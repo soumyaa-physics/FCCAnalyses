@@ -166,46 +166,52 @@ class Analysis():
             # Displaced vertex reconstruction
             # The selection functions have to be updated and taken from the Vertexing Utils.cc 
  
-            # select tracks with pT > 1 GeV
-            .Define('sel_tracks_pt', 'VertexingUtils::get_p_SV(1)(_EFlowTrack_trackStates)')
+            # # select tracks with pT > 1 GeV
+            # .Define('sel_tracks_pt', 'VertexingUtils::get_p_SV(1)(_EFlowTrack_trackStates)')
           
-            # select tracks with |d0 |> 2 mm
-            .Define('sel_tracks', 'VertexingUtils::get_dR_SV_obj(2)(sel_tracks_pt)')
+            # # select tracks with |d0 |> 2 mm
+            # .Define('sel_tracks', 'VertexingUtils::get_dR_SV_obj(2)(sel_tracks_pt)')
  
-            # find the DVs
-            .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, _EFlowTrack_trackStates, PrimaryVertexObject, true, 9., 40., 5.)")
-            # number of DVs
-            .Define('n_seltracks_DVs', 'VertexingUtils::get_n_SV(DV_evt_seltracks)')
-            # number of tracks from the DVs
-            .Define('n_trks_seltracks_DVs', 'VertexingUtils::get_VertexNtrk(DV_evt_seltracks)')
-            # invariant mass at the DVs (assuming the tracks to be pions)
-            .Define('invMass_seltracks_DVs', 'VertexingUtils::get_invM(DV_evt_seltracks)')
+            # # find the DVs
+            # .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, _EFlowTrack_trackStates, PrimaryVertexObject, true, 9., 40., 5.)")
+            # # number of DVs
+            # .Define('n_seltracks_DVs', 'VertexingUtils::get_n_SV(DV_evt_seltracks)')
+            # # number of tracks from the DVs
+            # .Define('n_trks_seltracks_DVs', 'VertexingUtils::get_VertexNtrk(DV_evt_seltracks)')
+            # # invariant mass at the DVs (assuming the tracks to be pions)
+            # .Define('invMass_seltracks_DVs', 'VertexingUtils::get_invM(DV_evt_seltracks)')
 
-            # get the chi2 distributions of the DVs from selected tracks - to check if tracks originate from the same physical point
-            .Define("DV_evt_seltracks_chi2",    "VertexingUtils::get_chi2_SV(DV_evt_seltracks)")
-            .Define("DV_evt_seltracks_normchi2","VertexingUtils::get_norm_chi2_SV(DV_evt_seltracks)") # DV chi2 (normalised)
+            # # get the chi2 distributions of the DVs from selected tracks - to check if tracks originate from the same physical point
+            # .Define("DV_evt_seltracks_chi2",    "VertexingUtils::get_chi2_SV(DV_evt_seltracks)")
+            # .Define("DV_evt_seltracks_normchi2","VertexingUtils::get_norm_chi2_SV(DV_evt_seltracks)") # DV chi2 (normalised)
 
-            # get the decay radius and full 3D distance of all the DVs from selected tracks
-            .Define("Reco_seltracks_DVs_Lxy","VertexingUtils::get_dxy_SV(DV_evt_seltracks, PrimaryVertexObject)")
-            .Define("Reco_seltracks_DVs_Lxyz","VertexingUtils::get_d3d_SV(DV_evt_seltracks, PrimaryVertexObject)")
+            # # get the decay radius and full 3D distance of all the DVs from selected tracks
+            # .Define("Reco_seltracks_DVs_Lxy","VertexingUtils::get_dxy_SV(DV_evt_seltracks, PrimaryVertexObject)")
+            # .Define("Reco_seltracks_DVs_Lxyz","VertexingUtils::get_d3d_SV(DV_evt_seltracks, PrimaryVertexObject)")
             
-            # merge vertices with position within 10*error-of-position, get the tracks from the merged vertices and refit
-            # this is hard coded in merge vertices: to only select the pair of vertices which are spatially consistent
-            .Define('merged_DVs', 'VertexingUtils::mergeVertices(DV_evt_seltracks, _EFlowTrack_trackStates)')
-            # number of merged DVs
-            .Define("merged_DVs_n", "VertexingUtils::get_n_SV(merged_DVs)")
-            # number of tracks from the merged DVs
-            .Define('n_trks_merged_DVs', 'VertexingUtils::get_VertexNtrk(merged_DVs)')
-            # invariant mass at the merged DVs
-            .Define('invMass_merged_DVs', 'VertexingUtils::get_invM(merged_DVs)')
+            # # merge vertices with position within 10*error-of-position, get the tracks from the merged vertices and refit
+            # # this is hard coded in merge vertices: to only select the pair of vertices which are spatially consistent
+            # .Define('merged_DVs', 'VertexingUtils::mergeVertices(DV_evt_seltracks, _EFlowTrack_trackStates)')
+            # # number of merged DVs
+            # .Define("merged_DVs_n", "VertexingUtils::get_n_SV(merged_DVs)")
+            # # number of tracks from the merged DVs
+            # .Define('n_trks_merged_DVs', 'VertexingUtils::get_VertexNtrk(merged_DVs)')
+            # # invariant mass at the merged DVs
+            # .Define('invMass_merged_DVs', 'VertexingUtils::get_invM(merged_DVs)')
 
-            # get the chi2 distributions of the merged DVs
-            .Define("merged_DVs_chi2",    "VertexingUtils::get_chi2_SV(merged_DVs)")
-            .Define("merged_DVs_normchi2","VertexingUtils::get_norm_chi2_SV(merged_DVs)") # DV chi2 (normalised)
+            # # get the chi2 distributions of the merged DVs
+            # .Define("merged_DVs_chi2",    "VertexingUtils::get_chi2_SV(merged_DVs)")
+            # .Define("merged_DVs_normchi2","VertexingUtils::get_norm_chi2_SV(merged_DVs)") # DV chi2 (normalised)
 
-            # get the decay radius of all the merged DVs
-            .Define("Reco_DVs_merged_Lxy","VertexingUtils::get_dxy_SV(merged_DVs, PrimaryVertexObject)")
-            .Define("Reco_DVs_merged_Lxyz","VertexingUtils::get_d3d_SV(merged_DVs, PrimaryVertexObject)")
+            # # get the decay radius of all the merged DVs
+            # .Define("Reco_DVs_merged_Lxy","VertexingUtils::get_dxy_SV(merged_DVs, PrimaryVertexObject)")
+            # .Define("Reco_DVs_merged_Lxyz","VertexingUtils::get_d3d_SV(merged_DVs, PrimaryVertexObject)")
+
+            # .Define("RecoTauTracks", "VertexingUtils::get_tracksInJets(Jet, _EFlowTrack_trackStates, Jet_to_Track_indices, 0)")
+            # .Define("RecoTauDecayVertexObject", "VertexFitterSimple::VertexFitter_Tk(2, RecoTauTracks)")
+            # .Define("RecoTauDecayVertex", "VertexingUtils::get_VertexData(RecoTauDecayVertexObject)")
+            # .Define("RecoTau_Lxy", "sqrt(RecoTauDecayVertex.position.x*RecoTauDecayVertex.position.x + RecoTauDecayVertex.position.y*RecoTauDecayVertex.position.y)")
+            # .Define("RecoTau_Lxyz", "sqrt(RecoTauDecayVertex.position.x*RecoTauDecayVertex.position.x + RecoTauDecayVertex.position.y*RecoTauDecayVertex.position.y + RecoTauDecayVertex.position.z*RecoTauDecayVertex.position.z)")
 
             # JETS
             .Define("n_RecoJets", "ReconstructedParticle::get_n(Jet)")
@@ -227,7 +233,7 @@ class Analysis():
             .Define("RecoJetTrack_Z0cov", "ReconstructedParticle2Track::getRP2TRK_Z0_cov(Jet,_EFlowTrack_trackStates)")
 
             # Electrons
-            .Alias("Electron0", "Electron#0.index")
+            .Alias("Electron0", "Electron_objIdx.index")
             .Define('RecoElectrons',  'ReconstructedParticle::get(Electron0, ReconstructedParticles)') 
             .Define("n_RecoElectrons", "ReconstructedParticle::get_n(RecoElectrons)")
             .Define("RecoElectrons_p", "ReconstructedParticle::get_p(RecoElectrons)")
@@ -240,12 +246,12 @@ class Analysis():
             .Define("RecoElectrons_e", "ReconstructedParticle::get_e(RecoElectrons)")
             .Define("RecoElectrons_charge", "ReconstructedParticle::get_charge(RecoElectrons)")
             .Define("RecoElectrons_theta", "ReconstructedParticle::get_theta(RecoElectrons)")
-            .Define("RecoElectrons_vx", "ReconstructedParticle::get_vertex_x(RecoElectrons)")
-            .Define("RecoElectrons_vy", "ReconstructedParticle::get_vertex_y(RecoElectrons)")
-            .Define("RecoElectrons_vz", "ReconstructedParticle::get_vertex_z(RecoElectrons)")
+            # .Define("RecoElectrons_vx", "ReconstructedParticle::get_vertex_x(RecoElectrons)")
+            # .Define("RecoElectrons_vy", "ReconstructedParticle::get_vertex_y(RecoElectrons)")
+            # .Define("RecoElectrons_vz", "ReconstructedParticle::get_vertex_z(RecoElectrons)")
 
             # Muons
-            .Alias("Muon0", "Muon#0.index")
+            .Alias("Muon0", "Muon_objIdx.index")
             .Define('RecoMuons',  'ReconstructedParticle::get(Muon0, ReconstructedParticles)') 
             .Define("n_RecoMuons", "ReconstructedParticle::get_n(RecoMuons)")
             .Define("RecoMuons_p", "ReconstructedParticle::get_p(RecoMuons)")
@@ -258,12 +264,12 @@ class Analysis():
             .Define("RecoMuons_e", "ReconstructedParticle::get_e(RecoMuons)")
             .Define("RecoMuons_charge", "ReconstructedParticle::get_charge(RecoMuons)")
             .Define("RecoMuons_theta", "ReconstructedParticle::get_theta(RecoMuons)")
-            .Define("RecoMuons_vx", "ReconstructedParticle::get_vertex_x(RecoMuons)")
-            .Define("RecoMuons_vy", "ReconstructedParticle::get_vertex_y(RecoMuons)")
-            .Define("RecoMuons_vz", "ReconstructedParticle::get_vertex_z(RecoMuons)")
+            # .Define("RecoMuons_vx", "ReconstructedParticle::get_vertex_x(RecoMuons)")
+            # .Define("RecoMuons_vy", "ReconstructedParticle::get_vertex_y(RecoMuons)")
+            # .Define("RecoMuons_vz", "ReconstructedParticle::get_vertex_z(RecoMuons)")
 
             # PHOTONS
-            .Alias("Photon0", "Photon#0.index") 
+            .Alias("Photon0", "Photon_objIdx.index") 
             .Define("RecoPhotons",  "ReconstructedParticle::get(Photon0, ReconstructedParticles)")
             .Define("n_RecoPhotons",  "ReconstructedParticle::get_n(RecoPhotons)") 
             .Define("RecoPhoton_e",      "ReconstructedParticle::get_e(RecoPhotons)")
@@ -278,15 +284,15 @@ class Analysis():
             .Define("RecoPhoton_charge",  "ReconstructedParticle::get_charge(RecoPhotons)")
 
             # MET
-            .Define("RecoMissingEnergy_e", "ReconstructedParticle::get_e(MissingET)")
-		    .Define("RecoMissingEnergy_p", "ReconstructedParticle::get_p(MissingET)")
-		    .Define("RecoMissingEnergy_pt", "ReconstructedParticle::get_pt(MissingET)")
-		    .Define("RecoMissingEnergy_px", "ReconstructedParticle::get_px(MissingET)") #x-component of RecoMissingEnergy
-		    .Define("RecoMissingEnergy_py", "ReconstructedParticle::get_py(MissingET)") #y-component of RecoMissingEnergy
-		    .Define("RecoMissingEnergy_pz", "ReconstructedParticle::get_pz(MissingET)") #z-component of RecoMissingEnergy
-		    .Define("RecoMissingEnergy_eta", "ReconstructedParticle::get_eta(MissingET)")
-		    .Define("RecoMissingEnergy_theta", "ReconstructedParticle::get_theta(MissingET)")
-		    .Define("RecoMissingEnergy_phi", "ReconstructedParticle::get_phi(MissingET)") #angle of RecoMissingEnergy
+            # .Define("RecoMissingEnergy_e", "ReconstructedParticle::get_e(MissingET)")
+		    # .Define("RecoMissingEnergy_p", "ReconstructedParticle::get_p(MissingET)")
+		    # .Define("RecoMissingEnergy_pt", "ReconstructedParticle::get_pt(MissingET)")
+		    # .Define("RecoMissingEnergy_px", "ReconstructedParticle::get_px(MissingET)") #x-component of RecoMissingEnergy
+		    # .Define("RecoMissingEnergy_py", "ReconstructedParticle::get_py(MissingET)") #y-component of RecoMissingEnergy
+		    # .Define("RecoMissingEnergy_pz", "ReconstructedParticle::get_pz(MissingET)") #z-component of RecoMissingEnergy
+		    # .Define("RecoMissingEnergy_eta", "ReconstructedParticle::get_eta(MissingET)")
+		    # .Define("RecoMissingEnergy_theta", "ReconstructedParticle::get_theta(MissingET)")
+		    # .Define("RecoMissingEnergy_phi", "ReconstructedParticle::get_phi(MissingET)") #angle of RecoMissingEnergy
 
 
         )
@@ -304,7 +310,6 @@ class Analysis():
             # Gen-level stau
             "GenStau",
             "n_GenStau",
-            "GenStau_observed_lifetime_xyz",
             "GenStau_vx",
             "GenStau_vy",
             "GenStau_vz",
@@ -377,22 +382,22 @@ class Analysis():
             "FSGenPhoton_theta",
             "FSGenPhoton_phi",
 
-            # Track information
-            'n_seltracks_DVs',
-            'n_trks_seltracks_DVs',
-            'invMass_seltracks_DVs',
-            "DV_evt_seltracks_chi2",
-            "DV_evt_seltracks_normchi2",
-            "Reco_seltracks_DVs_Lxy",
-            "Reco_seltracks_DVs_Lxyz",
+            # # Track information
+            # 'n_seltracks_DVs',
+            # 'n_trks_seltracks_DVs',
+            # 'invMass_seltracks_DVs',
+            # "DV_evt_seltracks_chi2",
+            # "DV_evt_seltracks_normchi2",
+            # "Reco_seltracks_DVs_Lxy",
+            # "Reco_seltracks_DVs_Lxyz",
 
-            "merged_DVs_n",
-            'n_trks_merged_DVs',
-            'invMass_merged_DVs',
-            "merged_DVs_chi2",
-            "merged_DVs_normchi2",
-            "Reco_DVs_merged_Lxy",
-            "Reco_DVs_merged_Lxyz",
+            # "merged_DVs_n",
+            # 'n_trks_merged_DVs',
+            # 'invMass_merged_DVs',
+            # "merged_DVs_chi2",
+            # "merged_DVs_normchi2",
+            # "Reco_DVs_merged_Lxy",
+            # "Reco_DVs_merged_Lxyz",
 
             # Reco Jets
             "n_RecoJets",
@@ -426,9 +431,9 @@ class Analysis():
             "RecoElectrons_theta",
             "RecoElectrons_phi",
             "RecoElectrons_charge",
-            "RecoElectrons_vx",
-            "RecoElectrons_vy",
-            "RecoElectrons_vz",
+            # "RecoElectrons_vx",
+            # "RecoElectrons_vy",
+            # "RecoElectrons_vz",
 
             # Reco Muons
             "RecoMuons",
@@ -443,9 +448,9 @@ class Analysis():
             "RecoMuons_theta",
             "RecoMuons_phi",
             "RecoMuons_charge",
-            "RecoMuons_vx",
-            "RecoMuons_vy",
-            "RecoMuons_vz",
+            # "RecoMuons_vx",
+            # "RecoMuons_vy",
+            # "RecoMuons_vz",
 
             # Reco Photons
             "RecoPhotons",
@@ -460,20 +465,17 @@ class Analysis():
             "RecoPhoton_theta",
             "RecoPhoton_phi",
             "RecoPhoton_charge",
-            "RecoPhoton_vx",
-            "RecoPhoton_vy",
-            "RecoPhoton_vz",
 
-            # MET
-            "RecoMissingEnergy_e",
-            "RecoMissingEnergy_p",
-            "RecoMissingEnergy_pt",
-            "RecoMissingEnergy_px",
-            "RecoMissingEnergy_py",
-            "RecoMissingEnergy_pz",
-            "RecoMissingEnergy_eta",
-            "RecoMissingEnergy_theta",
-            "RecoMissingEnergy_phi",
+            # # MET
+            # "RecoMissingEnergy_e",
+            # "RecoMissingEnergy_p",
+            # "RecoMissingEnergy_pt",
+            # "RecoMissingEnergy_px",
+            # "RecoMissingEnergy_py",
+            # "RecoMissingEnergy_pz",
+            # "RecoMissingEnergy_eta",
+            # "RecoMissingEnergy_theta",
+            # "RecoMissingEnergy_phi",
         ]
 
         return branch_list
