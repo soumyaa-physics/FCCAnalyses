@@ -16,7 +16,7 @@ class Analysis():
             #######################################################
             #               CME: 240 GeV (ZH)                     #
             #######################################################
-            'FCC_100stau_240com_000_events'  : {'fraction': 1.0},
+            'edm4hep_output'  : {'fraction': 1.0},
             # Background samples: e⁺e⁻ → γγγ
             #'background_3photons_cme_91p188'    : {'fraction': 1.0},
             } 
@@ -32,10 +32,10 @@ class Analysis():
 
         # Input/output directories
         # uncomment the input directory you want to use
-        self.input_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/'
+        self.input_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/edm4hep_output'
         self.output_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output'
 
-        self.tree_name = "Delphes"
+        self.tree_name = "events"
         print(f"Using tree: {self.tree_name}")
 
         # Optional HTCondor settings
@@ -51,9 +51,9 @@ class Analysis():
     def analyzers(self, df):
         '''
         Generator-level particle properties.
-        # '''
-        # df = df.Alias("MCRecoAssociations0", "_RecoMCLink_from.index")
-        # df = df.Alias("MCRecoAssociations1", "_RecoMCLink_to.index")
+        '''
+        df = df.Alias("MCRecoAssociations0", "_RecoMCLink_from.index")
+        df = df.Alias("MCRecoAssociations1", "_RecoMCLink_to.index")
 
         df2 = (
             df
@@ -70,9 +70,8 @@ class Analysis():
             .Define("GenStau_Lxyz", "sqrt(GenStau_vx*GenStau_vx + GenStau_vy*GenStau_vy + GenStau_vz*GenStau_vz)")
 
             # Stau daughters
-            .Define("StauDaughters", "FCCAnalyses::MCParticle::get_daughters(GenStau)")
-            .Define("GenTau", "FCCAnalyses::MCParticle::sel_pdgID(15,true)(StauDaughters)")
-            .Define("GenGravitino", "FCCAnalyses::MCParticle::sel_pdgID(1000049,false)(StauDaughters)")
+            .Define("GenTau", "FCCAnalyses::MCParticle::sel_pdgID(15,true)(Particle)")
+            .Define("GenGravitino", "FCCAnalyses::MCParticle::sel_pdgID(1000049,false)(Particle)")
 
             # Tau kinematics and vertex
             .Define("GenTau_px", "FCCAnalyses::MCParticle::get_px(GenTau)")
@@ -87,120 +86,210 @@ class Analysis():
             .Define("GenTau_vy", "FCCAnalyses::MCParticle::get_vertex_y(GenTau)")
             .Define("GenTau_vz", "FCCAnalyses::MCParticle::get_vertex_z(GenTau)")
 
-            # Final-state generator particles (status 1)
-            .Define("FSGenElectron", "FCCAnalyses::MCParticle::sel_genStatus(1)(FCCAnalyses::MCParticle::sel_pdgID(11,true)(ParticleMC))")
-            .Define("FSGenMuon",     "FCCAnalyses::MCParticle::sel_genStatus(1)(FCCAnalyses::MCParticle::sel_pdgID(13,true)(ParticleMC))")
-            .Define("FSGenTau",      "FCCAnalyses::MCParticle::sel_genStatus(1)(FCCAnalyses::MCParticle::sel_pdgID(15,true)(ParticleMC))")
-            .Define("FSGenPion",     "FCCAnalyses::MCParticle::sel_genStatus(1)(FCCAnalyses::MCParticle::sel_pdgID(211,true)(ParticleMC))")
+             # Final-state generator particles (status 1)
+            .Define("GenElectron_PID", "FCCAnalyses::MCParticle::sel_pdgID(11, true)(Particle)")
+            .Define("FSGenElectron", "FCCAnalyses::MCParticle::sel_genStatus(1)(GenElectron_PID)") 
+            .Define("GenMuon_PID", "FCCAnalyses::MCParticle::sel_pdgID(13, true)(Particle)")
+            .Define("FSGenMuon", "FCCAnalyses::MCParticle::sel_genStatus(1)(GenMuon_PID)")  
+            .Define("GenPhoton_PID", "FCCAnalyses::MCParticle::sel_pdgID(22, false)(Particle)")
+            .Define("FSGenPhoton", "FCCAnalyses::MCParticle::sel_genStatus(1)(GenPhoton_PID)") 
 
-            # Kinematics helper for FSGen
-            .Define("FSGenElectron_px","FCCAnalyses::MCParticle::get_px(FSGenElectron)")
-            .Define("FSGenElectron_py","FCCAnalyses::MCParticle::get_py(FSGenElectron)")
-            .Define("FSGenElectron_pz","FCCAnalyses::MCParticle::get_pz(FSGenElectron)")
-            .Define("FSGenElectron_pt","FCCAnalyses::MCParticle::get_pt(FSGenElectron)")
-            .Define("FSGenElectron_eta","FCCAnalyses::MCParticle::get_eta(FSGenElectron)")
-            .Define("FSGenElectron_phi","FCCAnalyses::MCParticle::get_phi(FSGenElectron)")
-            .Define("FSGenElectron_e","FCCAnalyses::MCParticle::get_e(FSGenElectron)")
-            .Define("FSGenElectron_charge","FCCAnalyses::MCParticle::get_charge(FSGenElectron)")
-            .Define("FSGenElectron_vx","FCCAnalyses::MCParticle::get_vertex_x(FSGenElectron)")
-            .Define("FSGenElectron_vy","FCCAnalyses::MCParticle::get_vertex_y(FSGenElectron)")
-            .Define("FSGenElectron_vz","FCCAnalyses::MCParticle::get_vertex_z(FSGenElectron)")
 
-            .Define("FSGenMuon_px","FCCAnalyses::MCParticle::get_px(FSGenMuon)")
-            .Define("FSGenMuon_py","FCCAnalyses::MCParticle::get_py(FSGenMuon)")
-            .Define("FSGenMuon_pz","FCCAnalyses::MCParticle::get_pz(FSGenMuon)")
-            .Define("FSGenMuon_pt","FCCAnalyses::MCParticle::get_pt(FSGenMuon)")
-            .Define("FSGenMuon_eta","FCCAnalyses::MCParticle::get_eta(FSGenMuon)")
-            .Define("FSGenMuon_phi","FCCAnalyses::MCParticle::get_phi(FSGenMuon)")
-            .Define("FSGenMuon_e","FCCAnalyses::MCParticle::get_e(FSGenMuon)")
-            .Define("FSGenMuon_charge","FCCAnalyses::MCParticle::get_charge(FSGenMuon)")
-            .Define("FSGenMuon_vx","FCCAnalyses::MCParticle::get_vertex_x(FSGenMuon)")
-            .Define("FSGenMuon_vy","FCCAnalyses::MCParticle::get_vertex_y(FSGenMuon)")
-            .Define("FSGenMuon_vz","FCCAnalyses::MCParticle::get_vertex_z(FSGenMuon)")
+            # Kinematics helper for FSGen electrons and positrons
+            .Define("n_FSGenElectron", "FCCAnalyses::MCParticle::get_n(FSGenElectron)")
+            .Define("FSGenElectron_e", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_e(FSGenElectron); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_p", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_p(FSGenElectron); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_pt", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_pt(FSGenElectron); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_px", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_px(FSGenElectron); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_py", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_py(FSGenElectron); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_pz", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_pz(FSGenElectron); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_eta", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_eta(FSGenElectron); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_theta", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_theta(FSGenElectron); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_phi", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_phi(FSGenElectron); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_charge", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_charge(FSGenElectron); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_vx", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_vertex_x( FSGenElectron ); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_vy", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_vertex_y( FSGenElectron ); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_vz", "if (n_FSGenElectron>0) return FCCAnalyses::MCParticle::get_vertex_z( FSGenElectron ); else return FCCAnalyses::MCParticle::get_genStatus(GenElectron_PID);")
 
-            .Define("FSGenTau_px","FCCAnalyses::MCParticle::get_px(FSGenTau)")
-            .Define("FSGenTau_py","FCCAnalyses::MCParticle::get_py(FSGenTau)")
-            .Define("FSGenTau_pz","FCCAnalyses::MCParticle::get_pz(FSGenTau)")
-            .Define("FSGenTau_pt","FCCAnalyses::MCParticle::get_pt(FSGenTau)")
-            .Define("FSGenTau_eta","FCCAnalyses::MCParticle::get_eta(FSGenTau)")
-            .Define("FSGenTau_phi","FCCAnalyses::MCParticle::get_phi(FSGenTau)")
-            .Define("FSGenTau_e","FCCAnalyses::MCParticle::get_e(FSGenTau)")
-            .Define("FSGenTau_charge","FCCAnalyses::MCParticle::get_charge(FSGenTau)")
-            .Define("FSGenTau_vx","FCCAnalyses::MCParticle::get_vertex_x(FSGenTau)")
-            .Define("FSGenTau_vy","FCCAnalyses::MCParticle::get_vertex_y(FSGenTau)")
-            .Define("FSGenTau_vz","FCCAnalyses::MCParticle::get_vertex_z(FSGenTau)")
+            # Kinematics for FSGen muons and anti-muons
+            .Define("n_FSGenMuon", "FCCAnalyses::MCParticle::get_n(FSGenMuon)")
+            .Define("FSGenMuon_e", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_e(FSGenMuon); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_p", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_p(FSGenMuon); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_pt", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_pt(FSGenMuon); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_px", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_px(FSGenMuon); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_py", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_py(FSGenMuon); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_pz", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_pz(FSGenMuon); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_eta", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_eta(FSGenMuon); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_theta", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_theta(FSGenMuon); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_phi", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_phi(FSGenMuon); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_charge", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_charge(FSGenMuon); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_vx", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_vertex_x( FSGenMuon ); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_vy", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_vertex_y( FSGenMuon ); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
+            .Define("FSGenMuon_vz", "if (n_FSGenMuon>0) return FCCAnalyses::MCParticle::get_vertex_z( FSGenMuon ); else return FCCAnalyses::MCParticle::get_genStatus(GenMuon_PID);")
 
-            .Define("FSGenPion_px","FCCAnalyses::MCParticle::get_px(FSGenPion)")
-            .Define("FSGenPion_py","FCCAnalyses::MCParticle::get_py(FSGenPion)")
-            .Define("FSGenPion_pz","FCCAnalyses::MCParticle::get_pz(FSGenPion)")
-            .Define("FSGenPion_pt","FCCAnalyses::MCParticle::get_pt(FSGenPion)")
-            .Define("FSGenPion_eta","FCCAnalyses::MCParticle::get_eta(FSGenPion)")
-            .Define("FSGenPion_phi","FCCAnalyses::MCParticle::get_phi(FSGenPion)")
-            .Define("FSGenPion_e","FCCAnalyses::MCParticle::get_e(FSGenPion)")
-            .Define("FSGenPion_charge","FCCAnalyses::MCParticle::get_charge(FSGenPion)")
-            .Define("FSGenPion_vx","FCCAnalyses::MCParticle::get_vertex_x(FSGenPion)")
-            .Define("FSGenPion_vy","FCCAnalyses::MCParticle::get_vertex_y(FSGenPion)")
-            .Define("FSGenPion_vz","FCCAnalyses::MCParticle::get_vertex_z(FSGenPion)")
+            #Kinematics for FSGen photons
+            .Define("n_FSGenPhoton", "FCCAnalyses::MCParticle::get_n(FSGenPhoton)")
+            .Define("FSGenPhoton_e", "FCCAnalyses::MCParticle::get_e(FSGenPhoton)")
+            .Define("FSGenPhoton_p", "FCCAnalyses::MCParticle::get_p(FSGenPhoton)")
+            .Define("FSGenPhoton_pt", "FCCAnalyses::MCParticle::get_pt(FSGenPhoton)")
+            .Define("FSGenPhoton_px", "FCCAnalyses::MCParticle::get_px(FSGenPhoton)")
+            .Define("FSGenPhoton_py", "FCCAnalyses::MCParticle::get_py(FSGenPhoton)")
+            .Define("FSGenPhoton_pz", "FCCAnalyses::MCParticle::get_pz(FSGenPhoton)")
+            .Define("FSGenPhoton_eta", "FCCAnalyses::MCParticle::get_eta(FSGenPhoton)")
+            .Define("FSGenPhoton_theta", "FCCAnalyses::MCParticle::get_theta(FSGenPhoton)")
+            .Define("FSGenPhoton_phi", "FCCAnalyses::MCParticle::get_phi(FSGenPhoton)")
 
             # --------------------------
             # Reconstructed particles
             # --------------------------
+            # MC Primary Vertex
+            .Define("MC_PrimaryVertex",  "FCCAnalyses::MCParticle::get_EventPrimaryVertex(21)( Particle )" )
+
+            # Tracks
+            .Define("n_RecoTracks",  "ReconstructedParticle2Track::getTK_n(_EFlowTrack_trackStates)")
+
+            # the following is inspired by Exotic Higgs decay (although it is now outdated)
+            # Vertex fitting
+
+            # First, reconstruct a vertex from all tracks 
+            # Input parameters are 1 = primary vertex, _EFlowTrack_trackStates contains all tracks, bool beamspotconstraint = true, bsc x/y/z (sigma xy, sigma_z)
+            .Define("VertexObject_allTracks",  "VertexFitterSimple::VertexFitter_Tk ( 1, _EFlowTrack_trackStates, true, 4.5, 20e-3, 300)")
+
+            # Select the tracks that are reconstructed  as primaries, so it removes all long lived decay tracks
+            .Define("RecoedPrimaryTracks",  "VertexFitterSimple::get_PrimaryTracks( _EFlowTrack_trackStates, true, 4.5, 20e-3, 300, 0., 0., 0.)")
+            .Define("n_RecoedPrimaryTracks",  "ReconstructedParticle2Track::getTK_n( RecoedPrimaryTracks )")
+
+            # the final primary vertex : final/refined fit
+            .Define("PrimaryVertexObject",   "VertexFitterSimple::VertexFitter_Tk ( 1, RecoedPrimaryTracks, true, 4.5, 20e-3, 300) ")
+            .Define("PrimaryVertex",   "VertexingUtils::get_VertexData( PrimaryVertexObject )")
+
+            # Displaced vertex reconstruction
+            # The selection functions have to be updated and taken from the Vertexing Utils.cc 
+ 
+            # select tracks with pT > 1 GeV
+            .Define('sel_tracks_pt', 'VertexingUtils::get_p_SV(1)(_EFlowTrack_trackStates)')
+          
+            # select tracks with |d0 |> 2 mm
+            .Define('sel_tracks', 'VertexingUtils::get_dR_SV_obj(2)(sel_tracks_pt)')
+ 
+            # find the DVs
+            .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, _EFlowTrack_trackStates, PrimaryVertexObject, true, 9., 40., 5.)")
+            # number of DVs
+            .Define('n_seltracks_DVs', 'VertexingUtils::get_n_SV(DV_evt_seltracks)')
+            # number of tracks from the DVs
+            .Define('n_trks_seltracks_DVs', 'VertexingUtils::get_VertexNtrk(DV_evt_seltracks)')
+            # invariant mass at the DVs (assuming the tracks to be pions)
+            .Define('invMass_seltracks_DVs', 'VertexingUtils::get_invM(DV_evt_seltracks)')
+
+            # get the chi2 distributions of the DVs from selected tracks - to check if tracks originate from the same physical point
+            .Define("DV_evt_seltracks_chi2",    "VertexingUtils::get_chi2_SV(DV_evt_seltracks)")
+            .Define("DV_evt_seltracks_normchi2","VertexingUtils::get_norm_chi2_SV(DV_evt_seltracks)") # DV chi2 (normalised)
+
+            # get the decay radius and full 3D distance of all the DVs from selected tracks
+            .Define("Reco_seltracks_DVs_Lxy","VertexingUtils::get_dxy_SV(DV_evt_seltracks, PrimaryVertexObject)")
+            .Define("Reco_seltracks_DVs_Lxyz","VertexingUtils::get_d3d_SV(DV_evt_seltracks, PrimaryVertexObject)")
+            
+            # merge vertices with position within 10*error-of-position, get the tracks from the merged vertices and refit
+            # this is hard coded in merge vertices: to only select the pair of vertices which are spatially consistent
+            .Define('merged_DVs', 'VertexingUtils::mergeVertices(DV_evt_seltracks, _EFlowTrack_trackStates)')
+            # number of merged DVs
+            .Define("merged_DVs_n", "VertexingUtils::get_n_SV(merged_DVs)")
+            # number of tracks from the merged DVs
+            .Define('n_trks_merged_DVs', 'VertexingUtils::get_VertexNtrk(merged_DVs)')
+            # invariant mass at the merged DVs
+            .Define('invMass_merged_DVs', 'VertexingUtils::get_invM(merged_DVs)')
+
+            # get the chi2 distributions of the merged DVs
+            .Define("merged_DVs_chi2",    "VertexingUtils::get_chi2_SV(merged_DVs)")
+            .Define("merged_DVs_normchi2","VertexingUtils::get_norm_chi2_SV(merged_DVs)") # DV chi2 (normalised)
+
+            # get the decay radius of all the merged DVs
+            .Define("Reco_DVs_merged_Lxy","VertexingUtils::get_dxy_SV(merged_DVs, PrimaryVertexObject)")
+            .Define("Reco_DVs_merged_Lxyz","VertexingUtils::get_d3d_SV(merged_DVs, PrimaryVertexObject)")
+
+            # JETS
+            .Define("n_RecoJets", "ReconstructedParticle::get_n(Jet)")
+            .Define("RecoJet_e",      "ReconstructedParticle::get_e(Jet)")
+            .Define("RecoJet_p",      "ReconstructedParticle::get_p(Jet)") 
+            .Define("RecoJet_pt",      "ReconstructedParticle::get_pt(Jet)")
+            .Define("RecoJet_px",      "ReconstructedParticle::get_px(Jet)")
+            .Define("RecoJet_py",      "ReconstructedParticle::get_py(Jet)")
+            .Define("RecoJet_pz",      "ReconstructedParticle::get_pz(Jet)")
+		    .Define("RecoJet_eta",     "ReconstructedParticle::get_eta(Jet)") 
+            .Define("RecoJet_theta",   "ReconstructedParticle::get_theta(Jet)")
+		    .Define("RecoJet_phi",     "ReconstructedParticle::get_phi(Jet)") 
+            .Define("RecoJet_charge",  "ReconstructedParticle::get_charge(Jet)")
+            .Define("RecoJetTrack_absD0", "return abs(ReconstructedParticle2Track::getRP2TRK_D0(Jet,_EFlowTrack_trackStates))")
+            .Define("RecoJetTrack_absZ0", "return abs(ReconstructedParticle2Track::getRP2TRK_Z0(Jet,_EFlowTrack_trackStates))")
+            .Define("RecoJetTrack_absD0sig", "return abs(ReconstructedParticle2Track::getRP2TRK_D0_sig(Jet,_EFlowTrack_trackStates))") 
+            .Define("RecoJetTrack_absZ0sig", "return abs(ReconstructedParticle2Track::getRP2TRK_Z0_sig(Jet,_EFlowTrack_trackStates))")
+            .Define("RecoJetTrack_D0cov", "ReconstructedParticle2Track::getRP2TRK_D0_cov(Jet,_EFlowTrack_trackStates)") 
+            .Define("RecoJetTrack_Z0cov", "ReconstructedParticle2Track::getRP2TRK_Z0_cov(Jet,_EFlowTrack_trackStates)")
+
             # Electrons
             .Alias("Electron0", "Electron#0.index")
-            .Define("RecoElectrons_px", "ReconstructedParticle::get_px(Electron)")
-            .Define("RecoElectrons_py", "ReconstructedParticle::get_py(Electron)")
-            .Define("RecoElectrons_pz", "ReconstructedParticle::get_pz(Electron)")
-            .Define("RecoElectrons_pt", "ReconstructedParticle::get_pt(Electron)")
-            .Define("RecoElectrons_eta", "ReconstructedParticle::get_eta(Electron)")
-            .Define("RecoElectrons_phi", "ReconstructedParticle::get_phi(Electron)")
-            .Define("RecoElectrons_e", "ReconstructedParticle::get_e(Electron)")
-            .Define("RecoElectrons_charge", "ReconstructedParticle::get_charge(Electron)")
-            .Define("RecoElectrons_vx", "ReconstructedParticle::get_vertex_x(Electron)")
-            .Define("RecoElectrons_vy", "ReconstructedParticle::get_vertex_y(Electron)")
-            .Define("RecoElectrons_vz", "ReconstructedParticle::get_vertex_z(Electron)")
+            .Define('RecoElectrons',  'ReconstructedParticle::get(Electron0, ReconstructedParticles)') 
+            .Define("n_RecoElectrons", "ReconstructedParticle::get_n(RecoElectrons)")
+            .Define("RecoElectrons_p", "ReconstructedParticle::get_p(RecoElectrons)")
+            .Define("RecoElectrons_px", "ReconstructedParticle::get_px(RecoElectrons)")
+            .Define("RecoElectrons_py", "ReconstructedParticle::get_py(RecoElectrons)")
+            .Define("RecoElectrons_pz", "ReconstructedParticle::get_pz(RecoElectrons)")
+            .Define("RecoElectrons_pt", "ReconstructedParticle::get_pt(RecoElectrons)")
+            .Define("RecoElectrons_eta", "ReconstructedParticle::get_eta(RecoElectrons)")
+            .Define("RecoElectrons_phi", "ReconstructedParticle::get_phi(RecoElectrons)")
+            .Define("RecoElectrons_e", "ReconstructedParticle::get_e(RecoElectrons)")
+            .Define("RecoElectrons_charge", "ReconstructedParticle::get_charge(RecoElectrons)")
+            .Define("RecoElectrons_theta", "ReconstructedParticle::get_theta(RecoElectrons)")
+            .Define("RecoElectrons_vx", "ReconstructedParticle::get_vertex_x(RecoElectrons)")
+            .Define("RecoElectrons_vy", "ReconstructedParticle::get_vertex_y(RecoElectrons)")
+            .Define("RecoElectrons_vz", "ReconstructedParticle::get_vertex_z(RecoElectrons)")
 
             # Muons
             .Alias("Muon0", "Muon#0.index")
-            .Define("RecoMuons_px", "ReconstructedParticle::get_px(Muon)")
-            .Define("RecoMuons_py", "ReconstructedParticle::get_py(Muon)")
-            .Define("RecoMuons_pz", "ReconstructedParticle::get_pz(Muon)")
-            .Define("RecoMuons_pt", "ReconstructedParticle::get_pt(Muon)")
-            .Define("RecoMuons_eta", "ReconstructedParticle::get_eta(Muon)")
-            .Define("RecoMuons_phi", "ReconstructedParticle::get_phi(Muon)")
-            .Define("RecoMuons_e", "ReconstructedParticle::get_e(Muon)")
-            .Define("RecoMuons_charge", "ReconstructedParticle::get_charge(Muon)")
-            .Define("RecoMuons_vx", "ReconstructedParticle::get_vertex_x(Muon)")
-            .Define("RecoMuons_vy", "ReconstructedParticle::get_vertex_y(Muon)")
-            .Define("RecoMuons_vz", "ReconstructedParticle::get_vertex_z(Muon)")
+            .Define('RecoMuons',  'ReconstructedParticle::get(Muon0, ReconstructedParticles)') 
+            .Define("n_RecoMuons", "ReconstructedParticle::get_n(RecoMuons)")
+            .Define("RecoMuons_p", "ReconstructedParticle::get_p(RecoMuons)")
+            .Define("RecoMuons_px", "ReconstructedParticle::get_px(RecoMuons)")
+            .Define("RecoMuons_py", "ReconstructedParticle::get_py(RecoMuons)")
+            .Define("RecoMuons_pz", "ReconstructedParticle::get_pz(RecoMuons)")
+            .Define("RecoMuons_pt", "ReconstructedParticle::get_pt(RecoMuons)")
+            .Define("RecoMuons_eta", "ReconstructedParticle::get_eta(RecoMuons)")
+            .Define("RecoMuons_phi", "ReconstructedParticle::get_phi(RecoMuons)")
+            .Define("RecoMuons_e", "ReconstructedParticle::get_e(RecoMuons)")
+            .Define("RecoMuons_charge", "ReconstructedParticle::get_charge(RecoMuons)")
+            .Define("RecoMuons_theta", "ReconstructedParticle::get_theta(RecoMuons)")
+            .Define("RecoMuons_vx", "ReconstructedParticle::get_vertex_x(RecoMuons)")
+            .Define("RecoMuons_vy", "ReconstructedParticle::get_vertex_y(RecoMuons)")
+            .Define("RecoMuons_vz", "ReconstructedParticle::get_vertex_z(RecoMuons)")
 
-            # Taus
-            .Alias("Tau0", "Tau#0.index")
-            .Define("RecoTaus_px", "ReconstructedParticle::get_px(Tau)")
-            .Define("RecoTaus_py", "ReconstructedParticle::get_py(Tau)")
-            .Define("RecoTaus_pz", "ReconstructedParticle::get_pz(Tau)")
-            .Define("RecoTaus_pt", "ReconstructedParticle::get_pt(Tau)")
-            .Define("RecoTaus_eta", "ReconstructedParticle::get_eta(Tau)")
-            .Define("RecoTaus_phi", "ReconstructedParticle::get_phi(Tau)")
-            .Define("RecoTaus_e", "ReconstructedParticle::get_e(Tau)")
-            .Define("RecoTaus_charge", "ReconstructedParticle::get_charge(Tau)")
-            .Define("RecoTaus_vx", "ReconstructedParticle::get_vertex_x(Tau)")
-            .Define("RecoTaus_vy", "ReconstructedParticle::get_vertex_y(Tau)")
-            .Define("RecoTaus_vz", "ReconstructedParticle::get_vertex_z(Tau)")
+            # PHOTONS
+            .Alias("Photon0", "Photon#0.index") 
+            .Define("RecoPhotons",  "ReconstructedParticle::get(Photon0, ReconstructedParticles)")
+            .Define("n_RecoPhotons",  "ReconstructedParticle::get_n(RecoPhotons)") 
+            .Define("RecoPhoton_e",      "ReconstructedParticle::get_e(RecoPhotons)")
+            .Define("RecoPhoton_p",      "ReconstructedParticle::get_p(RecoPhotons)")
+            .Define("RecoPhoton_pt",      "ReconstructedParticle::get_pt(RecoPhotons)")
+            .Define("RecoPhoton_px",      "ReconstructedParticle::get_px(RecoPhotons)")
+            .Define("RecoPhoton_py",      "ReconstructedParticle::get_py(RecoPhotons)")
+            .Define("RecoPhoton_pz",      "ReconstructedParticle::get_pz(RecoPhotons)")
+		    .Define("RecoPhoton_eta",     "ReconstructedParticle::get_eta(RecoPhotons)")
+            .Define("RecoPhoton_theta",   "ReconstructedParticle::get_theta(RecoPhotons)")
+		    .Define("RecoPhoton_phi",     "ReconstructedParticle::get_phi(RecoPhotons)") 
+            .Define("RecoPhoton_charge",  "ReconstructedParticle::get_charge(RecoPhotons)")
 
-            # Pions
-            .Define("RecoPions_px", "ReconstructedParticle::get_px(ParticleFlowCandidate)")
-            .Define("RecoPions_py", "ReconstructedParticle::get_py(ParticleFlowCandidate)")
-            .Define("RecoPions_pz", "ReconstructedParticle::get_pz(ParticleFlowCandidate)")
-            .Define("RecoPions_pt", "ReconstructedParticle::get_pt(ParticleFlowCandidate)")
-            .Define("RecoPions_eta", "ReconstructedParticle::get_eta(ParticleFlowCandidate)")
-            .Define("RecoPions_phi", "ReconstructedParticle::get_phi(ParticleFlowCandidate)")
-            .Define("RecoPions_e", "ReconstructedParticle::get_e(ParticleFlowCandidate)")
-            .Define("RecoPions_charge", "ReconstructedParticle::get_charge(ParticleFlowCandidate)")
-            .Define("RecoPions_vx", "ReconstructedParticle::get_vertex_x(ParticleFlowCandidate)")
-            .Define("RecoPions_vy", "ReconstructedParticle::get_vertex_y(ParticleFlowCandidate)")
-            .Define("RecoPions_vz", "ReconstructedParticle::get_vertex_z(ParticleFlowCandidate)")
+            # MET
+            .Define("RecoMissingEnergy_e", "ReconstructedParticle::get_e(MissingET)")
+		    .Define("RecoMissingEnergy_p", "ReconstructedParticle::get_p(MissingET)")
+		    .Define("RecoMissingEnergy_pt", "ReconstructedParticle::get_pt(MissingET)")
+		    .Define("RecoMissingEnergy_px", "ReconstructedParticle::get_px(MissingET)") #x-component of RecoMissingEnergy
+		    .Define("RecoMissingEnergy_py", "ReconstructedParticle::get_py(MissingET)") #y-component of RecoMissingEnergy
+		    .Define("RecoMissingEnergy_pz", "ReconstructedParticle::get_pz(MissingET)") #z-component of RecoMissingEnergy
+		    .Define("RecoMissingEnergy_eta", "ReconstructedParticle::get_eta(MissingET)")
+		    .Define("RecoMissingEnergy_theta", "ReconstructedParticle::get_theta(MissingET)")
+		    .Define("RecoMissingEnergy_phi", "ReconstructedParticle::get_phi(MissingET)") #angle of RecoMissingEnergy
+
+
         )
-
         return df2
 
 
@@ -222,8 +311,7 @@ class Analysis():
             "GenStau_Lxy",
             "GenStau_Lxyz",
 
-            # Stau daughters
-            "StauDaughters",
+            # # Stau daughters
             "GenTau",
             "GenGravitino",
 
@@ -235,45 +323,12 @@ class Analysis():
             "GenTau_px",
             "GenTau_py",
             "GenTau_pz",
+            "GenTau_charge",
 
             # Tau vertex
             "GenTau_vx",
             "GenTau_vy",
             "GenTau_vz",
-
-            # Final-state pions
-            "FSGenPion",
-            "n_FSGenPion",
-            "FSGenPion_e",
-            "FSGenPion_p",
-            "FSGenPion_pt",
-            "FSGenPion_px",
-            "FSGenPion_py",
-            "FSGenPion_pz",
-            "FSGenPion_eta",
-            "FSGenPion_theta",
-            "FSGenPion_phi",
-            "FSGenPion_charge",
-            "FSGenPion_vertex_x",
-            "FSGenPion_vertex_y",
-            "FSGenPion_vertex_z",
-
-            # Final-state muons
-            "FSGenMuon",
-            "n_FSGenMuon",
-            "FSGenMuon_e",
-            "FSGenMuon_p",
-            "FSGenMuon_pt",
-            "FSGenMuon_px",
-            "FSGenMuon_py",
-            "FSGenMuon_pz",
-            "FSGenMuon_eta",
-            "FSGenMuon_theta",
-            "FSGenMuon_phi",
-            "FSGenMuon_charge",
-            "FSGenMuon_vertex_x",
-            "FSGenMuon_vertex_y",
-            "FSGenMuon_vertex_z",
 
             # Final-state electrons
             "FSGenElectron",
@@ -288,9 +343,56 @@ class Analysis():
             "FSGenElectron_theta",
             "FSGenElectron_phi",
             "FSGenElectron_charge",
-            "FSGenElectron_vertex_x",
-            "FSGenElectron_vertex_y",
-            "FSGenElectron_vertex_z",
+            "FSGenElectron_vx",
+            "FSGenElectron_vy",
+            "FSGenElectron_vz",
+
+            # Final-state muons
+            "FSGenMuon",
+            "n_FSGenMuon",
+            "FSGenMuon_e",
+            "FSGenMuon_p",
+            "FSGenMuon_pt",
+            "FSGenMuon_px",
+            "FSGenMuon_py",
+            "FSGenMuon_pz",
+            "FSGenMuon_eta",
+            "FSGenMuon_theta",
+            "FSGenMuon_phi",
+            "FSGenMuon_charge",
+            "FSGenMuon_vx",
+            "FSGenMuon_vy",
+            "FSGenMuon_vz",
+
+            # Final-state photons
+            "FSGenPhoton",
+            "n_FSGenPhoton",
+            "FSGenPhoton_e",
+            "FSGenPhoton_p",
+            "FSGenPhoton_pt",
+            "FSGenPhoton_px",
+            "FSGenPhoton_py",
+            "FSGenPhoton_pz",
+            "FSGenPhoton_eta",
+            "FSGenPhoton_theta",
+            "FSGenPhoton_phi",
+
+            # Track information
+            'n_seltracks_DVs',
+            'n_trks_seltracks_DVs',
+            'invMass_seltracks_DVs',
+            "DV_evt_seltracks_chi2",
+            "DV_evt_seltracks_normchi2",
+            "Reco_seltracks_DVs_Lxy",
+            "Reco_seltracks_DVs_Lxyz",
+
+            "merged_DVs_n",
+            'n_trks_merged_DVs',
+            'invMass_merged_DVs',
+            "merged_DVs_chi2",
+            "merged_DVs_normchi2",
+            "Reco_DVs_merged_Lxy",
+            "Reco_DVs_merged_Lxyz",
 
             # Reco Jets
             "n_RecoJets",
@@ -304,20 +406,29 @@ class Analysis():
             "RecoJet_theta",
             "RecoJet_phi",
             "RecoJet_charge",
+            "RecoJetTrack_absD0",
+            "RecoJetTrack_absZ0",
+            "RecoJetTrack_absD0sig",
+            "RecoJetTrack_absZ0sig",
+            "RecoJetTrack_D0cov",
+            "RecoJetTrack_Z0cov",
 
             # Reco Electrons
             "RecoElectrons",
             "n_RecoElectrons",
-            "RecoElectron_e",
-            "RecoElectron_p",
-            "RecoElectron_pt",
-            "RecoElectron_px",
-            "RecoElectron_py",
-            "RecoElectron_pz",
-            "RecoElectron_eta",
-            "RecoElectron_theta",
-            "RecoElectron_phi",
-            "RecoElectron_charge",
+            "RecoElectrons_e",
+            "RecoElectrons_p",
+            "RecoElectrons_pt",
+            "RecoElectrons_px",
+            "RecoElectrons_py",
+            "RecoElectrons_pz",
+            "RecoElectrons_eta",
+            "RecoElectrons_theta",
+            "RecoElectrons_phi",
+            "RecoElectrons_charge",
+            "RecoElectrons_vx",
+            "RecoElectrons_vy",
+            "RecoElectrons_vz",
 
             # Reco Muons
             "RecoMuons",
@@ -332,6 +443,26 @@ class Analysis():
             "RecoMuons_theta",
             "RecoMuons_phi",
             "RecoMuons_charge",
+            "RecoMuons_vx",
+            "RecoMuons_vy",
+            "RecoMuons_vz",
+
+            # Reco Photons
+            "RecoPhotons",
+            "n_RecoPhotons",
+            "RecoPhoton_e",
+            "RecoPhoton_p",
+            "RecoPhoton_pt",
+            "RecoPhoton_px",
+            "RecoPhoton_py",
+            "RecoPhoton_pz",
+            "RecoPhoton_eta",
+            "RecoPhoton_theta",
+            "RecoPhoton_phi",
+            "RecoPhoton_charge",
+            "RecoPhoton_vx",
+            "RecoPhoton_vy",
+            "RecoPhoton_vz",
 
             # MET
             "RecoMissingEnergy_e",
