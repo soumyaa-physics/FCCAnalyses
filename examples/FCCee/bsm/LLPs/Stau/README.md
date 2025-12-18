@@ -16,6 +16,10 @@ trying to find an alternate
 removed displaced vertex info
 and MET
 
+EDM4hep → analysis_stage1 → flat ntuple
+flat ntuple → analysis_final → histograms
+histograms → analysis_plot → plots
+
 References:
 1. [VertexUtils](https://github.com/HEP-FCC/FCCAnalyses/blob/763cb483f4c8e605b3182c8b1d076cdd920739b2/analyzers/dataframe/src/VertexingUtils.cc)
 2. [vertex_github](https://hep-fcc.github.io/FCCAnalyses/doc/latest/VertexingUtils_8h.html)

@@ -1,1 +1,0 @@
-/eos/home-s/svashish/delphes/cards/delphes_card_IDEA.tcl
