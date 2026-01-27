@@ -124,6 +124,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a9f074d5475db3aab1ce870f281a4a8ba" id="r_a9f074d5475db3aab1ce870f281a4a8ba"><td class="memItemLeft" align="right" valign="top">ROOT::VecOps::RVec&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9f074d5475db3aab1ce870f281a4a8ba">IsPrimary_forTracks</a> (ROOT::VecOps::RVec&lt; edm4hep::TrackState &gt; allTracks, ROOT::VecOps::RVec&lt; edm4hep::TrackState &gt; primaryTracks)</td></tr>
 <tr class="memdesc:a9f074d5475db3aab1ce870f281a4a8ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">for an input vector of tracks, return a vector of bools that tell if the track was identified as a primary track  <br /></td></tr>
 <tr class="separator:a9f074d5475db3aab1ce870f281a4a8ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7474dca7becf8e47b3475d013c41da0b" id="r_a7474dca7becf8e47b3475d013c41da0b"><td class="memItemLeft" align="right" valign="top">ROOT::VecOps::RVec&lt; edm4hep::TrackState &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7474dca7becf8e47b3475d013c41da0b">getSelectedTracks</a> (ROOT::VecOps::RVec&lt; edm4hep::TrackState &gt; tracks, double ptMin=0.0, double d0AbsMin=0.0, double d0AbsMax=1.e10, double z0AbsMin=0.0, double z0AbsMax=10000)</td></tr>
+<tr class="memdesc:a7474dca7becf8e47b3475d013c41da0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">added this  <br /></td></tr>
+<tr class="separator:a7474dca7becf8e47b3475d013c41da0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1aa1405356a08a857aaeac336aba926" id="r_af1aa1405356a08a857aaeac336aba926"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1aa1405356a08a857aaeac336aba926">supress_stdout</a> ()</td></tr>
 <tr class="separator:af1aa1405356a08a857aaeac336aba926"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a212c2f47a91f730b09bd11057899f50f" id="r_a212c2f47a91f730b09bd11057899f50f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a212c2f47a91f730b09bd11057899f50f">resume_stdout</a> (int fd)</td></tr>
@@ -206,6 +209,49 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Return the tracks that are flagged as coming from the primary vertex. </p>
+
+</div>
+</div>
+<a id="a7474dca7becf8e47b3475d013c41da0b" name="a7474dca7becf8e47b3475d013c41da0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7474dca7becf8e47b3475d013c41da0b">&#9670;&#160;</a></span>getSelectedTracks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ROOT::VecOps::RVec&lt; edm4hep::TrackState &gt; FCCAnalyses::VertexFitterSimple::getSelectedTracks </td>
+          <td>(</td>
+          <td class="paramtype">ROOT::VecOps::RVec&lt; edm4hep::TrackState &gt;</td>          <td class="paramname"><span class="paramname"><em>tracks</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>ptMin</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0.0</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>d0AbsMin</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0.0</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>d0AbsMax</em></span><span class="paramdefsep"> = </span><span class="paramdefval">1.e10</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>z0AbsMin</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0.0</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>z0AbsMax</em></span><span class="paramdefsep"> = </span><span class="paramdefval">10000</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>added this </p>
 
 </div>
 </div>
