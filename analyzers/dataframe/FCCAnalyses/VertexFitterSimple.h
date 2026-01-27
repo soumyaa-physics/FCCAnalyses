@@ -73,6 +73,10 @@ namespace VertexFitterSimple{
                                                                  ROOT::VecOps::RVec<edm4hep::TrackState> primaryTracks ) ;
 
 
+  /// added this
+   ROOT::VecOps::RVec<edm4hep::TrackState> getSelectedTracks(           ROOT::VecOps::RVec<edm4hep::TrackState> tracks,
+                                                                        double ptMin = 0.0, double d0AbsMin = 0.0, double d0AbsMax = 1.e10, double z0AbsMin = 0.0, double z0AbsMax = 10000 ) ;
+
 /*
   Double_t FastRv(TVectorD p1, TVectorD p2) ;
   TMatrixDSym RegInv3(TMatrixDSym &Smat0) ;
