@@ -206,28 +206,22 @@ class RDFanalysis():
 
             # Tracks
             .Define("n_RecoTracks",  "ReconstructedParticle2Track::getTK_n(TrackStates)")
-            # Vertex fitting
-            # First, reconstruct a vertex from all tracks 
-            # Input parameters are 1 = primary vertex, TrackStates contains all tracks, bool beamspotconstraint = true, bsc x/y/z (sigma xy, sigma_z)
-            # .Define("VertexObject_allTracks",  "VertexFitterSimple::VertexFitter_Tk ( 1, TrackStates, true, 4.5, 20e-3, 300)")
-
-            # .Define("VertexObject_allTracks",  "VertexFitterSimple::VertexFitter_Tk ( 1, TrackStates, false)")
-
+            .Define("AcceptedTracks", "VertexFitterSimple::getSelectedTracks(TrackStates, 4.0)")
+            .Define("n_AcceptedTracks",  "ReconstructedParticle2Track::getTK_n(AcceptedTracks)")
             # Select the tracks that are reconstructed  as primaries, so it removes all long lived decay tracks
-            .Define("RecoedPrimaryTracks",  "VertexFitterSimple::get_PrimaryTracks( TrackStates, true, 4.5, 20e-3, 300, 0., 0., 0.)")
+            .Define("RecoedPrimaryTracks",  "VertexFitterSimple::get_PrimaryTracks( AcceptedTracks, true, 4.5, 20e-3, 300, 0., 0., 0.)")
             .Define("n_RecoedPrimaryTracks",  "ReconstructedParticle2Track::getTK_n( RecoedPrimaryTracks )")
 
             # the final primary vertex : final/refined fit
             .Define("PrimaryVertexObject",   "VertexFitterSimple::VertexFitter_Tk ( 1, RecoedPrimaryTracks, true, 4.5, 20e-3, 300 ) ") 
             .Define("PrimaryVertex",   "VertexingUtils::get_VertexData( PrimaryVertexObject )")
             .Define("PrimaryVertex_ntracks", "FCCAnalyses::VertexingUtils::get_VertexNtrk( PrimaryVertexObject )")
-
             # .Filter("PrimaryVertex_ntracks > 2")
 
-            .Define("sel_tracks", "VertexFitterSimple::get_NonPrimaryTracks(TrackStates, RecoedPrimaryTracks)") # 100 events/sec
+            .Define("sel_tracks", "VertexFitterSimple::get_NonPrimaryTracks(AcceptedTracks, RecoedPrimaryTracks)") # 100 events/sec
             .Filter("sel_tracks.size()>0")
             # find the DVs from the selected tracks
-            .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, TrackStates, PrimaryVertexObject, true, 9., 40., 5.)")
+            .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, AcceptedTracks, PrimaryVertexObject, true, 9., 40., 5.)")
             # number of DVs
             .Define('n_seltracks_DVs', 'VertexingUtils::get_n_SV(DV_evt_seltracks)')
             # number of tracks from the DVs
@@ -250,6 +244,7 @@ class RDFanalysis():
             # get the decay radius of all the merged DVs
             .Define("Reco_DVs_merged_Lxy","VertexingUtils::get_dxy_SV(DV_evt_seltracks, PrimaryVertexObject)")
             .Define("Reco_DVs_merged_Lxyz","VertexingUtils::get_d3d_SV(DV_evt_seltracks, PrimaryVertexObject)")
+
 
             # .Define("RecoTauTracks", "VertexingUtils::get_tracksInJets(Jet, _EFlowTrack_trackStates, Jet_to_Track_indices, 0)")
             # .Define("RecoTauDecayVertexObject", "VertexFitterSimple::VertexFitter_Tk(2, RecoTauTracks)")

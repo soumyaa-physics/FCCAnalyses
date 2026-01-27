@@ -11,7 +11,7 @@ processList = {
         #######################################################
         #             CME: 240 GeV (ZH)- 10mm                 #
         #######################################################
-        # 'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+        'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
         'FCCee_110_stau_10mm_ctau_ecm_240' : {'fraction': 1.0},
 
         #######################################################
@@ -25,7 +25,7 @@ processList = {
         # 'p8_ee_ZZ_ecm240': {'fraction': 1.0,'chunks':100},
         # 'mgp8_ee_zh_ecm240_hbb': {'fraction': 1.0,'chunks':100},
         # 'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
-        # 'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
+        'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
 
         # old samples
         # 'p8_ee_WW_mumu_ecm240': {'fraction': 0.5,'chunks':100},
@@ -196,8 +196,8 @@ histoList = {
     "n_nonprimary_tracks": {"name":"n_nonprimary_tracks",   "title":"Number of non-primary tracks DVs",  "bin":20, "xmin":-0.5, "xmax":19.5},
     "n_RecoedPrimaryTracks": {"name":"n_RecoedPrimaryTracks",   "title":"Number of primary tracks DVs",  "bin":25, "xmin":-0.5, "xmax":50.5},
     "sel_tracks_pt_DV": {"name": "sel_tracks_pt_DV", "title": "pt of non-primary tracks", "bin":40, "xmin":0.0, "xmax": 80},
-    "sel_tracks_D0_DV": {"name": "sel_tracks_D0_DV", "title": "D0 of non-primary tracks", "bin":4, "xmin":-0.1, "xmax": 2.0},
-    "sel_tracks_Z0_DV": {"name": "sel_tracks_Z0_DV", "title": "Z0 of non-primary tracks", "bin":4, "xmin":-0.1, "xmax": 2.0},
+    "sel_tracks_D0_DV": {"name": "sel_tracks_D0_DV", "title": "D0 of non-primary tracks", "bin":20, "xmin":-0.1, "xmax": 2.0},
+    "sel_tracks_Z0_DV": {"name": "sel_tracks_Z0_DV", "title": "Z0 of non-primary tracks", "bin":20, "xmin":-0.1, "xmax": 2.0},
 
 
     "n_trks_seltracks_DVs": {"name":"n_trks_seltracks_DVs",  "title":"Number of tracks per DV",   "bin":10, "xmin":-0.5, "xmax":9.5},

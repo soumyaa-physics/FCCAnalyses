@@ -15,7 +15,7 @@ class Analysis():
             #######################################################
             #               CME: 240 GeV (ZH)                     #
             #######################################################
-            # 'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+            'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
             'FCCee_110_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
             
             #######################################################
@@ -223,41 +223,35 @@ class Analysis():
             # Reconstructed particles
             # --------------------------
             # MC Primary Vertex
-            .Define("MC_PrimaryVertex",  "MCParticle::get_EventPrimaryVertex(21)( Particle )" )
+            # .Define("MC_PrimaryVertex",  "MCParticle::get_EventPrimaryVertex(21)( Particle )" )
 
             # Tracks
             .Define("n_RecoTracks",  "ReconstructedParticle2Track::getTK_n(TrackStates)")
-
-            # Vertex fitting
-            # First, reconstruct a vertex from all tracks 
-            # Input parameters are 1 = primary vertex, TrackStates contains all tracks, bool beamspotconstraint = true, bsc x/y/z (sigma xy, sigma_z)
-            .Define("VertexObject_allTracks",  "VertexFitterSimple::VertexFitter_Tk ( 1, TrackStates, true, 4.5, 20e-3, 300)")
-
+            .Define("AcceptedTracks", "VertexFitterSimple::getSelectedTracks(TrackStates, 4.0)")
+            .Define("n_AcceptedTracks",  "ReconstructedParticle2Track::getTK_n(AcceptedTracks)")
             # Select the tracks that are reconstructed  as primaries, so it removes all long lived decay tracks
-            .Define("RecoedPrimaryTracks",  "VertexFitterSimple::get_PrimaryTracks( TrackStates, true, 4.5, 20e-3, 300, 0., 0., 0.)")
+            .Define("RecoedPrimaryTracks",  "VertexFitterSimple::get_PrimaryTracks( AcceptedTracks, true, 4.5, 20e-3, 300, 0., 0., 0.)")
             .Define("n_RecoedPrimaryTracks",  "ReconstructedParticle2Track::getTK_n( RecoedPrimaryTracks )")
 
             # the final primary vertex : final/refined fit
             .Define("PrimaryVertexObject",   "VertexFitterSimple::VertexFitter_Tk ( 1, RecoedPrimaryTracks, true, 4.5, 20e-3, 300 ) ") 
             .Define("PrimaryVertex",   "VertexingUtils::get_VertexData( PrimaryVertexObject )")
             .Define("PrimaryVertex_ntracks", "FCCAnalyses::VertexingUtils::get_VertexNtrk( PrimaryVertexObject )")
-
             # .Filter("PrimaryVertex_ntracks > 2")
 
-            .Define("sel_tracks", "VertexFitterSimple::get_NonPrimaryTracks(TrackStates, RecoedPrimaryTracks)") # 100 events/sec
+            .Define("sel_tracks", "VertexFitterSimple::get_NonPrimaryTracks(AcceptedTracks, RecoedPrimaryTracks)") # 100 events/sec
             .Filter("sel_tracks.size()>0")
             # find the DVs from the selected tracks
-            .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, TrackStates, PrimaryVertexObject, true, 9., 40., 5.)")
+            .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, AcceptedTracks, PrimaryVertexObject, true, 9., 40., 5.)")
             # number of DVs
             .Define('n_seltracks_DVs', 'VertexingUtils::get_n_SV(DV_evt_seltracks)')
             # number of tracks from the DVs
             .Define('n_trks_seltracks_DVs', 'VertexingUtils::get_VertexNtrk(DV_evt_seltracks)') 
             .Define("n_nonprimary_tracks", "ReconstructedParticle2Track::getTK_n(sel_tracks)")
             # momentum of the selected tracks
-            .Define('sel_tracks_pt_DV', 'ReconstructedParticle2Track::getRP2TRK_mom(ReconstructedParticles ,sel_tracks)')
+            .Define('sel_tracks_pt_DV', 'ReconstructedParticle2Track::getRP2TRK_mom(ReconstructedParticles ,sel_tracks)') 
             .Define('sel_tracks_D0_DV', 'ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles ,sel_tracks)')
             .Define('sel_tracks_Z0_DV', 'ReconstructedParticle2Track::getRP2TRK_Z0(ReconstructedParticles ,sel_tracks)')
-
             # invariant mass at the DVs (assuming the tracks to be pions)
             .Define('invMass_seltracks_DVs', 'VertexingUtils::get_invM(DV_evt_seltracks)')
 
@@ -269,10 +263,10 @@ class Analysis():
             .Define("Reco_seltracks_DVs_Lxy","VertexingUtils::get_dxy_SV(DV_evt_seltracks, PrimaryVertexObject)")
             .Define("Reco_seltracks_DVs_Lxyz","VertexingUtils::get_d3d_SV(DV_evt_seltracks, PrimaryVertexObject)")
 
-            # ## uncoment later
-            # # get the decay radius of all the merged DVs
+            # get the decay radius of all the merged DVs
             .Define("Reco_DVs_merged_Lxy","VertexingUtils::get_dxy_SV(DV_evt_seltracks, PrimaryVertexObject)")
             .Define("Reco_DVs_merged_Lxyz","VertexingUtils::get_d3d_SV(DV_evt_seltracks, PrimaryVertexObject)")
+
 
             # # .Define("RecoTauTracks", "VertexingUtils::get_tracksInJets(Jet, _EFlowTrack_trackStates, Jet_to_Track_indices, 0)")
             # # .Define("RecoTauDecayVertexObject", "VertexFitterSimple::VertexFitter_Tk(2, RecoTauTracks)")
@@ -448,7 +442,7 @@ class Analysis():
             "FSGenPhoton_theta",
             "FSGenPhoton_phi",
 
-            # # # Track informationß
+            # Track information
             "n_RecoedPrimaryTracks", 
             "PrimaryVertex_ntracks",
             "n_RecoTracks",
