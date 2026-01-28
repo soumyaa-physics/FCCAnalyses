@@ -139,7 +139,7 @@ selections[''] = [
 
 extralabel = {}
 extralabel['selNone'] = "Before selection"
-extralabel["sel"] = "pt of non-primary tracks > 3 GeV"
+extralabel["sel"] = "MET>18 GeV"
 
 color_wheel = [
     # colors from DESY color guide
@@ -162,43 +162,37 @@ color_wheel = [
 colors = {}
 
 # Signal
-# colors['FCCee_100_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[0]) 
+colors['FCCee_100_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[0]) 
 colors['FCCee_110_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[1])
 
 # Background
-# colors['p8_ee_WW_mumu_ecm240'] = ROOT.TColor.GetColor(color_wheel[1])
-# colors['p8_ee_WW_ee_ecm240'] = ROOT.TColor.GetColor(color_wheel[2])
-# colors['p8_ee_WW_ecm240'] = ROOT.TColor.GetColor(color_wheel[1]) 
-# colors['p8_ee_ZZ_ecm240'] = ROOT.TColor.GetColor(color_wheel[2]) 
-# colors['mgp8_ee_zh_ecm240_hbb'] = ROOT.TColor.GetColor(color_wheel[3])
-# colors['wzp6_ee_nuenueH_Htautau_ecm240'] = ROOT.TColor.GetColor(color_wheel[4])
-colors['wzp6_ee_bbH_Htautau_ecm240'] = ROOT.TColor.GetColor(color_wheel[3])
+colors['p8_ee_WW_ecm240'] = ROOT.TColor.GetColor(color_wheel[1]) 
+colors['p8_ee_ZZ_ecm240'] = ROOT.TColor.GetColor(color_wheel[2]) 
+colors['mgp8_ee_zh_ecm240_hbb'] = ROOT.TColor.GetColor(color_wheel[3])
+colors['wzp6_ee_nuenueH_Htautau_ecm240'] = ROOT.TColor.GetColor(color_wheel[4])
+colors['wzp6_ee_bbH_Htautau_ecm240'] = ROOT.TColor.GetColor(color_wheel[5])
 
 # Plot and legend structure
 plots = {}
 plots[''] = {
     'signal': {
-        # 'FCCee_100_stau_10mm_ctau_ecm_240': ['FCCee_100_stau_10mm_ctau_ecm_240'],
+        'FCCee_100_stau_10mm_ctau_ecm_240': ['FCCee_100_stau_10mm_ctau_ecm_240'],
         'FCCee_110_stau_10mm_ctau_ecm_240': ['FCCee_110_stau_10mm_ctau_ecm_240'],
     },
     'backgrounds': {
-        # 'p8_ee_WW_mumu_ecm240': ['p8_ee_WW_mumu_ecm240'],
-        # 'p8_ee_WW_ee_ecm240': ['p8_ee_WW_ee_ecm240'],
-        # 'p8_ee_WW_ecm240': ['p8_ee_WW_ecm240'],
-        # 'p8_ee_ZZ_ecm240': ['p8_ee_ZZ_ecm240'],
-        # 'mgp8_ee_zh_ecm240_hbb': ['mgp8_ee_zh_ecm240_hbb'],
-        # 'wzp6_ee_nuenueH_Htautau_ecm240': ['wzp6_ee_nuenueH_Htautau_ecm240'],
+        'p8_ee_WW_ecm240': ['p8_ee_WW_ecm240'],
+        'p8_ee_ZZ_ecm240': ['p8_ee_ZZ_ecm240'],
+        'mgp8_ee_zh_ecm240_hbb': ['mgp8_ee_zh_ecm240_hbb'],
+        'wzp6_ee_nuenueH_Htautau_ecm240': ['wzp6_ee_nuenueH_Htautau_ecm240'],
         'wzp6_ee_bbH_Htautau_ecm240': ['wzp6_ee_bbH_Htautau_ecm240'],
     }
 }
 
 legend = {}
-# legend['FCCee_100_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 100 GeV, ctau_0 = 10 mm'
+legend['FCCee_100_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 100 GeV, ctau_0 = 10 mm'
 legend['FCCee_110_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 110 GeV, ctau_0 = 10 mm'
-# legend['p8_ee_WW_mumu_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
-# legend['p8_ee_WW_ee_ecm240'] = 'e^{+}e^{-} #rightarrow e^{+}e^{-}'
-# legend['p8_ee_WW_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
-# legend['p8_ee_ZZ_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
-# legend['mgp8_ee_zh_ecm240_hbb'] = 'e^{+}e^{-} #rightarrow ZH, H #rightarrow b#bar{b}'
-# legend['wzp6_ee_nuenueH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow H #rightarrow #tau^{+}#tau^{-}'
+legend['p8_ee_WW_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
+legend['p8_ee_ZZ_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
+legend['mgp8_ee_zh_ecm240_hbb'] = 'e^{+}e^{-} #rightarrow ZH, H #rightarrow b#bar{b}'
+legend['wzp6_ee_nuenueH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow H #rightarrow #tau^{+}#tau^{-}'
 legend['wzp6_ee_bbH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow H #rightarrow #tau^{+}#tau^{-}'

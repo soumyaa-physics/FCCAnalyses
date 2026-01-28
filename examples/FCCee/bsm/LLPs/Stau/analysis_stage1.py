@@ -444,6 +444,7 @@ class Analysis():
 
             # Track information
             "n_RecoedPrimaryTracks", 
+            "n_AcceptedTracks",
             "PrimaryVertex_ntracks",
             "n_RecoTracks",
             "sel_tracks_pt_DV",

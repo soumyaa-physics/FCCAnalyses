@@ -21,10 +21,10 @@ processList = {
         #######################################################
         #               WINTER 2023                           #
         #######################################################
-        # 'p8_ee_WW_ecm240': {'fraction': 1.0,'chunks':100},
-        # 'p8_ee_ZZ_ecm240': {'fraction': 1.0,'chunks':100},
-        # 'mgp8_ee_zh_ecm240_hbb': {'fraction': 1.0,'chunks':100},
-        # 'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
+        'p8_ee_WW_ecm240': {'fraction': 1.0,'chunks':100},
+        'p8_ee_ZZ_ecm240': {'fraction': 1.0,'chunks':100},
+        'mgp8_ee_zh_ecm240_hbb': {'fraction': 1.0,'chunks':100},
+        'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
         'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
 
         # old samples
@@ -43,7 +43,7 @@ procDictAdd = {
         #######################################################
         #             CME: 240 GeV (ZH)- 10mm                 #
         #######################################################
-        # 'FCCee_100_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.07733 ,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        'FCCee_100_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.07733 ,     "kfactor": 1.0, "matchingEfficiency": 1.0},
         # # 'FCCee_105_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
         'FCCee_110_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
         # # 'FCCee_115_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
@@ -86,7 +86,7 @@ cutList = {
 
 cutLabels = {
     "selNone": "Before selection",
-    "sel_pT": " sel_tracks_pt_DV > 3 GeV "
+    "sel": "Missing Energy > 18 GeV "
 }
 
 '''
