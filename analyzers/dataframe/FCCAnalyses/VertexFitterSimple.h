@@ -83,6 +83,9 @@ namespace VertexFitterSimple{
   TVectorD XPtoPar(TVector3 x, TVector3 p, Double_t Q);
   TVector3 ParToP(TVectorD Par);
 */
+   ROOT::VecOps::RVec<edm4hep::TrackState> getSelectedTracks( ROOT::VecOps::RVec<edm4hep::TrackState> tracks,
+                                                              double ptMin = 0.0, double d0AbsMin = 0.0, double d0AbsMax = 1.e10, double z0AbsMin = 0.0, double z0AbsMax = 10000 ) ;
+
 
 
 

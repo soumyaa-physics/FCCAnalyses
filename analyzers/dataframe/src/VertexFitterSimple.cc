@@ -389,6 +389,27 @@ IsPrimary_forTracks(ROOT::VecOps::RVec<edm4hep::TrackState> allTracks,
   return result;
 }
 
+ROOT::VecOps::RVec<edm4hep::TrackState> getSelectedTracks(           ROOT::VecOps::RVec<edm4hep::TrackState> tracks,
+                                                                        double ptMin , double d0AbsMin, double d0AbsMax, double z0AbsMin , double z0AbsMax  ){
+  
+  ROOT::VecOps::RVec<edm4hep::TrackState> result;
+  const float bField = 2; // 2 Tesla
+  for (auto &track : tracks) {  
+    float pt = bField * 0.2998 / TMath::Abs(1e3 * track.omega);
+    if (pt < ptMin) continue;
+    double ad0 = std::abs(track.D0); 
+    if (ad0 > d0AbsMax || ad0 < d0AbsMin){
+      continue;
+    }
+    double az0 = std::abs(track.Z0); 
+    if (az0 > z0AbsMax || az0 < z0AbsMin){
+      continue;
+    }
+    result.push_back(track);
+  }
+
+  return result;
+}
 } // namespace VertexFitterSimple
 
 } // namespace FCCAnalyses
