@@ -9,6 +9,7 @@ For running pre-edm4hep samples source this and switch to pre-edm4hep branch:
 ```
 source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10
 ```
+use setup_pre.sh now
 run:
 ```
 fccanalysis run analysis_stage_pre1.py --nevents 10000
