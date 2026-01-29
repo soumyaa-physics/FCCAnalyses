@@ -64,10 +64,10 @@ variables = [
             "FSGenMuon_vy",
             "FSGenMuon_vz",
 
-            # # Final-state electrons
+            # Final-state electrons
             "n_FSGenElectron",
             "FSGenElectron_e",
-            # "FSGenElectron_p",
+            "FSGenElectron_p",
             "FSGenElectron_pt",
             "FSGenElectron_px",
             "FSGenElectron_py",
@@ -123,9 +123,6 @@ variables = [
             "invMass_seltracks_DVs",
             "DV_evt_seltracks_chi2",
             "DV_evt_seltracks_normchi2",
-            "sel_tracks_pt_DV",
-            "sel_tracks_D0_DV",
-            "sel_tracks_Z0_DV",
 
             "Reco_DVs_merged_Lxy",
             "Reco_DVs_merged_Lxyz",
@@ -139,7 +136,7 @@ selections[''] = [
 
 extralabel = {}
 extralabel['selNone'] = "Before selection"
-extralabel["sel"] = "MET>18 GeV"
+extralabel["sel"] = "Missing Energy > 18 GeV"
 
 color_wheel = [
     # colors from DESY color guide
@@ -163,14 +160,16 @@ colors = {}
 
 # Signal
 colors['FCCee_100_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[0]) 
-colors['FCCee_110_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[6])
+colors['FCCee_110_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[1])
 
 # Background
-colors['p8_ee_WW_ecm240'] = ROOT.TColor.GetColor(color_wheel[1]) 
-colors['p8_ee_ZZ_ecm240'] = ROOT.TColor.GetColor(color_wheel[2]) 
+# colors['p8_ee_WW_mumu_ecm240'] = ROOT.TColor.GetColor(color_wheel[1])
+# colors['p8_ee_WW_ee_ecm240'] = ROOT.TColor.GetColor(color_wheel[2])
+# colors['p8_ee_WW_ecm240'] = ROOT.TColor.GetColor(color_wheel[1]) 
+# colors['p8_ee_ZZ_ecm240'] = ROOT.TColor.GetColor(color_wheel[2]) 
 colors['mgp8_ee_zh_ecm240_hbb'] = ROOT.TColor.GetColor(color_wheel[3])
 colors['wzp6_ee_nuenueH_Htautau_ecm240'] = ROOT.TColor.GetColor(color_wheel[4])
-colors['wzp6_ee_bbH_Htautau_ecm240'] = ROOT.TColor.GetColor(color_wheel[5])
+# colors['wzp6_ee_bbH_Htautau_ecm240'] = ROOT.TColor.GetColor(color_wheel[5])
 
 # Plot and legend structure
 plots = {}
@@ -180,21 +179,23 @@ plots[''] = {
         'FCCee_110_stau_10mm_ctau_ecm_240': ['FCCee_110_stau_10mm_ctau_ecm_240'],
     },
     'backgrounds': {
-        'p8_ee_WW_ecm240': ['p8_ee_WW_ecm240'],
-        'p8_ee_ZZ_ecm240': ['p8_ee_ZZ_ecm240'],
+        # 'p8_ee_WW_mumu_ecm240': ['p8_ee_WW_mumu_ecm240'],
+        # 'p8_ee_WW_ee_ecm240': ['p8_ee_WW_ee_ecm240'],
+        # 'p8_ee_WW_ecm240': ['p8_ee_WW_ecm240'],
+        # 'p8_ee_ZZ_ecm240': ['p8_ee_ZZ_ecm240'],
         'mgp8_ee_zh_ecm240_hbb': ['mgp8_ee_zh_ecm240_hbb'],
         'wzp6_ee_nuenueH_Htautau_ecm240': ['wzp6_ee_nuenueH_Htautau_ecm240'],
-        'wzp6_ee_bbH_Htautau_ecm240': ['wzp6_ee_bbH_Htautau_ecm240'],
+        # 'wzp6_ee_bbH_Htautau_ecm240': ['wzp6_ee_bbH_Htautau_ecm240'],
     }
 }
 
 legend = {}
-leg = ROOT.TLegend(0.6, 0.6, 0.9, 0.9)
-leg.SetTextSize(0.03)   # smaller text
-legend['FCCee_100_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 100 GeV,10 mm'
-legend['FCCee_110_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 110 GeV, 10 mm'
-legend['p8_ee_WW_ecm240'] = 'e^{+}e^{-} #rightarrow WW #mu^{+}#mu^{-}'
-legend['p8_ee_ZZ_ecm240'] = 'e^{+}e^{-} #rightarrow ZZ #mu^{+}#mu^{-}'
+legend['FCCee_100_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 100 GeV, ctau_0 = 10 mm'
+legend['FCCee_110_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 110 GeV, ctau_0 = 10 mm'
+# legend['p8_ee_WW_mumu_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
+# legend['p8_ee_WW_ee_ecm240'] = 'e^{+}e^{-} #rightarrow e^{+}e^{-}'
+# legend['p8_ee_WW_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
+# legend['p8_ee_ZZ_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
 legend['mgp8_ee_zh_ecm240_hbb'] = 'e^{+}e^{-} #rightarrow ZH, H #rightarrow b#bar{b}'
-legend['wzp6_ee_nuenueH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow #nu #nu H #rightarrow #tau^{+}#tau^{-}'
-legend['wzp6_ee_bbH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow bbH #rightarrow #tau^{+}#tau^{-}'
+legend['wzp6_ee_nuenueH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow H #rightarrow #tau^{+}#tau^{-}'
+# legend['wzp6_ee_bbH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow H #rightarrow #tau^{+}#tau^{-}'

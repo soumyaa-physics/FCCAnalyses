@@ -11,8 +11,8 @@ processList = {
         #######################################################
         #             CME: 240 GeV (ZH)- 10mm                 #
         #######################################################
-        'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
-        'FCCee_110_stau_10mm_ctau_ecm_240' : {'fraction': 1.0},
+        # 'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+        # 'FCCee_110_stau_10mm_ctau_ecm_240' : {'fraction': 1.0},
 
         #######################################################
         #             CME: 240 GeV (ZH)- 10cm                 #
@@ -21,10 +21,10 @@ processList = {
         #######################################################
         #               WINTER 2023                           #
         #######################################################
-        'p8_ee_WW_ecm240': {'fraction': 1.0,'chunks':100},
-        'p8_ee_ZZ_ecm240': {'fraction': 1.0,'chunks':100},
-        'mgp8_ee_zh_ecm240_hbb': {'fraction': 1.0,'chunks':100},
-        'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
+        # 'p8_ee_WW_ecm240': {'fraction': 1.0,'chunks':100},
+        # 'p8_ee_ZZ_ecm240': {'fraction': 1.0,'chunks':100},
+        # 'mgp8_ee_zh_ecm240_hbb': {'fraction': 1.0,'chunks':100},
+        # 'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
         'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
 
         # old samples
@@ -43,10 +43,10 @@ procDictAdd = {
         #######################################################
         #             CME: 240 GeV (ZH)- 10mm                 #
         #######################################################
-        'FCCee_100_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.07733 ,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        # 'FCCee_100_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.07733 ,     "kfactor": 1.0, "matchingEfficiency": 1.0},
         # # 'FCCee_105_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
-        'FCCee_110_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
-        # # 'FCCee_115_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        # 'FCCee_110_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        # 'FCCee_115_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
         
         #######################################################
         #             CME: 240 GeV (ZH)- 10cm                 #
@@ -70,7 +70,7 @@ doScale = True
 # nCPUS = 2
 
 # Whether to produce ROOT TTrees, default is False
-doTree = True
+doTree = False
 
 # Save cut yields and efficiencies in LaTeX table
 saveTabular = True
@@ -125,7 +125,7 @@ histoList = {
     # "decayLengthTau":        {"name": "decayLengthTau",    "title":"Gen Tau decay length",           "bin":50,   "xmin":0,    "xmax":50},
 
     # Final-state muons
-    "n_FSGenMuon":       {"name":"n_FSGenMuon",     "title":"Number of FS muons", "bin":11,   "xmin":-0.5,  "xmax":10.5},
+    "n_FSGenMuon":       {"name":"n_FSGenMuon",     "title":"Number of FS muons", "bin":5,   "xmin":-0.5,  "xmax":4.5},
     "FSGenMuon_e":      {"name":"FSGenMuon_e",      "title":"FS muon energy",     "bin":50, "xmin":0, "xmax":200},
     "FSGenMuon_px":     {"name":"FSGenMuon_px",     "title":"FS muon px",         "bin":50, "xmin":-100, "xmax":100},
     "FSGenMuon_py":     {"name":"FSGenMuon_py",     "title":"FS muon py",         "bin":50, "xmin":-100, "xmax":100},
@@ -139,7 +139,7 @@ histoList = {
     "FSGenMuon_charge": {"name":"FSGenMuon_charge", "title":"FS muon charge", "bin":3, "xmin":-1.5, "xmax":1.5},
 
     # Final-state electrons
-    "n_FSGenElectron": {"name":"n_FSGenElectron","title":"Number of FS electrons","bin":11,"xmin":-0.5,"xmax":10.5},
+    "n_FSGenElectron": {"name":"n_FSGenElectron","title":"Number of FS electrons","bin":5,"xmin":-0.5,"xmax":4.5},
     "FSGenElectron_e":    {"name":"FSGenElectron_e",    "title":"FS electron energy", "bin":50, "xmin":0, "xmax":200},
     "FSGenElectron_px":   {"name":"FSGenElectron_px",   "title":"FS electron px",     "bin":50, "xmin":-100, "xmax":100},
     "FSGenElectron_py":   {"name":"FSGenElectron_py",   "title":"FS electron py",     "bin":50, "xmin":-100, "xmax":100},
@@ -192,21 +192,19 @@ histoList = {
     "RecoMissingEnergy_phi": {"name":"RecoMissingEnergy_phi", "title":"Missing ET phi",    "bin":64,"xmin":-3.2,"xmax":3.2},
 
     # Reco DVs from selected tracks
-    "n_seltracks_DVs": {"name":"n_seltracks_DVs",   "title":"Number of reconstructed DVs",  "bin":11 , "xmin":-0.5, "xmax":10.5},
-    "n_nonprimary_tracks": {"name":"n_nonprimary_tracks",   "title":"Number of non-primary tracks DVs",  "bin":20, "xmin":-0.5, "xmax":19.5},
-    "n_RecoedPrimaryTracks": {"name":"n_RecoedPrimaryTracks",   "title":"Number of primary tracks DVs",  "bin":25, "xmin":-0.5, "xmax":50.5},
-    "sel_tracks_pt_DV": {"name": "sel_tracks_pt_DV", "title": "pt of non-primary tracks", "bin":40, "xmin":0.0, "xmax": 80},
-    "sel_tracks_D0_DV": {"name": "sel_tracks_D0_DV", "title": "D0 of non-primary tracks", "bin":20, "xmin":-0.1, "xmax": 2.0},
-    "sel_tracks_Z0_DV": {"name": "sel_tracks_Z0_DV", "title": "Z0 of non-primary tracks", "bin":20, "xmin":-0.1, "xmax": 2.0},
+    "n_seltracks_DVs": {"name":"n_seltracks_DVs",   "title":"Number of reconstructed DVs",  "bin":6, "xmin":-0.5, "xmax":5.5},
+    "n_nonprimary_tracks": {"name":"n_nonprimary_tracks",   "title":"Number of non-primary tracks DVs",  "bin":10, "xmin":-0.5, "xmax":9.5},
+    "n_RecoedPrimaryTracks": {"name":"n_RecoedPrimaryTracks",   "title":"Number of primary tracks DVs",  "bin":10, "xmin":-0.5, "xmax":9.5},
+    "sel_tracks_pt_DV": {"name": "sel_tracks_pt_DV", "title": "pt of seletected tracks", "bin":20, "xmin":0.0, "xmax": 40},
 
 
     "n_trks_seltracks_DVs": {"name":"n_trks_seltracks_DVs",  "title":"Number of tracks per DV",   "bin":10, "xmin":-0.5, "xmax":9.5},
-    "invMass_seltracks_DVs": {"name":"invMass_seltracks_DVs",  "title":"DV invariant mass [GeV]",    "bin":20, "xmin":0,    "xmax":40},
-    "DV_evt_seltracks_chi2": {"name":"DV_evt_seltracks_chi2",    "title":"DV fit chi2",    "bin":10, "xmin":0, "xmax":10},
+    "invMass_seltracks_DVs": {"name":"invMass_seltracks_DVs",  "title":"DV invariant mass [GeV]",    "bin":50, "xmin":0,    "xmax":200},
+    "DV_evt_seltracks_chi2": {"name":"DV_evt_seltracks_chi2",    "title":"DV fit chi2",    "bin":50, "xmin":0, "xmax":50},
     "DV_evt_seltracks_normchi2": {"name":"DV_evt_seltracks_normchi2",    "title":"DV fit normalized chi2",    "bin":50, "xmin":0, "xmax":10},
 
-    "Reco_DVs_merged_Lxy": {"name":"Reco_DVs_merged_Lxy","title":"Merged DV L_{xy} [mm]","bin":50,"xmin":0,"xmax":100},
-    "Reco_DVs_merged_Lxyz": {"name":"Reco_DVs_merged_Lxyz","title":"Merged DV L_{xyz} [mm]","bin":50,"xmin":0,"xmax":100},
+    "Reco_DVs_merged_Lxy": {"name":"Reco_DVs_merged_Lxy","title":"Merged DV L_{xy} [mm]","bin":50,"xmin":0,"xmax":300},
+    "Reco_DVs_merged_Lxyz": {"name":"Reco_DVs_merged_Lxyz","title":"Merged DV L_{xyz} [mm]","bin":50,"xmin":0,"xmax":300},
  
 }
 
