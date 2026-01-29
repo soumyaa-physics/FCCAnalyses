@@ -17,10 +17,10 @@ processList = {
     #               WINTER 2023                           #
     #######################################################
     'p8_ee_WW_ecm240': {'fraction': 0.01,'chunks':100},
-    "p8_ee_ZZ_ecm240": {'fraction': 0.1,'chunks':100},
-    "mgp8_ee_zh_ecm240_hbb": {'fraction': 0.5,'chunks':100},
-    'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 0.5,'chunks':100},
-    'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 0.5,'chunks':100},
+    # "p8_ee_ZZ_ecm240": {'fraction': 0.1,'chunks':100},
+    # "mgp8_ee_zh_ecm240_hbb": {'fraction': 0.5,'chunks':100},
+    # 'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 0.5,'chunks':100},
+    # 'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 0.5,'chunks':100},
 
 
     # 'p8_ee_WW_ee_ecm240': {'fraction': 0.1,'chunks':100},
@@ -35,20 +35,20 @@ prodTag     = "FCCee/winter2023/IDEA/"
 
     # backgrounds are stored here:
 input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA'
+# output_dir_eos = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1/'
     # input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023_training/IDEA/'
     # input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/spring2021/IDEA/'
 
     # input_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/edm4hep_output'
 output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1/'
 
-# for batch
+# # for batch
 # output_dir = './output_stage1/'
 # nCPUS       = 4
-# runBatch = true
+# runBatch = True
 # batchQueue = "longlunch"
 # compGroup = "group_u_FCC.local_gen"
 
-# output_dir_eos = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1/'
 # eosType = "eosuser"
 
 
@@ -288,10 +288,22 @@ class RDFanalysis():
             .Define("RecoElectrons_e", "ReconstructedParticle::get_e(RecoElectrons)")
             .Define("RecoElectrons_charge", "ReconstructedParticle::get_charge(RecoElectrons)")
             .Define("RecoElectrons_theta", "ReconstructedParticle::get_theta(RecoElectrons)")
-            # .Define("RecoElectrons_vx", "ReconstructedParticle::get_vertex_x(RecoElectrons)")
-            # .Define("RecoElectrons_vy", "ReconstructedParticle::get_vertex_y(RecoElectrons)")
-            # .Define("RecoElectrons_vz", "ReconstructedParticle::get_vertex_z(RecoElectrons)")
-
+            # invariant mass information
+            .Define("Reco_ee_energy", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_e.at(0) + RecoElectrons_e.at(1)); else return float(-1.);")
+            .Define("Reco_ee_px", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_px.at(0) + RecoElectrons_px.at(1)); else return float(-1.);")
+            .Define("Reco_ee_py", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_py.at(0) + RecoElectrons_py.at(1)); else return float(-1.);")
+            .Define("Reco_ee_pz", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_pz.at(0) + RecoElectrons_pz.at(1)); else return float(-1.);")
+            .Define("Reco_ee_invMass", 
+                "float invMass = -1.;"
+                "if (n_RecoElectrons > 1 && RecoElectrons_charge[0] != RecoElectrons_charge[1]) {"
+                "   float E  = RecoElectrons_e[0]  + RecoElectrons_e[1];"
+                "   float px = RecoElectrons_px[0] + RecoElectrons_px[1];"
+                "   float py = RecoElectrons_py[0] + RecoElectrons_py[1];"
+                "   float pz = RecoElectrons_pz[0] + RecoElectrons_pz[1];"
+                "   invMass = sqrt(E*E - px*px - py*py - pz*pz);"
+                "}"
+                "return invMass;"
+            )
             # Muons
             .Alias("Muon0", "MuonIdx")
             .Define("RecoMuons",  "ReconstructedParticle::get(Muon0, ReconstructedParticles)") 
@@ -306,9 +318,28 @@ class RDFanalysis():
             .Define("RecoMuons_e", "ReconstructedParticle::get_e(RecoMuons)")
             .Define("RecoMuons_charge", "ReconstructedParticle::get_charge(RecoMuons)")
             .Define("RecoMuons_theta", "ReconstructedParticle::get_theta(RecoMuons)")
-            # .Define("RecoMuons_vx", "ReconstructedParticle::get_vertex_x(RecoMuons)")
-            # .Define("RecoMuons_vy", "ReconstructedParticle::get_vertex_y(RecoMuons)")
-            # .Define("RecoMuons_vz", "ReconstructedParticle::get_vertex_z(RecoMuons)")
+            # invariant mass information
+            .Define("Reco_mumu_energy", "if ((n_RecoMuons>1) && (RecoMuons_charge.at(0) != RecoMuons_charge.at(1))) return (RecoMuons_e.at(0) + RecoMuons_e.at(1)); else return float(-1.);")
+            .Define("Reco_mumu_px", "if ((n_RecoMuons>1) && (RecoMuons_charge.at(0) != RecoMuons_charge.at(1))) return (RecoMuons_px.at(0) + RecoMuons_px.at(1)); else return float(-1.);")
+            .Define("Reco_mumu_py", "if ((n_RecoMuons>1) && (RecoMuons_charge.at(0) != RecoMuons_charge.at(1))) return (RecoMuons_py.at(0) + RecoMuons_py.at(1)); else return float(-1.);")
+            .Define("Reco_mumu_pz", "if ((n_RecoMuons>1) && (RecoMuons_charge.at(0) != RecoMuons_charge.at(1))) return (RecoMuons_pz.at(0) + RecoMuons_pz.at(1)); else return float(-1.);")
+            .Define("Reco_mumu_invMass", 
+                "float invMass = -1.;"
+                "if (n_RecoMuons > 1 && RecoMuons_charge[0] != RecoMuons_charge[1]) {"
+                "   float E  = RecoMuons_e[0]  + RecoMuons_e[1];"
+                "   float px = RecoMuons_px[0] + RecoMuons_px[1];"
+                "   float py = RecoMuons_py[0] + RecoMuons_py[1];"
+                "   float pz = RecoMuons_pz[0] + RecoMuons_pz[1];"
+                "   invMass = sqrt(E*E - px*px - py*py - pz*pz);"
+                "}"
+                "return invMass;"
+            )
+
+
+            # only ZZ -> llll events would have this overlap
+            .Define("muon_electron_overlap", "return (Reco_mumu_invMass>0 && Reco_ee_invMass>0);")
+            .Define("ZZ_veto", "return !(Reco_mumu_invMass>80 && Reco_mumu_invMass<100) && !(Reco_ee_invMass>80 && Reco_ee_invMass<100);")
+
 
             # PHOTONS
             .Alias("Photon0", "PhotonIdx") 
@@ -474,9 +505,11 @@ class RDFanalysis():
             "RecoElectrons_theta",
             "RecoElectrons_phi",
             "RecoElectrons_charge",
-            # "RecoElectrons_vx",
-            # "RecoElectrons_vy",
-            # "RecoElectrons_vz",
+            "Reco_ee_energy",
+            "Reco_ee_px",
+            "Reco_ee_py",
+            "Reco_ee_pz",
+            "Reco_ee_invMass",
 
             # Reco Muons
             "RecoMuons",
@@ -491,9 +524,12 @@ class RDFanalysis():
             "RecoMuons_theta",
             "RecoMuons_phi",
             "RecoMuons_charge",
-            # "RecoMuons_vx",
-            # "RecoMuons_vy",
-            # "RecoMuons_vz",
+            "Reco_mumu_energy",
+            "Reco_mumu_px",
+            "Reco_mumu_py",
+            "Reco_mumu_pz",
+            "Reco_mumu_invMass",
+            "muon_electron_overlap",
 
             # Reco Photons
             "RecoPhotons",

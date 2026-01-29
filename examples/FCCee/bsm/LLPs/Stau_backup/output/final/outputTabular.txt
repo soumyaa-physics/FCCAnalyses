@@ -1,0 +1,24 @@
+Yields:
+\begin{table}[H]
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l||c|c|c|c|c|} \hline
+         & Before selection & Missing Energy > 18 GeV  & All events \\ \hline
+        wzp6_ee_bbH_Htautau_ecm240 & 3.66e+05 $\pm$ 8.40e+04 & 3.66e+05 $\pm$ 8.40e+04 & 2.70e+05 $\pm$ 7.21e+04 \\
+        \hline
+    \end{tabular}}
+    \caption{Caption}
+    \label{tab:my_label}
+\end{table}
+
+Efficiency:
+\begin{table}[H] 
+    \resizebox{\textwidth}{!}{ 
+    \begin{tabular}{|l||c|} \hline
+         & wzp6_ee_bbH_Htautau_ecm240 \hline \\
+        selNone & 1 \\
+        sel & 0.737 \\
+        \hline
+    \end{tabular}}
+    \caption{Caption}
+    \label{tab:my_label}
+\end{table}
