@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1769692653800,
+  "lastUpdate": 1769692655838,
   "repoUrl": "https://github.com/soumyaa-physics/FCCAnalyses",
   "entries": {
     "Benchmark": [
@@ -583,6 +583,63 @@ window.BENCHMARK_DATA = {
             "range": "10",
             "unit": "Seconds",
             "extra": "Analysis path: examples/data_source/analysis_stage1.py"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "svashish@lxplus967.cern.ch",
+            "name": "Soumyaa Vashishtha"
+          },
+          "committer": {
+            "email": "svashish@lxplus967.cern.ch",
+            "name": "Soumyaa Vashishtha"
+          },
+          "distinct": true,
+          "id": "4e5fc05b7f4233f6622f88b37bfd73f52e52278b",
+          "message": "bg and sg working, phase 1 complete",
+          "timestamp": "2026-01-29T13:50:40+01:00",
+          "tree_id": "dbb1bea852ea835380d1343ee93c0f27912eb740",
+          "url": "https://github.com/soumyaa-physics/FCCAnalyses/commit/4e5fc05b7f4233f6622f88b37bfd73f52e52278b"
+        },
+        "date": 1769692655151,
+        "tool": "customBiggerIsBetter",
+        "benches": [
+          {
+            "name": "prod | Events processed per second: case-studies/analysis_example/scripts/analysis_example.py",
+            "value": 0.2523298056846374,
+            "unit": "Evt/s"
+          },
+          {
+            "name": "prod | Events processed per second: examples/FCCee/higgs/mH-recoil/mumu/analysis_stage1.py",
+            "value": 9.916783317557238,
+            "unit": "Evt/s"
+          },
+          {
+            "name": "prod | Events processed per second: examples/FCCee/flavour/Bc2TauNu/analysis_B2TauNu_truth.py",
+            "value": 0.43475009966602585,
+            "unit": "Evt/s"
+          },
+          {
+            "name": "prod | Events processed per second: examples/FCCee/test/jet_constituents.py",
+            "value": 10.81738031529063,
+            "unit": "Evt/s"
+          },
+          {
+            "name": "prod | Events processed per second: examples/FCCee/vertex_lcfiplus/analysis_V0.py",
+            "value": 0.23182639684640832,
+            "unit": "Evt/s"
+          },
+          {
+            "name": "prod | Events processed per second: examples/data_source/stages_source.py",
+            "value": 5.939481382930516,
+            "unit": "Evt/s"
+          },
+          {
+            "name": "prod | Events processed per second: examples/data_source/analysis_stage1.py",
+            "value": 5.765603683615566,
+            "unit": "Evt/s"
           }
         ]
       }
