@@ -193,8 +193,8 @@ leg = ROOT.TLegend(0.6, 0.6, 0.9, 0.9)
 leg.SetTextSize(0.03)   # smaller text
 legend['FCCee_100_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 100 GeV,10 mm'
 legend['FCCee_110_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 110 GeV, 10 mm'
-legend['p8_ee_WW_ecm240'] = 'e^{+}e^{-} #rightarrow WW #mu^{+}#mu^{-}'
-legend['p8_ee_ZZ_ecm240'] = 'e^{+}e^{-} #rightarrow ZZ #mu^{+}#mu^{-}'
+legend['p8_ee_WW_ecm240'] = 'e^{+}e^{-} #rightarrow WW '
+legend['p8_ee_ZZ_ecm240'] = 'e^{+}e^{-} #rightarrow ZZ '
 legend['mgp8_ee_zh_ecm240_hbb'] = 'e^{+}e^{-} #rightarrow ZH, H #rightarrow b#bar{b}'
 legend['wzp6_ee_nuenueH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow #nu #nu H #rightarrow #tau^{+}#tau^{-}'
 legend['wzp6_ee_bbH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow bbH #rightarrow #tau^{+}#tau^{-}'

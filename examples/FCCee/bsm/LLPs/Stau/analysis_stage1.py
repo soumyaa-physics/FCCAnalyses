@@ -132,7 +132,7 @@ class Analysis():
             raise RuntimeError("No Photon index collection found")
 
         df2 = (
-            df
+            # df
             # --------------------------
             # Generator-level particles
             # --------------------------
@@ -311,6 +311,11 @@ class Analysis():
             # .Define("RecoElectrons_vx", "ReconstructedParticle::get_vertex_x(RecoElectrons)")
             # .Define("RecoElectrons_vy", "ReconstructedParticle::get_vertex_y(RecoElectrons)")
             # .Define("RecoElectrons_vz", "ReconstructedParticle::get_vertex_z(RecoElectrons)")
+            .Define("Reco_ee_energy", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_e.at(0) + RecoElectrons_e.at(1)); else return float(-1.);")
+            .Define("Reco_ee_px", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_px.at(0) + RecoElectrons_px.at(1)); else return float(-1.);")
+            .Define("Reco_ee_py", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_py.at(0) + RecoElectrons_py.at(1)); else return float(-1.);")
+            .Define("Reco_ee_pz", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_pz.at(0) + RecoElectrons_pz.at(1)); else return float(-1.);")
+            .Define("Reco_ee_invMass", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return sqrt(Reco_ee_energy*Reco_ee_energy - RecoElectrons_px*RecoElectrons_px - RecoElectrons_py*RecoElectrons_py - RecoElectrons_pz*RecoElectrons_pz ); else return float(-1.);")
 
             # Muons
             .Alias("Muon0", "MuonIdx")
@@ -328,7 +333,16 @@ class Analysis():
             .Define("RecoMuons_theta", "ReconstructedParticle::get_theta(RecoMuons)")
             # .Define("RecoMuons_vx", "ReconstructedParticle::get_vertex_x(RecoMuons)")
             # .Define("RecoMuons_vy", "ReconstructedParticle::get_vertex_y(RecoMuons)")
-            # .Define("RecoMuons_vz", "ReconstructedParticle::get_vertex_z(RecoMuons)")
+            # .Define("RecoMuons_vz", "ReconstructedParticle::get_vertex_z(RecoMuons)")            
+            .Define("Reco_mumu_energy", "if ((n_RecoMuons>1) && (RecoMuon_charge.at(0) != RecoMuon_charge.at(1))) return (RecoMuon_e.at(0) + RecoMuon_e.at(1)); else return float(-1.);")
+            .Define("Reco_mumu_px", "if ((n_RecoMuons>1) && (RecoMuon_charge.at(0) != RecoMuon_charge.at(1))) return (RecoMuon_px.at(0) + RecoMuon_px.at(1)); else return float(-1.);")
+            .Define("Reco_mumu_py", "if ((n_RecoMuons>1) && (RecoMuon_charge.at(0) != RecoMuon_charge.at(1))) return (RecoMuon_py.at(0) + RecoMuon_py.at(1)); else return float(-1.);")
+            .Define("Reco_mumu_pz", "if ((n_RecoMuons>1) && (RecoMuon_charge.at(0) != RecoMuon_charge.at(1))) return (RecoMuon_pz.at(0) + RecoMuon_pz.at(1)); else return float(-1.);")
+            .Define("Reco_mumu_invMass", "if ((n_RecoMuons>1) && (RecoMuon_charge.at(0) != RecoMuon_charge.at(1))) return sqrt(Reco_mumu_energy*Reco_mumu_energy - Reco_mumu_px*Reco_mumu_px - Reco_mumu_py*Reco_mumu_py - Reco_mumu_pz*Reco_mumu_pz ); else return float(-1.);")
+
+            # only ZZ -> llll events would have this overlap
+            .Define("muon_electron_overlap", "return (Reco_mumu_invMass>0 && Reco_ee_invMass>0);")
+            .Define("ZZ_veto", "return !(Reco_mumu_invMass>80 && Reco_mumu_invMass<100) && !(Reco_ee_invMass>80 && Reco_ee_invMass<100);")
 
             # PHOTONS
             .Alias("Photon0", "PhotonIdx") 
@@ -494,6 +508,11 @@ class Analysis():
             "RecoElectrons_theta",
             "RecoElectrons_phi",
             "RecoElectrons_charge",
+            "Reco_ee_energy",
+            "Reco_ee_px",
+            "Reco_ee_py",
+            "Reco_ee_pz",
+            "Reco_ee_invMass",
             # "RecoElectrons_vx",
             # "RecoElectrons_vy",
             # "RecoElectrons_vz",
@@ -511,6 +530,13 @@ class Analysis():
             "RecoMuons_theta",
             "RecoMuons_phi",
             "RecoMuons_charge",
+            "Reco_mumu_energy",
+            "Reco_mumu_px",
+            "Reco_mumu_py",
+            "Reco_mumu_pz",
+            "Reco_mumu_invMass",
+            "muon_electron_overlap",
+            # "ZZ_veto",
             # "RecoMuons_vx",
             # "RecoMuons_vy",
             # "RecoMuons_vz",
