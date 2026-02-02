@@ -16,9 +16,9 @@ processList = {
     #######################################################
     #               WINTER 2023                           #
     #######################################################
-    'p8_ee_WW_ecm240': {'fraction': 0.01,'chunks':100},
+    # 'p8_ee_WW_ecm240': {'fraction': 0.01,'chunks':100},
     # "p8_ee_ZZ_ecm240": {'fraction': 0.1,'chunks':100},
-    # "mgp8_ee_zh_ecm240_hbb": {'fraction': 0.5,'chunks':100},
+    "mgp8_ee_zh_ecm240_hbb": {'fraction': 0.5,'chunks':100},
     # 'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 0.5,'chunks':100},
     # 'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 0.5,'chunks':100},
 
@@ -40,7 +40,7 @@ input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA'
     # input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/spring2021/IDEA/'
 
     # input_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/edm4hep_output'
-output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1/'
+output_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1/'
 
 # # for batch
 # output_dir = './output_stage1/'
