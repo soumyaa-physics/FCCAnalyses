@@ -70,7 +70,7 @@ doScale = True
 # nCPUS = 2
 
 # Whether to produce ROOT TTrees, default is False
-doTree = True
+doTree = False
 
 # Save cut yields and efficiencies in LaTeX table
 saveTabular = True
@@ -207,6 +207,27 @@ histoList = {
 
     "Reco_DVs_merged_Lxy": {"name":"Reco_DVs_merged_Lxy","title":"Merged DV L_{xy} [mm]","bin":50,"xmin":0,"xmax":100},
     "Reco_DVs_merged_Lxyz": {"name":"Reco_DVs_merged_Lxyz","title":"Merged DV L_{xyz} [mm]","bin":50,"xmin":0,"xmax":100},
- 
+
+    # Reco dielectron system
+    "Reco_ee_energy":  {"name":"Reco_ee_energy",  "title":"ee energy",   "bin":50, "xmin":0, "xmax":200},
+    "Reco_ee_px":      {"name":"Reco_ee_px",      "title":"ee px",       "bin":50, "xmin":-100, "xmax":100},
+    "Reco_ee_py":      {"name":"Reco_ee_py",      "title":"ee py",       "bin":50, "xmin":-100, "xmax":100},
+    "Reco_ee_pz":      {"name":"Reco_ee_pz",      "title":"ee pz",       "bin":50, "xmin":-100, "xmax":100},
+    "Reco_ee_invMass": {"name":"Reco_ee_invMass","title":"ee inv mass","bin":50,"xmin":0,"xmax":100},
+
+    # Reco dimuon system
+    "Reco_mumu_energy":  {"name":"Reco_mumu_energy",  "title":"mu mu energy",   "bin":50, "xmin":0, "xmax":200},
+    "Reco_mumu_px":      {"name":"Reco_mumu_px",      "title":"mu mu px",       "bin":50, "xmin":-100, "xmax":100},
+    "Reco_mumu_py":      {"name":"Reco_mumu_py",      "title":"mu mu py",       "bin":50, "xmin":-100, "xmax":100},
+    "Reco_mumu_pz":      {"name":"Reco_mumu_pz",      "title":"mu mu pz",       "bin":50, "xmin":-100, "xmax":100},
+    "Reco_mumu_invMass": {"name":"Reco_mumu_invMass", "title":"mu mu inv mass", "bin":50, "xmin":0, "xmax":100},
+    "muon_electron_overlap": {
+        "name":"muon_electron_overlap",
+        "title":"muon-electron overlap flag",
+        "bin":2,
+        "xmin":0,
+        "xmax":2
+    },
+
 }
 

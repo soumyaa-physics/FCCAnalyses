@@ -16,8 +16,8 @@ energy         = 240.
 collider       = 'FCC-ee'
 
 # Input/output directories
-inputDir       = "/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/"
-outdir         = "/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/plots"
+inputDir       = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/"
+outdir         = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/plots"
 os.makedirs(outdir, exist_ok=True)
 
 formats  = ['pdf']
@@ -129,6 +129,18 @@ variables = [
 
             "Reco_DVs_merged_Lxy",
             "Reco_DVs_merged_Lxyz",
+            "Reco_mumu_invMass",
+            "Reco_ee_invMass",
+
+            "Reco_ee_energy",
+            "Reco_mumu_energy",
+            "Reco_ee_px",
+            "Reco_mumu_px",
+            "Reco_ee_py",
+            "Reco_mumu_py",
+            "Reco_ee_pz",
+            "Reco_mumu_pz",
+            "muon_electron_overlap"
 ]
 # Define selections, labels, colors, plots, legends
 selections = {}
