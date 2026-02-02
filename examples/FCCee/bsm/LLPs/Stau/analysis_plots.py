@@ -16,8 +16,8 @@ energy         = 240.
 collider       = 'FCC-ee'
 
 # Input/output directories
-inputDir       = "/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/"
-outdir         = "/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/plots"
+inputDir       = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/"
+outdir         = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/plots"
 os.makedirs(outdir, exist_ok=True)
 
 formats  = ['pdf']
@@ -126,6 +126,15 @@ variables = [
 
             "Reco_DVs_merged_Lxy",
             "Reco_DVs_merged_Lxyz",
+            "Reco_ee_energy",
+            "Reco_mumu_energy",
+            "Reco_ee_px",
+            "Reco_mumu_px",
+            "Reco_ee_py",
+            "Reco_mumu_py",
+            "Reco_ee_pz",
+            "Reco_mumu_pz",
+            "muon_electron_overlap"
 ]
 # Define selections, labels, colors, plots, legends
 selections = {}
@@ -163,13 +172,11 @@ colors['FCCee_100_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[0]
 colors['FCCee_110_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[1])
 
 # Background
-# colors['p8_ee_WW_mumu_ecm240'] = ROOT.TColor.GetColor(color_wheel[1])
-# colors['p8_ee_WW_ee_ecm240'] = ROOT.TColor.GetColor(color_wheel[2])
-# colors['p8_ee_WW_ecm240'] = ROOT.TColor.GetColor(color_wheel[1]) 
-# colors['p8_ee_ZZ_ecm240'] = ROOT.TColor.GetColor(color_wheel[2]) 
+colors['p8_ee_WW_ecm240'] = ROOT.TColor.GetColor(color_wheel[1]) 
+colors['p8_ee_ZZ_ecm240'] = ROOT.TColor.GetColor(color_wheel[2]) 
 colors['mgp8_ee_zh_ecm240_hbb'] = ROOT.TColor.GetColor(color_wheel[3])
 colors['wzp6_ee_nuenueH_Htautau_ecm240'] = ROOT.TColor.GetColor(color_wheel[4])
-# colors['wzp6_ee_bbH_Htautau_ecm240'] = ROOT.TColor.GetColor(color_wheel[5])
+colors['wzp6_ee_bbH_Htautau_ecm240'] = ROOT.TColor.GetColor(color_wheel[5])
 
 # Plot and legend structure
 plots = {}
@@ -181,21 +188,20 @@ plots[''] = {
     'backgrounds': {
         # 'p8_ee_WW_mumu_ecm240': ['p8_ee_WW_mumu_ecm240'],
         # 'p8_ee_WW_ee_ecm240': ['p8_ee_WW_ee_ecm240'],
-        # 'p8_ee_WW_ecm240': ['p8_ee_WW_ecm240'],
-        # 'p8_ee_ZZ_ecm240': ['p8_ee_ZZ_ecm240'],
-        'mgp8_ee_zh_ecm240_hbb': ['mgp8_ee_zh_ecm240_hbb'],
+        'p8_ee_WW_ecm240': ['p8_ee_WW_ecm240'],
+        'p8_ee_ZZ_ecm240': ['p8_ee_ZZ_ecm240'],
+        'mgp8_ee_zh_ecm240_hbb': ['mgp8_ee_zh_ecm240_ßhbb'],
         'wzp6_ee_nuenueH_Htautau_ecm240': ['wzp6_ee_nuenueH_Htautau_ecm240'],
-        # 'wzp6_ee_bbH_Htautau_ecm240': ['wzp6_ee_bbH_Htautau_ecm240'],
+        'wzp6_ee_bbH_Htautau_ecm240': ['wzp6_ee_bbH_Htautau_ecm240'],
     }
 }
 
 legend = {}
 legend['FCCee_100_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 100 GeV, ctau_0 = 10 mm'
 legend['FCCee_110_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 110 GeV, ctau_0 = 10 mm'
-# legend['p8_ee_WW_mumu_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
-# legend['p8_ee_WW_ee_ecm240'] = 'e^{+}e^{-} #rightarrow e^{+}e^{-}'
-# legend['p8_ee_WW_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
-# legend['p8_ee_ZZ_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
+# BACKRGOUNDS
+legend['p8_ee_WW_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
+legend['p8_ee_ZZ_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
 legend['mgp8_ee_zh_ecm240_hbb'] = 'e^{+}e^{-} #rightarrow ZH, H #rightarrow b#bar{b}'
 legend['wzp6_ee_nuenueH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow H #rightarrow #tau^{+}#tau^{-}'
-# legend['wzp6_ee_bbH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow H #rightarrow #tau^{+}#tau^{-}'
+legend['wzp6_ee_bbH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow H #rightarrow #tau^{+}#tau^{-}'
