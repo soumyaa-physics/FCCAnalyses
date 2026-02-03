@@ -29,55 +29,55 @@ splitLeg = True
 # Variables to plots
 variables = [
             # Gen-level stau
-            "n_GenStau",
-            "GenStau_vx",
-            "GenStau_vy",
-            "GenStau_vz",
-            "GenStau_Lxy",
-            "GenStau_Lxyz",
+            # "n_GenStau",
+            # "GenStau_vx",
+            # "GenStau_vy",
+            # "GenStau_vz",
+            # "GenStau_Lxy",
+            # "GenStau_Lxyz",
 
-            # Tau kinematics
-            "GenTau_e",
-            "GenTau_pt",
-            "GenTau_eta",
-            "GenTau_phi",
-            "GenTau_px",
-            "GenTau_py",
-            "GenTau_pz",
+            # # Tau kinematics
+            # "GenTau_e",
+            # "GenTau_pt",
+            # "GenTau_eta",
+            # "GenTau_phi",
+            # "GenTau_px",
+            # "GenTau_py",
+            # "GenTau_pz",
 
-            # Tau vertex
-            "GenTau_vx",
-            "GenTau_vy",
-            "GenTau_vz",
+            # # Tau vertex
+            # "GenTau_vx",
+            # "GenTau_vy",
+            # "GenTau_vz",
 
-            # Final-state muons
-            "n_FSGenMuon",
-            "FSGenMuon_e",
-            "FSGenMuon_pt",
-            "FSGenMuon_px",
-            "FSGenMuon_py",
-            "FSGenMuon_pz",
-            "FSGenMuon_eta",
-            "FSGenMuon_phi",
-            "FSGenMuon_charge",
-            "FSGenMuon_vx",
-            "FSGenMuon_vy",
-            "FSGenMuon_vz",
+            # # Final-state muons
+            # "n_FSGenMuon",
+            # "FSGenMuon_e",
+            # "FSGenMuon_pt",
+            # "FSGenMuon_px",
+            # "FSGenMuon_py",
+            # "FSGenMuon_pz",
+            # "FSGenMuon_eta",
+            # "FSGenMuon_phi",
+            # "FSGenMuon_charge",
+            # "FSGenMuon_vx",
+            # "FSGenMuon_vy",
+            # "FSGenMuon_vz",
 
-            # # Final-state electrons
-            "n_FSGenElectron",
-            "FSGenElectron_e",
-            # "FSGenElectron_p",
-            "FSGenElectron_pt",
-            "FSGenElectron_px",
-            "FSGenElectron_py",
-            "FSGenElectron_pz",
-            "FSGenElectron_eta",
-            "FSGenElectron_phi",
-            "FSGenElectron_charge",
-            "FSGenElectron_vx",
-            "FSGenElectron_vy",
-            "FSGenElectron_vz",
+            # # # Final-state electrons
+            # "n_FSGenElectron",
+            # "FSGenElectron_e",
+            # # "FSGenElectron_p",
+            # "FSGenElectron_pt",
+            # "FSGenElectron_px",
+            # "FSGenElectron_py",
+            # "FSGenElectron_pz",
+            # "FSGenElectron_eta",
+            # "FSGenElectron_phi",
+            # "FSGenElectron_charge",
+            # "FSGenElectron_vx",
+            # "FSGenElectron_vy",
+            # "FSGenElectron_vz",
 
             # Reco Jets
             "n_RecoJets",
@@ -144,14 +144,29 @@ variables = [
 ]
 # Define selections, labels, colors, plots, legends
 selections = {}
+
 selections[''] = [
     "selNone",
-    "sel",
+    "sel_MET",
+    "sel_semiLepHad",
+    "sel_semiLeptonic",
+    "fullyHadronic",
+    # "sel_nEle",
+    # "sel_nEle_nMu",
+    # "sel_nEle_nMu_ee",
+    # "sel_final",
 ]
 
 extralabel = {}
 extralabel['selNone'] = "Before selection"
-extralabel["sel"] = "MET>18 GeV"
+extralabel["sel_MET"] = "MET>18 GeV"
+extralabel["sel_semiLepHad"] = "MET>18 GeV + Semi-lep hadronic"
+extralabel["sel_semiLeptonic"] = "MET>18 GeV + Semi-lep"
+extralabel["fullyHadronic"] = "MET>18 GeV + Fully Had"
+# extralabel["sel_nEle"] = "MET + nE<3"
+# extralabel["sel_nEle_nMu"] = "MET + nE<3 + n#mu<3"
+# extralabel["sel_nEle_nMu_ee"] = "MET + nE<3 + n#mu<3 + inv_ee < 85 GeV"
+# extralabel["sel_final"] = "MET + nE<3 + n#mu<3 + inv_ee < 85 GeV + inv_#mu#mu < 85 GeV"
 
 color_wheel = [
     # colors from DESY color guide

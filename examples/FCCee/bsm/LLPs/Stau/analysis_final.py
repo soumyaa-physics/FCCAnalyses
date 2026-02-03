@@ -80,13 +80,96 @@ saveJSON = True
 
 # Dictionary with the list of cuts. The key is the name of the selection that will be added to the output file
 cutList = {
-    "selNone": "n_RecoTracks > -1",
-    "sel": " RecoMissingEnergy_e > 18.",
-}
 
+    "selNone": "n_RecoTracks > -1",
+
+    "sel_MET": (
+        "n_RecoTracks > -1"
+        " && RecoMissingEnergy_e > 18."
+    ),
+
+    # "sel_nEle": (
+    #     "n_RecoTracks > -1"
+    #     " && RecoMissingEnergy_e > 18."
+    #     " && n_RecoElectrons < 3"
+    # ),
+
+    # "sel_nEle_nMu": (
+    #     "n_RecoTracks > -1"
+    #     " && RecoMissingEnergy_e > 18."
+    #     " && n_RecoElectrons < 3"
+    #     " && n_RecoMuons < 3"
+    # ),
+
+    # "sel_nEle_nMu_ee": (
+    #     "n_RecoTracks > -1"
+    #     " && RecoMissingEnergy_e > 18."
+    #     " && n_RecoElectrons < 3"
+    #     " && n_RecoMuons < 3"
+    #     " && Reco_ee_invMass == -1."
+    # ),
+
+    # "sel_final": (
+    #     "n_RecoTracks > -1"
+    #     " && RecoMissingEnergy_e > 18."
+    #     " && n_RecoElectrons < 3"
+    #     " && n_RecoMuons < 3"
+    #     " && Reco_ee_invMass == -1."
+    #     " && Reco_mumu_invMass == -1."
+    # ),
+    
+    "sel_semiLepHad": (
+        "n_RecoTracks > -1"
+        " && RecoMissingEnergy_e > 18."
+        "&& ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1) || (n_RecoElectrons == 0 && n_RecoMuons == 0))"
+    ),
+
+    "sel_semiLeptonic": (
+        "n_RecoTracks > -1"
+        " && RecoMissingEnergy_e > 18."
+        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+    ),
+
+    "sel_semiLep_jetcut": (
+        "n_RecoTracks > -1"
+        " && RecoMissingEnergy_e > 18."
+        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+        " && n_RecoJets < 4"
+    ),
+
+    "sel_semiLep_DVcut": (
+        "n_RecoTracks > -1"
+        " && RecoMissingEnergy_e > 18."
+        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+        " && n_RecoJets < 4"
+        # exactly one DV from selected tracks
+        " && n_seltracks_DVs == 1"
+        # with <= 3 tracks
+        # " && n_trks_seltracks_DVs.size() == 1" # ensure that there is only one DV
+        # " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
+    ),
+
+    # "fullyHadronic": (
+    #     "n_RecoTracks > -1"
+    #     " && RecoMissingEnergy_e > 18."
+    #     " && n_RecoElectrons == 0"
+    #     " && n_RecoMuons == 0"
+    # ),
+
+}
 cutLabels = {
+
     "selNone": "Before selection",
-    "sel": "Missing Energy > 18 GeV "
+    "sel_MET": "MET > 18 GeV",
+    # "sel_nEle": "Number of reconstructed electrons < 3",
+    # "sel_nEle_nMu": "Number of reconstructed muons < 3",
+    # "sel_nEle_nMu_ee": "Invariant mass of ee < 85 GeV",
+    # "sel_final": "Invariant mass of mm < 85 GeV",
+    "sel_semiLepHad": "MET > 18 GeV + (0 or 1 reco lepton",
+    "sel_semiLeptonic": "MET > 18 GeV + 1 reco lepton ",
+    "sel_semiLep_jetcut": "MET > 18 GeV +  1 reco lepton + < 4 jets",
+    "sel_semiLep_DVcut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV cut",
+    # "fullyHadronic": "Missing Energy > 18 GeV + 0 reconstructed leptons (e and #mu)",
 }
 
 '''
@@ -100,57 +183,57 @@ The key is the name of the variable in the output files.
 '''
 
 histoList = {
-    # Gen-level stau
-    "n_GenStau":           {"name":"n_GenStau",          "title":"Number of gen staus",             "bin":5,   "xmin":-0.5,  "xmax":4.5},
-    "GenStau_vx":          {"name":"GenStau_vx",         "title":"Stau vertex x",                   "bin":50,  "xmin":-10,   "xmax":10},
-    "GenStau_vy":          {"name":"GenStau_vy",         "title":"Stau vertex y",                   "bin":50,  "xmin":-10,   "xmax":10},
-    "GenStau_vz":          {"name":"GenStau_vz",         "title":"Stau vertex z",                   "bin":50,  "xmin":-50,   "xmax":50},
-    "GenStau_Lxy":         {"name":"GenStau_Lxy",        "title":"Transverse decay length Lxy",     "bin":50,  "xmin":0,     "xmax":10},
-    "GenStau_Lxyz":        {"name":"GenStau_Lxyz",       "title":"3D decay length Lxyz",            "bin":50,  "xmin":0,     "xmax":10},
-    # "GenStau_observed_lifetime_xyz":   {"name":"GenStau_observed_lifetime_xyz",   "title":"Observed stau lifetime (xyz)",    "bin":50,  "xmin":0,     "xmax":100},
-    # "n_StauDaughters":       {"name":"n_StauDaughters",        "title":"Number of Stau Daughters",        "bin":5,   "xmin":-0.5, "xmax":9.5},
+    # # Gen-level stau
+    # "n_GenStau":           {"name":"n_GenStau",          "title":"Number of gen staus",             "bin":5,   "xmin":-0.5,  "xmax":4.5},
+    # "GenStau_vx":          {"name":"GenStau_vx",         "title":"Stau vertex x",                   "bin":50,  "xmin":-10,   "xmax":10},
+    # "GenStau_vy":          {"name":"GenStau_vy",         "title":"Stau vertex y",                   "bin":50,  "xmin":-10,   "xmax":10},
+    # "GenStau_vz":          {"name":"GenStau_vz",         "title":"Stau vertex z",                   "bin":50,  "xmin":-50,   "xmax":50},
+    # "GenStau_Lxy":         {"name":"GenStau_Lxy",        "title":"Transverse decay length Lxy",     "bin":50,  "xmin":0,     "xmax":10},
+    # "GenStau_Lxyz":        {"name":"GenStau_Lxyz",       "title":"3D decay length Lxyz",            "bin":50,  "xmin":0,     "xmax":10},
+    # # "GenStau_observed_lifetime_xyz":   {"name":"GenStau_observed_lifetime_xyz",   "title":"Observed stau lifetime (xyz)",    "bin":50,  "xmin":0,     "xmax":100},
+    # # "n_StauDaughters":       {"name":"n_StauDaughters",        "title":"Number of Stau Daughters",        "bin":5,   "xmin":-0.5, "xmax":9.5},
     
-    # Tau
-    "GenTau_e":              {"name":"GenTau_e",              "title":"Gen Tau energy",                  "bin":100,  "xmin":0,    "xmax":200},
-    "GenTau_px":             {"name":"GenTau_px",             "title":"Gen Tau px",                      "bin":100,  "xmin":-200, "xmax":200},
-    "GenTau_py":             {"name":"GenTau_py",             "title":"Gen Tau py",                      "bin":100,  "xmin":-200, "xmax":200},
-    "GenTau_pz":             {"name":"GenTau_pz",             "title":"Gen Tau pz",                      "bin":100,  "xmin":-500, "xmax":500},
-    "GenTau_pt":             {"name":"GenTau_pt",             "title":"Gen Tau pt",                      "bin":100,  "xmin":0,    "xmax":200},
-    "GenTau_eta":            {"name":"GenTau_eta",            "title":"Gen Tau eta",                     "bin":100,  "xmin":-5,   "xmax":5},
-    "GenTau_phi":            {"name":"GenTau_phi",            "title":"Gen Tau phi",                     "bin":100,  "xmin":-3.2, "xmax":3.2},
+    # # Tau
+    # "GenTau_e":              {"name":"GenTau_e",              "title":"Gen Tau energy",                  "bin":100,  "xmin":0,    "xmax":200},
+    # "GenTau_px":             {"name":"GenTau_px",             "title":"Gen Tau px",                      "bin":100,  "xmin":-200, "xmax":200},
+    # "GenTau_py":             {"name":"GenTau_py",             "title":"Gen Tau py",                      "bin":100,  "xmin":-200, "xmax":200},
+    # "GenTau_pz":             {"name":"GenTau_pz",             "title":"Gen Tau pz",                      "bin":100,  "xmin":-500, "xmax":500},
+    # "GenTau_pt":             {"name":"GenTau_pt",             "title":"Gen Tau pt",                      "bin":100,  "xmin":0,    "xmax":200},
+    # "GenTau_eta":            {"name":"GenTau_eta",            "title":"Gen Tau eta",                     "bin":100,  "xmin":-5,   "xmax":5},
+    # "GenTau_phi":            {"name":"GenTau_phi",            "title":"Gen Tau phi",                     "bin":100,  "xmin":-3.2, "xmax":3.2},
 
-    "GenTau_vx":             {"name":"GenTau_vx",             "title":"Gen Tau vx",                      "bin":100,  "xmin":-10,  "xmax":10},
-    "GenTau_vy":             {"name":"GenTau_vy",             "title":"Gen Tau vy",                      "bin":100,  "xmin":-10,  "xmax":10},
-    "GenTau_vz":             {"name":"GenTau_vz",             "title":"Gen Tau vz",                      "bin":100,  "xmin":-50,  "xmax":50},
-    # "decayLengthTau":        {"name": "decayLengthTau",    "title":"Gen Tau decay length",           "bin":50,   "xmin":0,    "xmax":50},
+    # "GenTau_vx":             {"name":"GenTau_vx",             "title":"Gen Tau vx",                      "bin":100,  "xmin":-10,  "xmax":10},
+    # "GenTau_vy":             {"name":"GenTau_vy",             "title":"Gen Tau vy",                      "bin":100,  "xmin":-10,  "xmax":10},
+    # "GenTau_vz":             {"name":"GenTau_vz",             "title":"Gen Tau vz",                      "bin":100,  "xmin":-50,  "xmax":50},
+    # # "decayLengthTau":        {"name": "decayLengthTau",    "title":"Gen Tau decay length",           "bin":50,   "xmin":0,    "xmax":50},
 
-    # Final-state muons
-    "n_FSGenMuon":       {"name":"n_FSGenMuon",     "title":"Number of FS muons", "bin":11,   "xmin":-0.5,  "xmax":10.5},
-    "FSGenMuon_e":      {"name":"FSGenMuon_e",      "title":"FS muon energy",     "bin":50, "xmin":0, "xmax":200},
-    "FSGenMuon_px":     {"name":"FSGenMuon_px",     "title":"FS muon px",         "bin":50, "xmin":-100, "xmax":100},
-    "FSGenMuon_py":     {"name":"FSGenMuon_py",     "title":"FS muon py",         "bin":50, "xmin":-100, "xmax":100},
-    "FSGenMuon_pz":     {"name":"FSGenMuon_pz",     "title":"FS muon pz",         "bin":50, "xmin":-200, "xmax":200},
-    "FSGenMuon_pt":     {"name":"FSGenMuon_pt",     "title":"FS muon pt",         "bin":50, "xmin":0, "xmax":100},
-    "FSGenMuon_eta":    {"name":"FSGenMuon_eta",    "title":"FS muon eta",        "bin":50, "xmin":-5, "xmax":5},
-    "FSGenMuon_phi":    {"name":"FSGenMuon_phi",    "title":"FS muon phi",        "bin":64, "xmin":-3.2, "xmax":3.2},
-    "FSGenMuon_vx":{"name":"FSGenMuon_vx","title":"FS muon vertex x","bin":50,"xmin":-10,"xmax":10},
-    "FSGenMuon_vy":{"name":"FSGenMuon_vy","title":"FS muon vertex y","bin":50,"xmin":-10,"xmax":10},
-    "FSGenMuon_vz":{"name":"FSGenMuon_vz","title":"FS muon vertex z","bin":50,"xmin":-50,"xmax":50},
-    "FSGenMuon_charge": {"name":"FSGenMuon_charge", "title":"FS muon charge", "bin":3, "xmin":-1.5, "xmax":1.5},
+    # # Final-state muons
+    # "n_FSGenMuon":       {"name":"n_FSGenMuon",     "title":"Number of FS muons", "bin":11,   "xmin":-0.5,  "xmax":10.5},
+    # "FSGenMuon_e":      {"name":"FSGenMuon_e",      "title":"FS muon energy",     "bin":50, "xmin":0, "xmax":200},
+    # "FSGenMuon_px":     {"name":"FSGenMuon_px",     "title":"FS muon px",         "bin":50, "xmin":-100, "xmax":100},
+    # "FSGenMuon_py":     {"name":"FSGenMuon_py",     "title":"FS muon py",         "bin":50, "xmin":-100, "xmax":100},
+    # "FSGenMuon_pz":     {"name":"FSGenMuon_pz",     "title":"FS muon pz",         "bin":50, "xmin":-200, "xmax":200},
+    # "FSGenMuon_pt":     {"name":"FSGenMuon_pt",     "title":"FS muon pt",         "bin":50, "xmin":0, "xmax":100},
+    # "FSGenMuon_eta":    {"name":"FSGenMuon_eta",    "title":"FS muon eta",        "bin":50, "xmin":-5, "xmax":5},
+    # "FSGenMuon_phi":    {"name":"FSGenMuon_phi",    "title":"FS muon phi",        "bin":64, "xmin":-3.2, "xmax":3.2},
+    # "FSGenMuon_vx":{"name":"FSGenMuon_vx","title":"FS muon vertex x","bin":50,"xmin":-10,"xmax":10},
+    # "FSGenMuon_vy":{"name":"FSGenMuon_vy","title":"FS muon vertex y","bin":50,"xmin":-10,"xmax":10},
+    # "FSGenMuon_vz":{"name":"FSGenMuon_vz","title":"FS muon vertex z","bin":50,"xmin":-50,"xmax":50},
+    # "FSGenMuon_charge": {"name":"FSGenMuon_charge", "title":"FS muon charge", "bin":3, "xmin":-1.5, "xmax":1.5},
 
-    # Final-state electrons
-    "n_FSGenElectron": {"name":"n_FSGenElectron","title":"Number of FS electrons","bin":11,"xmin":-0.5,"xmax":10.5},
-    "FSGenElectron_e":    {"name":"FSGenElectron_e",    "title":"FS electron energy", "bin":50, "xmin":0, "xmax":200},
-    "FSGenElectron_px":   {"name":"FSGenElectron_px",   "title":"FS electron px",     "bin":50, "xmin":-100, "xmax":100},
-    "FSGenElectron_py":   {"name":"FSGenElectron_py",   "title":"FS electron py",     "bin":50, "xmin":-100, "xmax":100},
-    "FSGenElectron_pz":   {"name":"FSGenElectron_pz",   "title":"FS electron pz",     "bin":50, "xmin":-200, "xmax":200},
-    "FSGenElectron_pt":   {"name":"FSGenElectron_pt",   "title":"FS electron pt",     "bin":50, "xmin":0, "xmax":100},
-    "FSGenElectron_eta":  {"name":"FSGenElectron_eta",  "title":"FS electron eta",    "bin":50, "xmin":-5, "xmax":5},
-    "FSGenElectron_phi":  {"name":"FSGenElectron_phi",  "title":"FS electron phi",    "bin":64, "xmin":-3.2, "xmax":3.2},
-    "FSGenElectron_vx": {"name":"FSGenElectron_vx","title":"FS electron vertex x","bin":50,"xmin":-10,"xmax":10},
-    "FSGenElectron_vy": {"name":"FSGenElectron_vy","title":"FS electron vertex y","bin":50,"xmin":-10,"xmax":10},
-    "FSGenElectron_vz": {"name":"FSGenElectron_vz","title":"FS electron vertex z","bin":50,"xmin":-50,"xmax":50},
-    "FSGenElectron_charge": {"name":"FSGenElectron_charge", "title":"FS electron charge", "bin":3, "xmin":-1.5, "xmax":1.5},
+    # # Final-state electrons
+    # "n_FSGenElectron": {"name":"n_FSGenElectron","title":"Number of FS electrons","bin":11,"xmin":-0.5,"xmax":10.5},
+    # "FSGenElectron_e":    {"name":"FSGenElectron_e",    "title":"FS electron energy", "bin":50, "xmin":0, "xmax":200},
+    # "FSGenElectron_px":   {"name":"FSGenElectron_px",   "title":"FS electron px",     "bin":50, "xmin":-100, "xmax":100},
+    # "FSGenElectron_py":   {"name":"FSGenElectron_py",   "title":"FS electron py",     "bin":50, "xmin":-100, "xmax":100},
+    # "FSGenElectron_pz":   {"name":"FSGenElectron_pz",   "title":"FS electron pz",     "bin":50, "xmin":-200, "xmax":200},
+    # "FSGenElectron_pt":   {"name":"FSGenElectron_pt",   "title":"FS electron pt",     "bin":50, "xmin":0, "xmax":100},
+    # "FSGenElectron_eta":  {"name":"FSGenElectron_eta",  "title":"FS electron eta",    "bin":50, "xmin":-5, "xmax":5},
+    # "FSGenElectron_phi":  {"name":"FSGenElectron_phi",  "title":"FS electron phi",    "bin":64, "xmin":-3.2, "xmax":3.2},
+    # "FSGenElectron_vx": {"name":"FSGenElectron_vx","title":"FS electron vertex x","bin":50,"xmin":-10,"xmax":10},
+    # "FSGenElectron_vy": {"name":"FSGenElectron_vy","title":"FS electron vertex y","bin":50,"xmin":-10,"xmax":10},
+    # "FSGenElectron_vz": {"name":"FSGenElectron_vz","title":"FS electron vertex z","bin":50,"xmin":-50,"xmax":50},
+    # "FSGenElectron_charge": {"name":"FSGenElectron_charge", "title":"FS electron charge", "bin":3, "xmin":-1.5, "xmax":1.5},
 
     # Reco Jets
     "n_RecoJets":     {"name":"n_RecoJets","title":"Number of reconstructed jets","bin":10,"xmin":-0.5,"xmax":9.5},
