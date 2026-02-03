@@ -15,8 +15,10 @@ class Analysis():
             #######################################################
             #               CME: 240 GeV (ZH)                     #
             #######################################################
-            'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
-            'FCCee_110_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+            # 'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+            # 'FCCee_110_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+
+            "FCCee_110_stau_20cm_ctau_ecm_240"  : {'fraction': 1.0},
             
             #######################################################
             #               SPRING 2021                           #

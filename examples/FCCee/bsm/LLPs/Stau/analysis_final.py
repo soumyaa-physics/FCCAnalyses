@@ -15,8 +15,9 @@ processList = {
         'FCCee_110_stau_10mm_ctau_ecm_240' : {'fraction': 1.0},
 
         #######################################################
-        #             CME: 240 GeV (ZH)- 10cm                 #
+        #             CME: 240 GeV (ZH)- 20cm                 #
         #######################################################
+        'FCCee_110_stau_20cm_ctau_ecm_240'  : {'fraction': 1.0},
 
         #######################################################
         #               WINTER 2023                           #
@@ -47,10 +48,11 @@ procDictAdd = {
         # # 'FCCee_105_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
         'FCCee_110_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
         # # 'FCCee_115_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
-        
+
         #######################################################
-        #             CME: 240 GeV (ZH)- 10cm                 #
+        #             CME: 240 GeV (ZH)- 20cm                 #
         #######################################################
+        'FCCee_110_stau_20cm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
 
         
         }
@@ -149,26 +151,39 @@ cutList = {
         # " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
     ),
 
-    # "fullyHadronic": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     " && n_RecoElectrons == 0"
-    #     " && n_RecoMuons == 0"
-    # ),
+    "sel_semiLep_ntrks_cut": (
+        "n_RecoTracks > -1"
+        " && RecoMissingEnergy_e > 18."
+        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+        " && n_RecoJets < 4"
+        # exactly one DV from selected tracks
+        # " && n_seltracks_DVs == 1"
+        # with <= 3 tracks
+        " && n_trks_seltracks_DVs.size() == 1" # ensure that there is only one DV
+        " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
+    ),
+
+    "fullyHadronic": (
+        "n_RecoTracks > -1"
+        " && RecoMissingEnergy_e > 18."
+        " && n_RecoElectrons == 0"
+        " && n_RecoMuons == 0"
+    ),
 
 }
 cutLabels = {
 
-    "selNone": "Before selection",
-    "sel_MET": "MET > 18 GeV",
-    # "sel_nEle": "Number of reconstructed electrons < 3",
-    # "sel_nEle_nMu": "Number of reconstructed muons < 3",
-    # "sel_nEle_nMu_ee": "Invariant mass of ee < 85 GeV",
-    # "sel_final": "Invariant mass of mm < 85 GeV",
-    "sel_semiLepHad": "MET > 18 GeV + (0 or 1 reco lepton",
-    "sel_semiLeptonic": "MET > 18 GeV + 1 reco lepton ",
-    "sel_semiLep_jetcut": "MET > 18 GeV +  1 reco lepton + < 4 jets",
+    # "selNone": "Before selection",
+    # "sel_MET": "MET > 18 GeV",
+    # # "sel_nEle": "Number of reconstructed electrons < 3",
+    # # "sel_nEle_nMu": "Number of reconstructed muons < 3",
+    # # "sel_nEle_nMu_ee": "Invariant mass of ee < 85 GeV",
+    # # "sel_final": "Invariant mass of mm < 85 GeV",
+    # "sel_semiLepHad": "MET > 18 GeV + (0 or 1 reco lepton",
+    # "sel_semiLeptonic": "MET > 18 GeV + 1 reco lepton ",
+    # "sel_semiLep_jetcut": "MET > 18 GeV +  1 reco lepton + < 4 jets",
     "sel_semiLep_DVcut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV cut",
+    "sel_semiLep_ntrks_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks",
     # "fullyHadronic": "Missing Energy > 18 GeV + 0 reconstructed leptons (e and #mu)",
 }
 
