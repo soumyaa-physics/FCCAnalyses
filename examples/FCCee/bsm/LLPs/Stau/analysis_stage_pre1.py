@@ -16,11 +16,11 @@ processList = {
     #######################################################
     #               WINTER 2023                           #
     #######################################################
-    # 'p8_ee_WW_ecm240': {'fraction': 0.01,'chunks':100},
-    # "p8_ee_ZZ_ecm240": {'fraction': 0.1,'chunks':100},
-    "mgp8_ee_zh_ecm240_hbb": {'fraction': 0.5,'chunks':100},
-    # 'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 0.5,'chunks':100},
-    # 'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 0.5,'chunks':100},
+    # 'p8_ee_WW_ecm240': {'fraction': 1,'chunks':10}, ## 10k events (with nevents 1000)
+    # "p8_ee_ZZ_ecm240": {'fraction': 1,'chunks':10}, ## 10k events (with nevents 1000)
+    # "mgp8_ee_zh_ecm240_hbb": {'fraction': 1,'chunks':10}, ## 10k events (with nevents 1000)
+    'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':10}, ##(4k events with nevents 1000) # need to change to nevents 2500
+    # 'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 1.0,'chunks':10}, ## 10k events (with nevents 1000)
 
 
     # 'p8_ee_WW_ee_ecm240': {'fraction': 0.1,'chunks':100},
@@ -35,21 +35,19 @@ prodTag     = "FCCee/winter2023/IDEA/"
 
     # backgrounds are stored here:
 input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA'
-# output_dir_eos = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1/'
     # input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023_training/IDEA/'
     # input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/spring2021/IDEA/'
 
     # input_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/edm4hep_output'
-output_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1/'
+output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1'
 
-# # for batch
-# output_dir = './output_stage1/'
-# nCPUS       = 4
-# runBatch = True
-# batchQueue = "longlunch"
-# compGroup = "group_u_FCC.local_gen"
+    # for batch
+    # output_dir = './output_stage1/'
 
-# eosType = "eosuser"
+    # Optional: output directory on eos, if specified files will be copied
+    # there once the batch job is done, default is empty
+    # output_dir_eos = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1'
+    # eosType = "eosuser"
 
 
 # Mandatory: Analysis class where the user defines the operations on the dataframe
@@ -125,10 +123,14 @@ class RDFanalysis():
             .Define("GenStau_vz", "MCParticle::get_vertex_z(GenStau)")
             .Define("GenStau_Lxy", "sqrt(GenStau_vx*GenStau_vx + GenStau_vy*GenStau_vy)")
             .Define("GenStau_Lxyz", "sqrt(GenStau_vx*GenStau_vx + GenStau_vy*GenStau_vy + GenStau_vz*GenStau_vz)")
-
+            .Define("GenStau_time", "MCParticle::get_time(GenStau)")
             # Stau daughters
             .Define("GenTau", "MCParticle::sel_pdgID(15,true)(Particle)")
+            .Define("GenTau_status", "MCParticle::get_genStatus(GenTau)")
             .Define("GenGravitino", "MCParticle::sel_pdgID(1000049,false)(Particle)")
+            .Define("n_GenGravitino", "MCParticle::get_n(GenGravitino)")
+            .Define("GenGravitino_status", "MCParticle::get_genStatus(GenGravitino)")
+            .Define("GenGravitino_e", "MCParticle::get_e(GenGravitino)")
 
             # Tau kinematics and vertex
             .Define("GenTau_px", "MCParticle::get_px(GenTau)")
@@ -142,6 +144,11 @@ class RDFanalysis():
             .Define("GenTau_vx", "MCParticle::get_vertex_x(GenTau)")
             .Define("GenTau_vy", "MCParticle::get_vertex_y(GenTau)")
             .Define("GenTau_vz", "MCParticle::get_vertex_z(GenTau)")
+            .Define("GenTau_time", "MCParticle::get_time(GenTau)")
+            .Define("GenTau_cTau",
+            "ROOT::VecOps::RVec<float> v; "
+            "for (auto t : GenTau_time) v.push_back(t * 2.99792458e10); "
+            "return v;")
 
             .Define("Tau_prod", "MCParticle::get_vertex(GenTau)") 
             .Define("GenTau_mass", "MCParticle::get_mass(GenTau)")  
@@ -171,6 +178,7 @@ class RDFanalysis():
             .Define("FSGenElectron_vx", "if (n_FSGenElectron>0) return MCParticle::get_vertex_x( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
             .Define("FSGenElectron_vy", "if (n_FSGenElectron>0) return MCParticle::get_vertex_y( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
             .Define("FSGenElectron_vz", "if (n_FSGenElectron>0) return MCParticle::get_vertex_z( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_time", "if (n_FSGenElectron>0) return MCParticle::get_time( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
 
             # Kinematics for FSGen muons and anti-muons
             .Define("n_FSGenMuon", "MCParticle::get_n(FSGenMuon)")
@@ -187,7 +195,8 @@ class RDFanalysis():
             .Define("FSGenMuon_vx", "if (n_FSGenMuon>0) return MCParticle::get_vertex_x( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
             .Define("FSGenMuon_vy", "if (n_FSGenMuon>0) return MCParticle::get_vertex_y( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
             .Define("FSGenMuon_vz", "if (n_FSGenMuon>0) return MCParticle::get_vertex_z( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
-
+            .Define("FSGenMuon_time", "if (n_FSGenMuon>0) return MCParticle::get_time( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
+            
             #Kinematics for FSGen photons
             .Define("n_FSGenPhoton", "MCParticle::get_n(FSGenPhoton)")
             .Define("FSGenPhoton_e", "MCParticle::get_e(FSGenPhoton)")
@@ -199,6 +208,21 @@ class RDFanalysis():
             .Define("FSGenPhoton_eta", "MCParticle::get_eta(FSGenPhoton)")
             .Define("FSGenPhoton_theta", "MCParticle::get_theta(FSGenPhoton)")
             .Define("FSGenPhoton_phi", "MCParticle::get_phi(FSGenPhoton)")
+
+            # custon neutrino PID to include nu_e, nu_mu, nu_tau
+            .Define("GenNeutrino_PID", "FCCAnalyses::MCParticle::sel_pdgID(16, true)(Particle) ")
+            .Define("FSGenNeutrino", "FCCAnalyses::MCParticle::sel_genStatus(1)(GenNeutrino_PID)") #gen status==1 means final state particle (FS)
+            .Define("n_FSGenNeutrino", "FCCAnalyses::MCParticle::get_n(FSGenNeutrino)")
+            .Define("FSGenNeutrino_e", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_e(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_p", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_p(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_pt", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_pt(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_px", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_px(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_py", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_py(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_pz", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_pz(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_eta", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_eta(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_theta", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_theta(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_phi", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_phi(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_charge", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_charge(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
 
             # --------------------------
             # Reconstructed particles
@@ -229,11 +253,14 @@ class RDFanalysis():
             # number of tracks from the DVs
             .Define('n_trks_seltracks_DVs', 'VertexingUtils::get_VertexNtrk(DV_evt_seltracks)') 
             .Define("n_nonprimary_tracks", "ReconstructedParticle2Track::getTK_n(sel_tracks)")
-            # momentum of the selected tracks
-            .Define('sel_tracks_pt_DV', 'ReconstructedParticle2Track::getRP2TRK_mom(ReconstructedParticles ,sel_tracks)')
-            .Define('sel_tracks_D0_DV', 'ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles ,sel_tracks)')
-            .Define('sel_tracks_Z0_DV', 'ReconstructedParticle2Track::getRP2TRK_Z0(ReconstructedParticles ,sel_tracks)')
-            # invariant mass at the DVs (assuming the tracks to be pions)
+            # momentum of the selected tracks`  `
+            .Define('sel_tracks_pt_DV', 'ReconstructedParticle2Track::getRP2TRK_mom(ReconstructedParticles ,sel_tracks)') 
+            .Define("sel_tracks_D0_DV", 
+                    "ROOT::VecOps::RVec<float> tmp; for (auto x : ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles, sel_tracks)) tmp.push_back(x==-9. ? 0. : abs(x)); return tmp;")
+            .Define("sel_tracks_Z0_DV", 
+                    "ROOT::VecOps::RVec<float> tmp; for (auto x : ReconstructedParticle2Track::getRP2TRK_Z0(ReconstructedParticles, sel_tracks)) tmp.push_back(x==-9. ? 0. : abs(x)); return tmp;")
+
+           # invariant mass at the DVs (assuming the tracks to be pions)
             .Define('invMass_seltracks_DVs', 'VertexingUtils::get_invM(DV_evt_seltracks)')
 
             # get the chi2 distributions of the DVs from selected tracks - to check if tracks originate from the same physical point
@@ -262,9 +289,9 @@ class RDFanalysis():
             .Define("RecoJet_px",      "ReconstructedParticle::get_px(Jet)")
             .Define("RecoJet_py",      "ReconstructedParticle::get_py(Jet)")
             .Define("RecoJet_pz",      "ReconstructedParticle::get_pz(Jet)")
-		    .Define("RecoJet_eta",     "ReconstructedParticle::get_eta(Jet)") 
+            .Define("RecoJet_eta",     "ReconstructedParticle::get_eta(Jet)") 
             .Define("RecoJet_theta",   "ReconstructedParticle::get_theta(Jet)")
-		    .Define("RecoJet_phi",     "ReconstructedParticle::get_phi(Jet)") 
+            .Define("RecoJet_phi",     "ReconstructedParticle::get_phi(Jet)") 
             .Define("RecoJet_charge",  "ReconstructedParticle::get_charge(Jet)")
             .Define("RecoJet_mvis",     "ReconstructedParticle::get_P4vis(Jet)")
             .Define("RecoJetTrack_absD0", "return abs(ReconstructedParticle2Track::getRP2TRK_D0(Jet,TrackStates))")
@@ -304,6 +331,7 @@ class RDFanalysis():
                 "}"
                 "return invMass;"
             )
+
             # Muons
             .Alias("Muon0", "MuonIdx")
             .Define("RecoMuons",  "ReconstructedParticle::get(Muon0, ReconstructedParticles)") 
@@ -335,11 +363,9 @@ class RDFanalysis():
                 "return invMass;"
             )
 
-
-            # only ZZ -> llll events would have this overlap
+            # # only ZZ -> llll events would have this overlap
             .Define("muon_electron_overlap", "return (Reco_mumu_invMass>0 && Reco_ee_invMass>0);")
             .Define("ZZ_veto", "return !(Reco_mumu_invMass>80 && Reco_mumu_invMass<100) && !(Reco_ee_invMass>80 && Reco_ee_invMass<100);")
-
 
             # PHOTONS
             .Alias("Photon0", "PhotonIdx") 
@@ -351,9 +377,9 @@ class RDFanalysis():
             .Define("RecoPhoton_px",      "ReconstructedParticle::get_px(RecoPhotons)")
             .Define("RecoPhoton_py",      "ReconstructedParticle::get_py(RecoPhotons)")
             .Define("RecoPhoton_pz",      "ReconstructedParticle::get_pz(RecoPhotons)")
-		    .Define("RecoPhoton_eta",     "ReconstructedParticle::get_eta(RecoPhotons)")
+            .Define("RecoPhoton_eta",     "ReconstructedParticle::get_eta(RecoPhotons)")
             .Define("RecoPhoton_theta",   "ReconstructedParticle::get_theta(RecoPhotons)")
-		    .Define("RecoPhoton_phi",     "ReconstructedParticle::get_phi(RecoPhotons)") 
+            .Define("RecoPhoton_phi",     "ReconstructedParticle::get_phi(RecoPhotons)") 
             .Define("RecoPhoton_charge",  "ReconstructedParticle::get_charge(RecoPhotons)")
 
             # MET
@@ -389,7 +415,9 @@ class RDFanalysis():
             # # Stau daughters
             "GenTau",
             "GenGravitino",
-
+            "n_GenGravitino",
+            "GenGravitino_status",
+            "GenGravitino_e",
             # Tau kinematics
             "GenTau_e",
             "GenTau_pt",
@@ -453,9 +481,23 @@ class RDFanalysis():
             "FSGenPhoton_theta",
             "FSGenPhoton_phi",
 
-            # # # Track information
-            "n_AcceptedTracks",
+            # Neutrinos
+            "FSGenNeutrino",
+            "n_FSGenNeutrino",
+            "FSGenNeutrino_e",
+            "FSGenNeutrino_p",
+            "FSGenNeutrino_pt",
+            "FSGenNeutrino_px",
+            "FSGenNeutrino_py",
+            "FSGenNeutrino_pz",
+            "FSGenNeutrino_eta",
+            "FSGenNeutrino_theta",
+            "FSGenNeutrino_phi",
+            "FSGenNeutrino_charge",
+
+            # Track information
             "n_RecoedPrimaryTracks", 
+            "n_AcceptedTracks",
             "PrimaryVertex_ntracks",
             "n_RecoTracks",
             "sel_tracks_pt_DV",
@@ -555,6 +597,14 @@ class RDFanalysis():
             "RecoMissingEnergy_eta",
             "RecoMissingEnergy_theta",
             "RecoMissingEnergy_phi",
+
+            # Time variables
+            "GenStau_time",
+            "GenTau_time",
+            "FSGenElectron_time",
+            "FSGenMuon_time",
+            "GenTau_status",
+            "GenTau_cTau",
         ]
 
         return branch_list

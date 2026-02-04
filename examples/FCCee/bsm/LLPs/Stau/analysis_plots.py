@@ -64,10 +64,10 @@ variables = [
             # "FSGenMuon_vy",
             # "FSGenMuon_vz",
 
-            # # Final-state electrons
+            # # # Final-state electrons
             # "n_FSGenElectron",
             # "FSGenElectron_e",
-            # "FSGenElectron_p",
+            # # "FSGenElectron_p",
             # "FSGenElectron_pt",
             # "FSGenElectron_px",
             # "FSGenElectron_py",
@@ -80,74 +80,90 @@ variables = [
             # "FSGenElectron_vz",
 
             # Reco Jets
-            # "n_RecoJets",
-            # "RecoJet_e",
-            # "RecoJet_pt",
-            # "RecoJet_px",
-            # "RecoJet_py",
-            # "RecoJet_pz",
-            # "RecoJet_eta",
-            # "RecoJet_phi",
-            # "RecoJet_charge",
+            "n_RecoJets",
+            "RecoJet_e",
+            "RecoJet_pt",
+            "RecoJet_px",
+            "RecoJet_py",
+            "RecoJet_pz",
+            "RecoJet_eta",
+            "RecoJet_phi",
+            "RecoJet_charge",
 
-            # # Reco Electrons
-            # "n_RecoElectrons",
-            # "RecoElectrons_e",
-            # "RecoElectrons_pt",
-            # "RecoElectrons_px",
-            # "RecoElectrons_py",
-            # "RecoElectrons_pz",
-            # "RecoElectrons_eta",
-            # "RecoElectrons_phi",
-            # "RecoElectrons_charge",
+            # Reco Electrons
+            "n_RecoElectrons",
+            "RecoElectrons_e",
+            "RecoElectrons_pt",
+            "RecoElectrons_px",
+            "RecoElectrons_py",
+            "RecoElectrons_pz",
+            "RecoElectrons_eta",
+            "RecoElectrons_phi",
+            "RecoElectrons_charge",
 
-            # # Reco Muons
-            # "n_RecoMuons",
-            # "RecoMuons_e",
-            # "RecoMuons_pt",
-            # "RecoMuons_px",
-            # "RecoMuons_py",
-            # "RecoMuons_pz",
-            # "RecoMuons_eta",
-            # "RecoMuons_phi",
-            # "RecoMuons_charge",
+            # Reco Muons
+            "n_RecoMuons",
+            "RecoMuons_e",
+            "RecoMuons_pt",
+            "RecoMuons_px",
+            "RecoMuons_py",
+            "RecoMuons_pz",
+            "RecoMuons_eta",
+            "RecoMuons_phi",
+            "RecoMuons_charge",
 
-            # # MET
-            # "RecoMissingEnergy_e",
-            # "RecoMissingEnergy_pt",
-            # "RecoMissingEnergy_eta",
-            # "RecoMissingEnergy_phi",
+            # MET
+            "RecoMissingEnergy_e",
+            "RecoMissingEnergy_pt",
+            "RecoMissingEnergy_eta",
+            "RecoMissingEnergy_phi",
 
             "n_seltracks_DVs",
             "n_trks_seltracks_DVs",
             "invMass_seltracks_DVs",
             "DV_evt_seltracks_chi2",
             "DV_evt_seltracks_normchi2",
+            "sel_tracks_pt_DV",
+            "sel_tracks_D0_DV",
+            "sel_tracks_Z0_DV",
 
             "Reco_DVs_merged_Lxy",
             "Reco_DVs_merged_Lxyz",
+            "Reco_mumu_invMass",
+            "Reco_ee_invMass",
+
             "Reco_ee_energy",
             "Reco_mumu_energy",
-            "Reco_ee_invMass",
-            "Reco_mumu_invMass",
             "Reco_ee_px",
             "Reco_mumu_px",
             "Reco_ee_py",
             "Reco_mumu_py",
             "Reco_ee_pz",
             "Reco_mumu_pz",
-            "muon_electron_overlap",
+            "muon_electron_overlap"
 ]
 # Define selections, labels, colors, plots, legends
 selections = {}
 selections[''] = [
-    "selNone",
-    "sel",
+    # "selNone",
+    "sel_MET",
+    "sel_semiLepHad",
+    "sel_semiLeptonic",
+    "sel_semiLep_jetcut",
+    "sel_semiLep_DVcut",
+    "sel_semiLep_ntrks_cut",
+    "fullyHadronic",
 ]
 
 extralabel = {}
-extralabel['selNone'] = "Before selection"
-extralabel["sel"] = "Missing Energy > 18 GeV"
+# extralabel['selNone'] = "Before selection"
+extralabel["sel_MET"] = "MET>18 GeV"
+extralabel["sel_semiLepHad"] = "MET>18 GeV + Semi-lep hadronic"
+extralabel["sel_semiLeptonic"] = "MET>18 GeV + Semi-lep"
+extralabel["sel_semiLep_jetcut"] = "MET>18 GeV + Semi-lep + Jet cuts"
+extralabel["sel_semiLep_DVcut"] = "MET>18 GeV + Semi-lep + DV cuts"
+extralabel["sel_semiLep_ntrks_cut"] = "MET>18 GeV + Semi-lep + nTracks cut"
+extralabel["fullyHadronic"] = "MET>18 GeV + Fully Had"
 
 color_wheel = [
     # colors from DESY color guide
@@ -163,15 +179,17 @@ color_wheel = [
     "#006987",  # Petrol
     "#8C3C5B",  # Aubergine
     "#504F8F",  # Purple
-    "#828F2B",  # Dark olive
-    "#004A6F"   # Dark blue
+    "#EAD21D",  # Gold
+    "#0D85C2",  # Bright blue
+    "#FF4000",  # Bright orange
 ]
 
 colors = {}
 
 # Signal
-colors['FCCee_100_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[0]) 
-colors['FCCee_110_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[1])
+colors['FCCee_100_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[12]) 
+colors['FCCee_110_stau_10mm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[13])
+colors['FCCee_110_stau_20cm_ctau_ecm_240'] = ROOT.TColor.GetColor(color_wheel[14])
 
 # Background
 colors['p8_ee_WW_ecm240'] = ROOT.TColor.GetColor(color_wheel[1]) 
@@ -186,24 +204,25 @@ plots[''] = {
     'signal': {
         'FCCee_100_stau_10mm_ctau_ecm_240': ['FCCee_100_stau_10mm_ctau_ecm_240'],
         'FCCee_110_stau_10mm_ctau_ecm_240': ['FCCee_110_stau_10mm_ctau_ecm_240'],
+        'FCCee_110_stau_20cm_ctau_ecm_240': ['FCCee_110_stau_20cm_ctau_ecm_240'],
     },
     'backgrounds': {
-        # 'p8_ee_WW_mumu_ecm240': ['p8_ee_WW_mumu_ecm240'],
-        # 'p8_ee_WW_ee_ecm240': ['p8_ee_WW_ee_ecm240'],
         'p8_ee_WW_ecm240': ['p8_ee_WW_ecm240'],
         'p8_ee_ZZ_ecm240': ['p8_ee_ZZ_ecm240'],
-        'mgp8_ee_zh_ecm240_hbb': ['mgp8_ee_zh_ecm240_ßhbb'],
+        'mgp8_ee_zh_ecm240_hbb': ['mgp8_ee_zh_ecm240_hbb'],
         'wzp6_ee_nuenueH_Htautau_ecm240': ['wzp6_ee_nuenueH_Htautau_ecm240'],
         'wzp6_ee_bbH_Htautau_ecm240': ['wzp6_ee_bbH_Htautau_ecm240'],
     }
 }
 
 legend = {}
-legend['FCCee_100_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 100 GeV, ctau_0 = 10 mm'
-legend['FCCee_110_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 110 GeV, ctau_0 = 10 mm'
-# BACKRGOUNDS
-legend['p8_ee_WW_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
-legend['p8_ee_ZZ_ecm240'] = 'e^{+}e^{-} #rightarrow #mu^{+}#mu^{-}'
+leg = ROOT.TLegend(0.6, 0.6, 0.9, 0.9)
+leg.SetTextSize(0.03)   # smaller text
+legend['FCCee_100_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 100 GeV,10 mm'
+legend['FCCee_110_stau_10mm_ctau_ecm_240'] = 'm_{stau} = 110 GeV, 10 mm'
+legend['FCCee_110_stau_20cm_ctau_ecm_240'] = 'm_{stau} = 110 GeV, 20 cm'
+legend['p8_ee_WW_ecm240'] = 'e^{+}e^{-} #rightarrow WW '
+legend['p8_ee_ZZ_ecm240'] = 'e^{+}e^{-} #rightarrow ZZ '
 legend['mgp8_ee_zh_ecm240_hbb'] = 'e^{+}e^{-} #rightarrow ZH, H #rightarrow b#bar{b}'
-legend['wzp6_ee_nuenueH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow H #rightarrow #tau^{+}#tau^{-}'
-legend['wzp6_ee_bbH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow H #rightarrow #tau^{+}#tau^{-}'
+legend['wzp6_ee_nuenueH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow #nu #nu H #rightarrow #tau^{+}#tau^{-}'
+legend['wzp6_ee_bbH_Htautau_ecm240'] = 'e^{+}e^{-} #rightarrow bbH #rightarrow #tau^{+}#tau^{-}'
