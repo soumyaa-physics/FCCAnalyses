@@ -15,8 +15,8 @@ class Analysis():
             #######################################################
             #               CME: 240 GeV (ZH)                     #
             #######################################################
-            # 'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
-            # 'FCCee_110_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+            'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+            'FCCee_110_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
 
             "FCCee_110_stau_20cm_ctau_ecm_240"  : {'fraction': 1.0},
             
@@ -146,10 +146,14 @@ class Analysis():
             .Define("GenStau_vz", "MCParticle::get_vertex_z(GenStau)")
             .Define("GenStau_Lxy", "sqrt(GenStau_vx*GenStau_vx + GenStau_vy*GenStau_vy)")
             .Define("GenStau_Lxyz", "sqrt(GenStau_vx*GenStau_vx + GenStau_vy*GenStau_vy + GenStau_vz*GenStau_vz)")
-
+            .Define("GenStau_time", "MCParticle::get_time(GenStau)")
             # Stau daughters
             .Define("GenTau", "MCParticle::sel_pdgID(15,true)(Particle)")
+            .Define("GenTau_status", "MCParticle::get_genStatus(GenTau)")
             .Define("GenGravitino", "MCParticle::sel_pdgID(1000049,false)(Particle)")
+            .Define("n_GenGravitino", "MCParticle::get_n(GenGravitino)")
+            .Define("GenGravitino_status", "MCParticle::get_genStatus(GenGravitino)")
+            .Define("GenGravitino_e", "MCParticle::get_e(GenGravitino)")
 
             # Tau kinematics and vertex
             .Define("GenTau_px", "MCParticle::get_px(GenTau)")
@@ -163,6 +167,11 @@ class Analysis():
             .Define("GenTau_vx", "MCParticle::get_vertex_x(GenTau)")
             .Define("GenTau_vy", "MCParticle::get_vertex_y(GenTau)")
             .Define("GenTau_vz", "MCParticle::get_vertex_z(GenTau)")
+            .Define("GenTau_time", "MCParticle::get_time(GenTau)")
+            .Define("GenTau_cTau",
+            "ROOT::VecOps::RVec<float> v; "
+            "for (auto t : GenTau_time) v.push_back(t * 2.99792458e10); "
+            "return v;")
 
             .Define("Tau_prod", "MCParticle::get_vertex(GenTau)") 
             .Define("GenTau_mass", "MCParticle::get_mass(GenTau)")  
@@ -192,6 +201,7 @@ class Analysis():
             .Define("FSGenElectron_vx", "if (n_FSGenElectron>0) return MCParticle::get_vertex_x( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
             .Define("FSGenElectron_vy", "if (n_FSGenElectron>0) return MCParticle::get_vertex_y( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
             .Define("FSGenElectron_vz", "if (n_FSGenElectron>0) return MCParticle::get_vertex_z( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_time", "if (n_FSGenElectron>0) return MCParticle::get_time( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
 
             # Kinematics for FSGen muons and anti-muons
             .Define("n_FSGenMuon", "MCParticle::get_n(FSGenMuon)")
@@ -208,7 +218,8 @@ class Analysis():
             .Define("FSGenMuon_vx", "if (n_FSGenMuon>0) return MCParticle::get_vertex_x( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
             .Define("FSGenMuon_vy", "if (n_FSGenMuon>0) return MCParticle::get_vertex_y( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
             .Define("FSGenMuon_vz", "if (n_FSGenMuon>0) return MCParticle::get_vertex_z( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
-
+            .Define("FSGenMuon_time", "if (n_FSGenMuon>0) return MCParticle::get_time( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
+            
             #Kinematics for FSGen photons
             .Define("n_FSGenPhoton", "MCParticle::get_n(FSGenPhoton)")
             .Define("FSGenPhoton_e", "MCParticle::get_e(FSGenPhoton)")
@@ -220,6 +231,21 @@ class Analysis():
             .Define("FSGenPhoton_eta", "MCParticle::get_eta(FSGenPhoton)")
             .Define("FSGenPhoton_theta", "MCParticle::get_theta(FSGenPhoton)")
             .Define("FSGenPhoton_phi", "MCParticle::get_phi(FSGenPhoton)")
+
+            # custon neutrino PID to include nu_e, nu_mu, nu_tau
+            .Define("GenNeutrino_PID", "FCCAnalyses::MCParticle::sel_pdgID(16, true)(Particle) ")
+            .Define("FSGenNeutrino", "FCCAnalyses::MCParticle::sel_genStatus(1)(GenNeutrino_PID)") #gen status==1 means final state particle (FS)
+            .Define("n_FSGenNeutrino", "FCCAnalyses::MCParticle::get_n(FSGenNeutrino)")
+            .Define("FSGenNeutrino_e", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_e(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_p", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_p(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_pt", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_pt(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_px", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_px(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_py", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_py(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_pz", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_pz(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_eta", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_eta(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_theta", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_theta(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_phi", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_phi(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
+            .Define("FSGenNeutrino_charge", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_charge(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
 
             # --------------------------
             # Reconstructed particles
@@ -250,11 +276,14 @@ class Analysis():
             # number of tracks from the DVs
             .Define('n_trks_seltracks_DVs', 'VertexingUtils::get_VertexNtrk(DV_evt_seltracks)') 
             .Define("n_nonprimary_tracks", "ReconstructedParticle2Track::getTK_n(sel_tracks)")
-            # momentum of the selected tracks
+            # momentum of the selected tracks`  `
             .Define('sel_tracks_pt_DV', 'ReconstructedParticle2Track::getRP2TRK_mom(ReconstructedParticles ,sel_tracks)') 
-            .Define('sel_tracks_D0_DV', 'ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles ,sel_tracks)')
-            .Define('sel_tracks_Z0_DV', 'ReconstructedParticle2Track::getRP2TRK_Z0(ReconstructedParticles ,sel_tracks)')
-            # invariant mass at the DVs (assuming the tracks to be pions)
+            .Define("sel_tracks_D0_DV", 
+                    "ROOT::VecOps::RVec<float> tmp; for (auto x : ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles, sel_tracks)) tmp.push_back(x==-9. ? 0. : abs(x)); return tmp;")
+            .Define("sel_tracks_Z0_DV", 
+                    "ROOT::VecOps::RVec<float> tmp; for (auto x : ReconstructedParticle2Track::getRP2TRK_Z0(ReconstructedParticles, sel_tracks)) tmp.push_back(x==-9. ? 0. : abs(x)); return tmp;")
+
+           # invariant mass at the DVs (assuming the tracks to be pions)
             .Define('invMass_seltracks_DVs', 'VertexingUtils::get_invM(DV_evt_seltracks)')
 
             # get the chi2 distributions of the DVs from selected tracks - to check if tracks originate from the same physical point
@@ -269,12 +298,11 @@ class Analysis():
             .Define("Reco_DVs_merged_Lxy","VertexingUtils::get_dxy_SV(DV_evt_seltracks, PrimaryVertexObject)")
             .Define("Reco_DVs_merged_Lxyz","VertexingUtils::get_d3d_SV(DV_evt_seltracks, PrimaryVertexObject)")
 
-
-            # # .Define("RecoTauTracks", "VertexingUtils::get_tracksInJets(Jet, _EFlowTrack_trackStates, Jet_to_Track_indices, 0)")
-            # # .Define("RecoTauDecayVertexObject", "VertexFitterSimple::VertexFitter_Tk(2, RecoTauTracks)")
-            # # .Define("RecoTauDecayVertex", "VertexingUtils::get_VertexData(RecoTauDecayVertexObject)")
-            # # .Define("RecoTau_Lxy", "sqrt(RecoTauDecayVertex.position.x*RecoTauDecayVertex.position.x + RecoTauDecayVertex.position.y*RecoTauDecayVertex.position.y)")
-            # # .Define("RecoTau_Lxyz", "sqrt(RecoTauDecayVertex.position.x*RecoTauDecayVertex.position.x + RecoTauDecayVertex.position.y*RecoTauDecayVertex.position.y + RecoTauDecayVertex.position.z*RecoTauDecayVertex.position.z)")
+            # .Define("RecoTauTracks", "VertexingUtils::get_tracksInJets(Jet, _EFlowTrack_trackStates, Jet_to_Track_indices, 0)")
+            # .Define("RecoTauDecayVertexObject", "VertexFitterSimple::VertexFitter_Tk(2, RecoTauTracks)")
+            # .Define("RecoTauDecayVertex", "VertexingUtils::get_VertexData(RecoTauDecayVertexObject)")
+            # .Define("RecoTau_Lxy", "sqrt(RecoTauDecayVertex.position.x*RecoTauDecayVertex.position.x + RecoTauDecayVertex.position.y*RecoTauDecayVertex.position.y)")
+            # .Define("RecoTau_Lxyz", "sqrt(RecoTauDecayVertex.position.x*RecoTauDecayVertex.position.x + RecoTauDecayVertex.position.y*RecoTauDecayVertex.position.y + RecoTauDecayVertex.position.z*RecoTauDecayVertex.position.z)")
 
             # # JETS
             .Define("n_RecoJets", "ReconstructedParticle::get_n(Jet)")
@@ -410,7 +438,9 @@ class Analysis():
             # # Stau daughters
             "GenTau",
             "GenGravitino",
-
+            "n_GenGravitino",
+            "GenGravitino_status",
+            "GenGravitino_e",
             # Tau kinematics
             "GenTau_e",
             "GenTau_pt",
@@ -473,6 +503,20 @@ class Analysis():
             "FSGenPhoton_eta",
             "FSGenPhoton_theta",
             "FSGenPhoton_phi",
+
+            # Neutrinos
+            "FSGenNeutrino",
+            "n_FSGenNeutrino",
+            "FSGenNeutrino_e",
+            "FSGenNeutrino_p",
+            "FSGenNeutrino_pt",
+            "FSGenNeutrino_px",
+            "FSGenNeutrino_py",
+            "FSGenNeutrino_pz",
+            "FSGenNeutrino_eta",
+            "FSGenNeutrino_theta",
+            "FSGenNeutrino_phi",
+            "FSGenNeutrino_charge",
 
             # Track information
             "n_RecoedPrimaryTracks", 
@@ -576,6 +620,14 @@ class Analysis():
             "RecoMissingEnergy_eta",
             "RecoMissingEnergy_theta",
             "RecoMissingEnergy_phi",
+
+            # Time variables
+            "GenStau_time",
+            "GenTau_time",
+            "FSGenElectron_time",
+            "FSGenMuon_time",
+            "GenTau_status",
+            "GenTau_cTau",
         ]
 
         return branch_list
