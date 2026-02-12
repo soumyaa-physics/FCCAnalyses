@@ -1,9 +1,88 @@
 #include "FCCAnalyses/ReconstructedParticle2Track.h"
+#include "FCCAnalyses/VertexFitterSimple.h"
 #include "FCCAnalyses/VertexingUtils.h"
 
 namespace FCCAnalyses{
 
 namespace ReconstructedParticle2Track{
+
+/// Kink Finder
+ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
+    const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+    const ROOT::VecOps::RVec<edm4hep::TrackState>& primary,
+    const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced
+){
+   // return the vertex data of the kink candidate, if any. If multiple candidates, return all of them. If none, return empty vector.
+    ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> vertexCandidates;
+    // useful for background
+    if (displaced.empty()) return vertexCandidates;
+    // int n_kinks = 0;
+    for (size_t i = 0; i < primary.size(); ++i) {
+        const auto& tIn = primary[i]; // current primary track
+        const edm4hep::ReconstructedParticleData* rpIn = nullptr; 
+        for (const auto& rp : reco) { // get associated reco particle
+            if (rp.tracks_begin == i) { rpIn = &rp; break; }
+        }
+        if (!rpIn){
+            std::cout<<"WARNING: no reco particle associated to this primary track, skipping kink candidate search for this track"<<std::endl;
+            continue; // if no reco particle associated to this track, skip
+        }
+        // doing the same for displaced tracks
+        // also need to make only 2 leading displaced tracks - for now 3 to be safe
+        auto dispMom = getRP2TRK_mom(reco, displaced); //get the momentum, defined in this file
+
+        std::vector<size_t> dispIdx(displaced.size()); //size of displaced tracks
+        std::iota(dispIdx.begin(), dispIdx.end(), 0); // initialize with 0,1,2,
+        // sort indices of displaced tracks by momentum
+        std::sort(dispIdx.begin(), dispIdx.end(), [&](size_t a, size_t b) { return dispMom[a] > dispMom[b]; });
+        size_t nDispToUse = std::min<size_t>(3, dispIdx.size()); // get the first three indices
+
+        for (size_t k = 0; k < nDispToUse; ++k) {
+            size_t j = dispIdx[k];
+            const auto& tOut = displaced[j]; // current displaced track
+
+            const edm4hep::ReconstructedParticleData* rpOut = nullptr;
+            for (const auto& rp : reco) {
+                if (rp.tracks_begin == j) { rpOut = &rp; break; }
+            }
+            if (!rpOut){ //this wont work now, i already check the reco particle
+                std::cout<<"WARNING: no reco particle associated to this displaced track, skipping kink candidate search for this track"<<std::endl;
+                continue;
+            }
+          
+            // check charge, impact parameters
+            if (rpIn->charge != rpOut->charge) continue;
+            if (std::abs(tIn.D0 - tOut.D0) < 0.05) continue;
+            // vertex reconstruction
+            ROOT::VecOps::RVec<edm4hep::TrackState> tracksToFit = { tIn, tOut };
+            auto vtxObj = VertexFitterSimple::VertexFitter_Tk(2, tracksToFit); // flag 2 for SVs
+            auto vtxData = VertexingUtils::get_VertexData(vtxObj);
+            // ROOT::VecOps::RVec<float> vertex(3);
+            // vertex[0] = vtxData.position.x;
+            // vertex[1] = vtxData.position.y;
+            // vertex[2] = vtxData.position.z;
+            ROOT::VecOps::RVec<float> vertex = {vtxData.position.x, vtxData.position.y, vtxData.position.z};
+
+            // removing duplicates- ig not needed when i only 2 leading displaced tracks, but just in case
+            bool isDuplicate = false;
+
+            for (auto& existing : vertexCandidates) {
+                float dx = existing[0] - vertex[0];
+                float dy = existing[1] - vertex[1];
+                float dz = existing[2] - vertex[2];
+                float dist = std::sqrt(dx*dx + dy*dy + dz*dz);
+                if (dist < 0.1f) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+
+            if (!isDuplicate)
+            vertexCandidates.push_back(vertex);            
+        }
+    }
+    return vertexCandidates;
+  }
 
   ROOT::VecOps::RVec<float> 
   getRP2TRK_mom(ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in,

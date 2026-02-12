@@ -15,10 +15,12 @@ class Analysis():
             #######################################################
             #               CME: 240 GeV (ZH)                     #
             #######################################################
-            'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
-            'FCCee_110_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+            # 'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+            # 'FCCee_110_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
 
-            "FCCee_110_stau_20cm_ctau_ecm_240"  : {'fraction': 1.0},
+            # "FCCee_110_stau_20cm_ctau_ecm_240"  : {'fraction': 1.0},
+            # "FCCee_110_stau_1p5m_ctau_ecm_240"  : {'fraction': 1.0},
+            "FCCee_110_stau_3m_ctau_ecm_240_changed_delphes"  : {'fraction': 1.0},
             
             #######################################################
             #               SPRING 2021                           #
@@ -51,7 +53,7 @@ class Analysis():
         # self.input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/spring2021/IDEA/'
 
         self.input_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/edm4hep_output'
-        self.output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1'
+        self.output_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1'
 
         # for batch
         # self.output_dir = './output_stage1/'
@@ -141,15 +143,23 @@ class Analysis():
             # .Alias("Particle1", "_Particle_daughters.index")
             .Define("GenStau", "MCParticle::sel_pdgID(1000015,true)(Particle)")
             .Define("n_GenStau", "MCParticle::get_n(GenStau)")
+            .Define("GenStau_status", "MCParticle::get_genStatus(GenStau)")
             .Define("GenStau_vx", "MCParticle::get_vertex_x(GenStau)") 
             .Define("GenStau_vy", "MCParticle::get_vertex_y(GenStau)")
+            .Define("GenStau_e", "MCParticle::get_e(GenStau)")
             .Define("GenStau_vz", "MCParticle::get_vertex_z(GenStau)")
             .Define("GenStau_Lxy", "sqrt(GenStau_vx*GenStau_vx + GenStau_vy*GenStau_vy)")
             .Define("GenStau_Lxyz", "sqrt(GenStau_vx*GenStau_vx + GenStau_vy*GenStau_vy + GenStau_vz*GenStau_vz)")
             .Define("GenStau_time", "MCParticle::get_time(GenStau)")
+            .Define("GenStau_theta", "MCParticle::get_theta(GenStau)")
+            .Define("GenStau_phi", "MCParticle::get_phi(GenStau)")
             # Stau daughters
+            # .Define("StauTauDecay", "MCParticle::get_indices_MotherByIndex(GenStau_idx[0], 15,  false,  true, false, Particle, Particle1.index)")
+            # .Define("GenTau_daughters", "MCParticle::get_list_of_particles_from_decay(GenTau)")
+
             .Define("GenTau", "MCParticle::sel_pdgID(15,true)(Particle)")
             .Define("GenTau_status", "MCParticle::get_genStatus(GenTau)")
+            .Define("GenTau_theta", "MCParticle::get_theta(GenTau)")
             .Define("GenGravitino", "MCParticle::sel_pdgID(1000049,false)(Particle)")
             .Define("n_GenGravitino", "MCParticle::get_n(GenGravitino)")
             .Define("GenGravitino_status", "MCParticle::get_genStatus(GenGravitino)")
@@ -255,10 +265,15 @@ class Analysis():
 
             # Tracks
             .Define("n_RecoTracks",  "ReconstructedParticle2Track::getTK_n(TrackStates)")
-            .Define("AcceptedTracks", "VertexFitterSimple::getSelectedTracks(TrackStates, 4.0)")
+            .Define("AcceptedTracks", "VertexFitterSimple::getSelectedTracks(TrackStates, 2.0)")
             .Define("n_AcceptedTracks",  "ReconstructedParticle2Track::getTK_n(AcceptedTracks)")
             # Select the tracks that are reconstructed  as primaries, so it removes all long lived decay tracks
+            # this would be our stau tracks
             .Define("RecoedPrimaryTracks",  "VertexFitterSimple::get_PrimaryTracks( AcceptedTracks, true, 4.5, 20e-3, 300, 0., 0., 0.)")
+            .Define("RecoedPrimaryTracks_phi",  "ReconstructedParticle2Track::getRP2TRK_phi(ReconstructedParticles, RecoedPrimaryTracks)")
+            .Define("RecoedPrimaryTracks_d0", "ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles, RecoedPrimaryTracks)")
+            # .Define("RecoedPrimaryTracks_theta",  "ReconstructedParticle2Track::getRP2TRK_theta(ReconstructedParticles, RecoedPrimaryTracks)")
+            .Define("RecoedPrimaryTracks_p",  "ReconstructedParticle2Track::getRP2TRK_mom(ReconstructedParticles, RecoedPrimaryTracks)")
             .Define("n_RecoedPrimaryTracks",  "ReconstructedParticle2Track::getTK_n( RecoedPrimaryTracks )")
 
             # the final primary vertex : final/refined fit
@@ -268,6 +283,22 @@ class Analysis():
             # .Filter("PrimaryVertex_ntracks > 2")
 
             .Define("sel_tracks", "VertexFitterSimple::get_NonPrimaryTracks(AcceptedTracks, RecoedPrimaryTracks)") # 100 events/sec
+            .Define("selTracks_d0", "ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles, sel_tracks)")
+
+            # KINK FINDER FROM SELECTED TRACKS - TARGETTING 1 PRONG TAU DECAYS 
+            .Define("RecoedPrimaryTracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, RecoedPrimaryTracks)")
+            .Define("sel_tracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, sel_tracks)")
+
+            .Define("KinkCandidates","ReconstructedParticle2Track::findKink_candidate(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
+            .Define("nKinkVertices", "KinkCandidates.size()")
+            
+            # .Define("KinkCandidates_angle","ROOT::VecOps::Map(KinkCandidates, [](const ROOT::VecOps::RVec<float>& v){ return v[0]; })")
+            # .Define("KinkCandidates_x", "ReconstructedParticle2Track::findKink_x(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
+            # .Define("KinkCandidates_y", "ReconstructedParticle2Track::findKink_y(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
+            # .Define("KinkCandidates_z", "ReconstructedParticle2Track::findKink_z(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
+            # .Define("KinkCandidates_angle", "ReconstructedParticle2Track::findKink_angle(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
+
+            # DISPLACED VERTICES FROM SELECTED TRACKS- TARGETTING 3 PRONG TAU DECAYS
             .Filter("sel_tracks.size()>0")
             # find the DVs from the selected tracks
             .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, AcceptedTracks, PrimaryVertexObject, true, 9., 40., 5.)")
@@ -417,6 +448,16 @@ class Analysis():
             .Define("RecoMissingEnergy_theta",  "hasMissingET ? ReconstructedParticle::get_theta(MissingET)[0] : 0.f")
             .Define("RecoMissingEnergy_phi",  "hasMissingET ? ReconstructedParticle::get_phi(MissingET)[0] : 0.f")
 
+            # Visible energy
+            # need to look at what lepton does it pick up- is it accidentally a ISR or FSR electron
+            .Define("RecoVisibleEnergy",
+                "float visE = 0.;"
+                "for (size_t i = 0; i < n_RecoJets; i++) { visE += RecoJet_e[i]; }"
+                "for (size_t i = 0; i < n_RecoElectrons; i++) { visE += RecoElectrons_e[i]; }"
+                "for (size_t i = 0; i < n_RecoMuons; i++) { visE += RecoMuons_e[i]; }"
+                "return visE;"
+            )
+            .Define("RecoMissingEnergy3D", "240. - RecoVisibleEnergy")
         )
         return df2
 
@@ -429,10 +470,13 @@ class Analysis():
             # Gen-level stau
             "GenStau",
             "n_GenStau",
+            "GenStau_status",
             "GenStau_vx",
             "GenStau_vy",
             "GenStau_vz",
             "GenStau_Lxy",
+            "GenStau_e",
+            "GenStau_phi",
             "GenStau_Lxyz",
 
             # # Stau daughters
@@ -628,6 +672,28 @@ class Analysis():
             "FSGenMuon_time",
             "GenTau_status",
             "GenTau_cTau",
+            "GenStau_theta",
+            "GenTau_theta",
+
+            "RecoVisibleEnergy",
+            "RecoMissingEnergy3D",
+            "RecoedPrimaryTracks_charge",
+            "sel_tracks_charge",
+
+            "RecoedPrimaryTracks_phi",
+            # "RecoedPrim÷aryTracks_theta",
+            "RecoedPrimaryTracks_p",
+            # "GenStau_daughters",
+            # "GenTau_daughters",
+            "KinkCandidates",
+            "nKinkVertices",
+            # "KinkCandidates_x",
+            # "KinkCandidates_y",
+            # "KinkCandidates_z",
+            # "KinkCandidates_angle",
+            "selTracks_d0",
+            "RecoedPrimaryTracks_d0",
+            # "n_KinkCandidates"
         ]
 
         return branch_list

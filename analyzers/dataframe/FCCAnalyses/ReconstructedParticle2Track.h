@@ -28,7 +28,13 @@ namespace edm4hep {
 namespace FCCAnalyses{
 
 namespace ReconstructedParticle2Track{
-
+  
+  // now all in one vector
+  ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
+      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+      const ROOT::VecOps::RVec<edm4hep::TrackState>& primary,
+      const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced
+  );
   //compute the magnetic field Bz
   ROOT::VecOps::RVec<float> getRP2TRK_Bz(const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& rps,
 					 const ROOT::VecOps::RVec<edm4hep::TrackState>& tracks); //here computed for all particles passed

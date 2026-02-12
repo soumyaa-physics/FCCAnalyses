@@ -3,22 +3,30 @@ Final stage of the stau analysis
 '''
 
 # Input/output directories
-inputDir  = "/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1"
-outputDir = "/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/"
+inputDir  = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1"
+outputDir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/"
 
 # List of datasets used in the analysis
 processList = {
         #######################################################
         #             CME: 240 GeV (ZH)- 10mm                 #
         #######################################################
-        'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
-        'FCCee_110_stau_10mm_ctau_ecm_240' : {'fraction': 1.0},
+        # 'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+        # 'FCCee_110_stau_10mm_ctau_ecm_240' : {'fraction': 1.0},
 
         #######################################################
         #             CME: 240 GeV (ZH)- 20cm                 #
         #######################################################
-        'FCCee_110_stau_20cm_ctau_ecm_240'  : {'fraction': 1.0},
+        # 'FCCee_110_stau_20cm_ctau_ecm_240'  : {'fraction': 1.0},
 
+        #######################################################
+        #             CME: 240 GeV (ZH)- 3m                 #
+        #######################################################
+        'FCCee_110_stau_3m_ctau_ecm_240'  : {'fraction': 1.0},
+
+        #######################################################
+        #             CME: 240 GeV (ZH)- 20cm                 #
+        #######################################################
         #######################################################
         #               WINTER 2023                           #
         #######################################################
@@ -44,15 +52,25 @@ procDictAdd = {
         #######################################################
         #             CME: 240 GeV (ZH)- 10mm                 #
         #######################################################
-        'FCCee_100_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.07733 ,     "kfactor": 1.0, "matchingEfficiency": 1.0},
-        # # 'FCCee_105_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
-        'FCCee_110_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
-        # # 'FCCee_115_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        # 'FCCee_100_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.07733 ,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        # # # 'FCCee_105_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        # 'FCCee_110_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        # # # 'FCCee_115_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+
+        # #######################################################
+        # #             CME: 240 GeV (ZH)- 20cm                 #
+        # #######################################################
+        # 'FCCee_110_stau_20cm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
 
         #######################################################
-        #             CME: 240 GeV (ZH)- 20cm                 #
+        #             CME: 240 GeV (ZH)- 1.5m                 # 
         #######################################################
-        'FCCee_110_stau_20cm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        # 'FCCee_110_stau_1p5m_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+
+        #######################################################
+        #             CME: 240 GeV (ZH)- 3m                 #
+        #######################################################
+        'FCCee_110_stau_3m_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 100000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
 
         
         }
@@ -85,10 +103,10 @@ cutList = {
 
     "selNone": "n_RecoTracks > -1",
 
-    "sel_MET": (
-        "n_RecoTracks > -1"
-        " && RecoMissingEnergy_e > 18."
-    ),
+    # "sel_MET": (
+    #     "n_RecoTracks > -1"
+    #     " && RecoMissingEnergy_e > 18."
+    # ),
 
     # "sel_nEle": (
     #     "n_RecoTracks > -1"
@@ -126,11 +144,11 @@ cutList = {
     #     "&& ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1) || (n_RecoElectrons == 0 && n_RecoMuons == 0))"
     # ),
 
-    "sel_semiLeptonic": (
-        "n_RecoTracks > -1"
-        " && RecoMissingEnergy_e > 18."
-        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
-    ),
+    # "sel_semiLeptonic": (
+    #     "n_RecoTracks > -1"
+    #     " && RecoMissingEnergy_e > 18."
+    #     " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+    # ),
 
     "sel_semiLep_jetcut": (
         "n_RecoTracks > -1"
@@ -151,39 +169,39 @@ cutList = {
         # " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
     # )
 
-    "sel_semiLep_ntrks_cut": (
-        "n_RecoTracks > -1"
-        " && RecoMissingEnergy_e > 18."
-        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
-        " && n_RecoJets < 4"
-        # exactly one DV from selected tracks
-        # " && n_seltracks_DVs == 1"
-        # with <= 3 tracks
-        " && n_trks_seltracks_DVs.size() == 1" # ensure that there is only one DV
-        " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
-    ),
-
-
-    "sel_semiLep_jet_cut": (
-        "n_RecoTracks > -1"
-        " && RecoMissingEnergy_e > 18."
-        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
-        " && n_RecoJets < 4"
-        # exactly one DV from selected tracks
-        # " && n_seltracks_DVs == 1"
-        # with <= 3 tracks
-        " && n_trks_seltracks_DVs.size() == 1" # ensure that there is only one DV
-        " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
-        " && RecoJet_e[0] < 120" # cut on leading jet energy to further suppress hadronic background
-    ),
-
-
-    # "fullyHadronic": (
+    # "sel_semiLep_ntrks_cut": (
     #     "n_RecoTracks > -1"
     #     " && RecoMissingEnergy_e > 18."
-    #     " && n_RecoElectrons == 0"
-    #     " && n_RecoMuons == 0"
+    #     " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+    #     " && n_RecoJets < 4"
+    #     # exactly one DV from selected tracks
+    #     # " && n_seltracks_DVs == 1"
+    #     # with <= 3 tracks
+    #     " && n_trks_seltracks_DVs.size() == 1" # ensure that there is only one DV
+    #     " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
     # ),
+
+
+    # "sel_semiLep_jet_energy_cut": (
+    #     "n_RecoTracks > -1"
+    #     " && RecoMissingEnergy_e > 18."
+    #     " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+    #     " && n_RecoJets < 4"
+    #     # exactly one DV from selected tracks
+    #     # " && n_seltracks_DVs == 1"
+    #     # with <= 3 tracks
+    #     " && n_trks_seltracks_DVs.size() == 1" # ensure that there is only one DV
+    #     " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
+    #     " && RecoJet_e[0] < 120" # cut on leading jet energy to further suppress hadronic background
+    # ),
+
+
+    # # "fullyHadronic": (
+    # #     "n_RecoTracks > -1"
+    # #     " && RecoMissingEnergy_e > 18."
+    # #     " && n_RecoElectrons == 0"
+    # #     " && n_RecoMuons == 0"
+    # # ),
 
     "hadronic_cuts": (
         "n_RecoTracks > -1"
@@ -197,18 +215,18 @@ cutList = {
 cutLabels = {
 
     "selNone": "Before selection",
-    "sel_MET": "MET > 18 GeV",
-    # "sel_nEle": "Number of reconstructed electrons < 3",
-    # "sel_nEle_nMu": "Number of reconstructed muons < 3",
-    # "sel_nEle_nMu_ee": "Invariant mass of ee < 85 GeV",
-    # "sel_final": "Invariant mass of mm < 85 GeV",
-    # "sel_semiLepHad": "MET > 18 GeV + (0 or 1 reco lepton",
-    "sel_semiLeptonic": "MET > 18 GeV + 1 reco lepton ",
+    # "sel_MET": "MET > 18 GeV",
+    # # "sel_nEle": "Number of reconstructed electrons < 3",
+    # # "sel_nEle_nMu": "Number of reconstructed muons < 3",
+    # # "sel_nEle_nMu_ee": "Invariant mass of ee < 85 GeV",
+    # # "sel_final": "Invariant mass of mm < 85 GeV",
+    # # "sel_semiLepHad": "MET > 18 GeV + (0 or 1 reco lepton",
+    # # "sel_semiLeptonic": "MET > 18 GeV + 1 reco lepton ",
     "sel_semiLep_jetcut": "MET > 18 GeV +  1 reco lepton + < 4 jets",
-    # "sel_semiLep_DVcut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV cut",
-    "sel_semiLep_ntrks_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks",
-    "sel_semiLep_jet_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks + leading jet_e < 120 GeV",
-    # "fullyHadronic": "MET > 18 GeV + 0 reco leptons",
+    # # "sel_semiLep_DVcut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV cut",
+    # # "sel_semiLep_ntrks_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks",
+    # "sel_semiLep_jet_energy_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks + jet_e < 120 GeV",
+    # # "fullyHadronic": "MET > 18 GeV + 0 reco leptons",
     "hadronic_cuts": "MET > 40 GeV + 0 leptons + < 4 jets",
 }
 
@@ -241,13 +259,13 @@ histoList = {
     "GenTau_pt":             {"name":"GenTau_pt",             "title":"Gen Tau pt",                      "bin":100,  "xmin":0,    "xmax":200},
     "GenTau_eta":            {"name":"GenTau_eta",            "title":"Gen Tau eta",                     "bin":100,  "xmin":-5,   "xmax":5},
     "GenTau_phi":            {"name":"GenTau_phi",            "title":"Gen Tau phi",                     "bin":100,  "xmin":-3.2, "xmax":3.2},
-
+    "GenTau_theta":          {"name":"GenTau_theta",          "title":"Gen Tau theta",                   "bin":100,  "xmin":0,    "xmax":3.2},
     "GenTau_vx":             {"name":"GenTau_vx",             "title":"Gen Tau vx",                      "bin":100,  "xmin":-10,  "xmax":10},
     "GenTau_vy":             {"name":"GenTau_vy",             "title":"Gen Tau vy",                      "bin":100,  "xmin":-10,  "xmax":10},
     "GenTau_vz":             {"name":"GenTau_vz",             "title":"Gen Tau vz",                      "bin":100,  "xmin":-50,  "xmax":50},
-    "GenTau_cTau":           {"name":"GenTau_cTau",           "title":"cTau",                    "bin":120,   "xmin":0,    "xmax":60},
+    "GenTau_cTau":           {"name":"GenTau_cTau",           "title":"cTau",                    "bin":150,   "xmin":0,    "xmax":300},
     # "decayLengthTau":        {"name": "decayLengthTau",    "title":"Gen Tau decay length",           "bin":50,   "xmin":0,    "xmax":50},
-
+    "GenStau_theta":          {"name":"GenStau_theta",          "title":"Gen Stau theta",                   "bin":100,  "xmin":0,    "xmax":3.2},
     # Final-state muons
     "n_FSGenMuon":       {"name":"n_FSGenMuon",     "title":"Number of FS muons", "bin":11,   "xmin":-0.5,  "xmax":10.5},
     "FSGenMuon_e":      {"name":"FSGenMuon_e",      "title":"FS muon energy",     "bin":50, "xmin":0, "xmax":200},
@@ -361,6 +379,10 @@ histoList = {
         "xmin":0,
         "xmax":2
     },
+
+    "RecoVisibleEnergy": {"name":"RecoVisibleEnergy", "title":"Visible energy", "bin":120,"xmin":0,"xmax":240},
+    "RecoMissingEnergy3D": {"name":"RecoMissingEnergy3D", "title":"Calculated Missing energy", "bin":120,"xmin":0,"xmax":240},
+
 
 }
 
