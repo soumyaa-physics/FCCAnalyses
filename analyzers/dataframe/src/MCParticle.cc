@@ -586,13 +586,14 @@ std::vector<int> get_list_of_stable_particles_from_decay( int i, ROOT::VecOps::R
 
   int db = in.at(i).daughters_begin ;
   int de = in.at(i).daughters_end;
-
   if ( db != de ) {// particle is unstable
     //int d1 = ind[db] ;
     //int d2 = ind[de-1];
     //for (int idaughter = d1; idaughter <= d2; idaughter++) {
     for (int id = db; id < de; id++) {
       int idaughter = ind[ id ];
+      // prevent infinite recursion for looping MC record 
+      if (idaughter == i) continue; 
       std::vector<int> rr = get_list_of_stable_particles_from_decay( idaughter, in, ind) ;
       res.insert( res.end(), rr.begin(), rr.end() );
     }
