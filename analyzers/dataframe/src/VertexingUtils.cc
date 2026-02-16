@@ -401,12 +401,15 @@ int getVertex_matching_recoParticles(const ROOT::VecOps::RVec<FCCAnalysesVertex 
   indicesWeWant.insert(recoParticleIndices.begin(),recoParticleIndices.end()); 
   // correct for "-1" representing missed tracks in the recoParticleIndices
   int correctMissing = indicesWeWant.count(-1); 
+    if (indicesWeWant.size() - correctMissing < 2) return -1; // do not match vertices with fewer than 2 charged tracks
   for (int iVX = 0; iVX < vertices.size(); ++iVX){
     auto vxParticleIndices = get_VertexRecoParticlesInd(vertices[iVX],reco); 
     int nFound = std::count_if(vxParticleIndices.begin(), vxParticleIndices.end(),[&](int recoIndex){
       return indicesWeWant.count(recoIndex);
     }) ; 
-    if (require_all && nFound == indicesWeWant.size() - correctMissing || nFound == vxParticleIndices.size()) return iVX;
+    if ((require_all && nFound == indicesWeWant.size() - correctMissing) || (vxParticleIndices.size() >= 2 && nFound == vxParticleIndices.size())){
+       return iVX;
+    }
   }
   return -1; 
 }
