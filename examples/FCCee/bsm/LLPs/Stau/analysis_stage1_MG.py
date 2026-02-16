@@ -53,6 +53,10 @@ class Analysis(OriginalAnalysis):
     def analyzers(self, df):
         df2 = super().analyzers(df)
         df2 = (df2 
+            .Define("GenStau_p", "MCParticle::get_p(GenStau)")
+            .Define("GenStau_m", "MCParticle::get_mass(GenStau)")
+            .Define("GenStau_beta", "GenStau_p/GenStau_e")
+            .Define("GenStau_gamma", "GenStau_e/GenStau_m")
             .Define("ParticleIndices", "Utils::index_range(Particle)")
             .Define("RecoIndices", "Utils::index_range(ReconstructedParticles)")
             .Define("GenStauIndices","MCParticle::sel_pdgID(1000015,true)(ParticleIndices,Particle)")
@@ -71,15 +75,23 @@ class Analysis(OriginalAnalysis):
             .Define("ChargedStauChildren2_PDG","MCParticle::get_pdg(ChargedStauChildren2)")
             .Define("ChargedStauChildren1_q","MCParticle::get_charge(ChargedStauChildren1)")
             .Define("ChargedStauChildren2_q","MCParticle::get_charge(ChargedStauChildren2)")
+            .Define("ChargedStauChildren1_vx","MCParticle::get_vertex_x(ChargedStauChildren1)")
+            .Define("ChargedStauChildren2_vx","MCParticle::get_vertex_x(ChargedStauChildren2)")
+            .Define("ChargedStauChildren1_vy","MCParticle::get_vertex_y(ChargedStauChildren1)")
+            .Define("ChargedStauChildren2_vy","MCParticle::get_vertex_y(ChargedStauChildren2)")
+            .Define("ChargedStauChildren1_vz","MCParticle::get_vertex_z(ChargedStauChildren1)")
+            .Define("ChargedStauChildren2_vz","MCParticle::get_vertex_z(ChargedStauChildren2)")
             .Define("ChargedStauChildren1_n","Utils::getsize(ChargedStauChildren1)")
-            .Define("ChargedStauChildren2_n","Utils::getsize(ChargedStauChildren2)")            
+            .Define("ChargedStauChildren2_n","Utils::getsize(ChargedStauChildren2)")      
+            .Define("Stau_nChildren","Utils::merge<unsigned long>({ChargedStauChildren1_n},{ChargedStauChildren2_n})")
             .Define("ChargedStauChildren1_recoMatch_ix","ReconstructedParticle2MC::selRP_indices_matched_to_list(ChargedStauChildrenIndices1,MCRecoAssociations0, MCRecoAssociations1, Particle, false )")
             .Define("ChargedStauChildren2_recoMatch_ix","ReconstructedParticle2MC::selRP_indices_matched_to_list(ChargedStauChildrenIndices2,MCRecoAssociations0, MCRecoAssociations1, Particle, false )")
             .Define("ChargedStauChildren1_recoMatch_n","Utils::count_valid_indices(ChargedStauChildren1_recoMatch_ix, ReconstructedParticles)")
             .Define("ChargedStauChildren2_recoMatch_n","Utils::count_valid_indices(ChargedStauChildren2_recoMatch_ix, ReconstructedParticles)")
+            .Define("Stau_nRecoTracks","Utils::merge<int>({ChargedStauChildren1_recoMatch_n},{ChargedStauChildren2_recoMatch_n})")
             .Define("ChargedStauChildren1_vxMatch_ix","VertexingUtils::getVertex_matching_recoParticles(DV_evt_seltracks, ChargedStauChildren1_recoMatch_ix , ReconstructedParticles)")
             .Define("ChargedStauChildren2_vxMatch_ix","VertexingUtils::getVertex_matching_recoParticles(DV_evt_seltracks, ChargedStauChildren2_recoMatch_ix , ReconstructedParticles)")
-
+            .Define("Stau_DVmatch_index","Utils::merge<int>({ChargedStauChildren1_vxMatch_ix},{ChargedStauChildren2_vxMatch_ix})")
             .Define("Stau1_recoMatch_ix","ReconstructedParticle2MC::selRP_indices_matched_to_list({GenStauIndicesStat22[0]}, MCRecoAssociations0, MCRecoAssociations1, Particle, false )")
             .Define("Stau2_recoMatch_ix","ReconstructedParticle2MC::selRP_indices_matched_to_list({GenStauIndicesStat22[1]},MCRecoAssociations0, MCRecoAssociations1, Particle, false )")
 
@@ -87,6 +99,7 @@ class Analysis(OriginalAnalysis):
             .Define ("Stau2_reco_for_KinkVx_ix","Utils::merge(Stau2_recoMatch_ix, ChargedStauChildren2_recoMatch_ix)")
             .Define("Stau1_kinkVertexMatch_ix","VertexingUtils::getVertex_matching_recoParticles(KinkCandidates_VertexObject, Stau1_reco_for_KinkVx_ix , ReconstructedParticles)")
             .Define("Stau2_kinkVertexMatch_ix","VertexingUtils::getVertex_matching_recoParticles(KinkCandidates_VertexObject, Stau2_reco_for_KinkVx_ix , ReconstructedParticles)")
+            .Define("Stau_KVmatch_index","Utils::merge<int>({Stau1_kinkVertexMatch_ix},{Stau2_kinkVertexMatch_ix})")
 
             .Define("ChargedStauChildrenIndices","Utils::merge(ChargedStauChildrenIndices1, ChargedStauChildrenIndices2)")
             .Define("ChargedStauChildren","Utils::merge(ChargedStauChildren1, ChargedStauChildren2)")
@@ -102,8 +115,25 @@ class Analysis(OriginalAnalysis):
             .Define("ChargedStauChildren_vertex_z","MCParticle::get_vertex_z(ChargedStauChildren)")
 
         )
+        for prop in ["status",
+                        "e",
+                        "time",
+                        "theta",
+                        "beta",
+                        "gamma",
+                        "phi" ]:
+            df2 = df2.Define(f"Stau_{prop}",f"GenStau_{prop}[GenStau_status==22]")
+
+
+        # Stau lifetime 
+        df2 = df2.Define("Stau1_Lxy","sqrt(ChargedStauChildren1_vx[0]*ChargedStauChildren1_vx[0] + ChargedStauChildren1_vy[0]*ChargedStauChildren1_vy[0])")
+        df2 = df2.Define("Stau1_Lxyz","sqrt(Stau1_Lxy*Stau1_Lxy + ChargedStauChildren1_vz[0]*ChargedStauChildren1_vz[0])")
+        df2 = df2.Define("Stau2_Lxy","sqrt(ChargedStauChildren2_vx[0]*ChargedStauChildren2_vx[0] + ChargedStauChildren2_vy[0]*ChargedStauChildren2_vy[0])")
+        df2 = df2.Define("Stau2_Lxyz","sqrt(Stau2_Lxy*Stau2_Lxy + ChargedStauChildren2_vz[0]*ChargedStauChildren2_vz[0])")
+        df2 = df2.Define("Stau_Lxy","Utils::merge<float>({Stau1_Lxy},{Stau2_Lxy})")
+        df2 = df2.Define("Stau_Lxyz","Utils::merge<float>({Stau1_Lxyz},{Stau2_Lxyz})")
+
         return df2
-        
     
     def output(self):
         out = super().output() 
@@ -140,5 +170,17 @@ class Analysis(OriginalAnalysis):
         out += ["Stau2_reco_for_KinkVx_ix"]
         out += ["Stau1_kinkVertexMatch_ix"]
         out += ["Stau2_kinkVertexMatch_ix"]
+        out += ["Stau_nChildren"]
+        out += ["Stau_nRecoTracks"]
+        out += ["Stau_DVmatch_index"]
+        out += ["Stau_KVmatch_index"]
+        out += [f"Stau_{prop}" for prop in ["status",
+                        "e",
+                        "time",
+                        "theta",
+                        "beta",
+                        "gamma",
+                        "phi",
+                         "Lxy","Lxyz" ]]
         # out += ["StauPDG"]
         return out 
