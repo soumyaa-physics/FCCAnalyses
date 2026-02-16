@@ -172,7 +172,7 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
             if (std::abs(tIn.D0 - tOut.D0) < 0.05) continue;
             // vertex reconstruction
             ROOT::VecOps::RVec<edm4hep::TrackState> tracksToFit = { tIn, tOut };
-            auto vtxObj = VertexFitterSimple::VertexFitter_Tk(2, tracksToFit); // flag 2 for SVs
+            auto vtxObj = VertexFitterSimple::VertexFitter_Tk(2, tracksToFit, fullTracks); // flag 2 for SVs
             auto vtxData = VertexingUtils::get_VertexData(vtxObj);
             ROOT::VecOps::RVec<float> vertex = {
                 vtxData.position.x,
