@@ -80,18 +80,26 @@ class Analysis(OriginalAnalysis):
             .Define("ChargedStauChildren1_vxMatch_ix","VertexingUtils::getVertex_matching_recoParticles(DV_evt_seltracks, ChargedStauChildren1_recoMatch_ix , ReconstructedParticles)")
             .Define("ChargedStauChildren2_vxMatch_ix","VertexingUtils::getVertex_matching_recoParticles(DV_evt_seltracks, ChargedStauChildren2_recoMatch_ix , ReconstructedParticles)")
 
+            .Define("Stau1_recoMatch_ix","ReconstructedParticle2MC::selRP_indices_matched_to_list({GenStauIndicesStat22[0]}, MCRecoAssociations0, MCRecoAssociations1, Particle, false )")
+            .Define("Stau2_recoMatch_ix","ReconstructedParticle2MC::selRP_indices_matched_to_list({GenStauIndicesStat22[1]},MCRecoAssociations0, MCRecoAssociations1, Particle, false )")
+
+            .Define ("Stau1_reco_for_KinkVx_ix","Utils::merge(Stau1_recoMatch_ix, ChargedStauChildren1_recoMatch_ix)")
+            .Define ("Stau2_reco_for_KinkVx_ix","Utils::merge(Stau2_recoMatch_ix, ChargedStauChildren2_recoMatch_ix)")
+            .Define("Stau1_kinkVertexMatch_ix","VertexingUtils::getVertex_matching_recoParticles(KinkCandidates_VertexObject, Stau1_reco_for_KinkVx_ix , ReconstructedParticles)")
+            .Define("Stau2_kinkVertexMatch_ix","VertexingUtils::getVertex_matching_recoParticles(KinkCandidates_VertexObject, Stau2_reco_for_KinkVx_ix , ReconstructedParticles)")
+
             .Define("ChargedStauChildrenIndices","Utils::merge(ChargedStauChildrenIndices1, ChargedStauChildrenIndices2)")
             .Define("ChargedStauChildren","Utils::merge(ChargedStauChildren1, ChargedStauChildren2)")
             .Define("ChargedStauChildren_recoMatch_ix","Utils::merge(ChargedStauChildren1_recoMatch_ix, ChargedStauChildren2_recoMatch_ix)")
-            .Define("ChargedStauChildren_pt","MCParticle::get_pt(ChargedStauChildren")
-            .Define("ChargedStauChildren_p","MCParticle::get_p(ChargedStauChildren")
-            .Define("ChargedStauChildren_eta","MCParticle::get_eta(ChargedStauChildren")
-            .Define("ChargedStauChildren_phi","MCParticle::get_phi(ChargedStauChildren")
-            .Define("ChargedStauChildren_pdg","MCParticle::get_pdg(ChargedStauChildren")
-            .Define("ChargedStauChildren_charge","MCParticle::get_charge(ChargedStauChildren")
-            .Define("ChargedStauChildren_vertex_x","MCParticle::get_vertex_x(ChargedStauChildren")
-            .Define("ChargedStauChildren_vertex_y","MCParticle::get_vertex_y(ChargedStauChildren")
-            .Define("ChargedStauChildren_vertex_z","MCParticle::get_vertex_z(ChargedStauChildren")
+            .Define("ChargedStauChildren_pt","MCParticle::get_pt(ChargedStauChildren)")
+            .Define("ChargedStauChildren_p","MCParticle::get_p(ChargedStauChildren)")
+            .Define("ChargedStauChildren_eta","MCParticle::get_eta(ChargedStauChildren)")
+            .Define("ChargedStauChildren_phi","MCParticle::get_phi(ChargedStauChildren)")
+            .Define("ChargedStauChildren_pdg","MCParticle::get_pdg(ChargedStauChildren)")
+            .Define("ChargedStauChildren_charge","MCParticle::get_charge(ChargedStauChildren)")
+            .Define("ChargedStauChildren_vertex_x","MCParticle::get_vertex_x(ChargedStauChildren)")
+            .Define("ChargedStauChildren_vertex_y","MCParticle::get_vertex_y(ChargedStauChildren)")
+            .Define("ChargedStauChildren_vertex_z","MCParticle::get_vertex_z(ChargedStauChildren)")
 
         )
         return df2
@@ -126,5 +134,11 @@ class Analysis(OriginalAnalysis):
         out += ["ChargedStauChildren_vertex_x"]
         out += ["ChargedStauChildren_vertex_y"]
         out += ["ChargedStauChildren_vertex_z"]
+        out += ["Stau1_recoMatch_ix"]
+        out += ["Stau2_recoMatch_ix"]
+        out += ["Stau1_reco_for_KinkVx_ix"]
+        out += ["Stau2_reco_for_KinkVx_ix"]
+        out += ["Stau1_kinkVertexMatch_ix"]
+        out += ["Stau2_kinkVertexMatch_ix"]
         # out += ["StauPDG"]
         return out 
