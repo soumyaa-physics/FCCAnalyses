@@ -1,6 +1,7 @@
 #include "FCCAnalyses/ReconstructedParticle2Track.h"
 #include "FCCAnalyses/VertexFitterSimple.h"
 #include "FCCAnalyses/VertexingUtils.h"
+#include "FCCAnalyses/ReconstructedTrack.h"
 
 namespace FCCAnalyses{
 
@@ -10,46 +11,67 @@ namespace ReconstructedParticle2Track{
 ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
     const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
     const ROOT::VecOps::RVec<edm4hep::TrackState>& primary,
-    const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced
+    const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced,
+    const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks 
 ){
+   // full tracks is needed to get the index
    // return the vertex data of the kink candidate, if any. If multiple candidates, return all of them. If none, return empty vector.
     ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> vertexCandidates;
+    
+    auto primary_indices = ReconstructedTrack::get_indices(primary, fullTracks);
+    auto displaced_indices = ReconstructedTrack::get_indices(displaced, fullTracks);
     // useful for background
     if (displaced.empty()) return vertexCandidates;
-    // int n_kinks = 0;
+
+    auto primMom_mag = getRP2TRK_mom(reco, primary); // this gives the magnitude of the momentum
+    auto dispMom_mag = getRP2TRK_mom(reco, displaced);
+
+    // moved this out of the loop, as it only needs to be done once
+    std::vector<size_t> dispIdx(displaced.size()); //size of displaced tracks
+    std::iota(dispIdx.begin(), dispIdx.end(), 0); // initialize with 0,1,2,
+    // sort indices of displaced tracks by momentum
+    std::sort(dispIdx.begin(), dispIdx.end(), [&](size_t a, size_t b) { return dispMom_mag[a] > dispMom_mag[b]; });
+    size_t nDispToUse = std::min<size_t>(3, dispIdx.size()); // get the first three indices
+
+    // loop over primary tracks
     for (size_t i = 0; i < primary.size(); ++i) {
-        const auto& tIn = primary[i]; // current primary track
+        int trackIndex = primary_indices[i]; // get the correct index
+        if (trackIndex < 0) continue; // if no valid index, skip
+        const auto& tIn = primary[i];
+
         const edm4hep::ReconstructedParticleData* rpIn = nullptr; 
-        for (const auto& rp : reco) { // get associated reco particle
-            if (rp.tracks_begin == i) { rpIn = &rp; break; }
+        for (const auto& rp : reco) {
+            for (int it = rp.tracks_begin; it < rp.tracks_end; ++it) {
+                if (it == trackIndex) { // index of tracks and reco particles should match
+                    rpIn = &rp;
+                    break;
+                }
+            }
+            if (rpIn) break; // if we found the associated reco particle, no need to continue looping
         }
-        if (!rpIn){
-            std::cout<<"WARNING: no reco particle associated to this primary track, skipping kink candidate search for this track"<<std::endl;
-            continue; // if no reco particle associated to this track, skip
-        }
+        if (!rpIn) continue; // if no reco particle associated to this track, skip
+        // auto primMom_current = primMom[i];
         // doing the same for displaced tracks
-        // also need to make only 2 leading displaced tracks - for now 3 to be safe
-        auto dispMom = getRP2TRK_mom(reco, displaced); //get the momentum, defined in this file
-
-        std::vector<size_t> dispIdx(displaced.size()); //size of displaced tracks
-        std::iota(dispIdx.begin(), dispIdx.end(), 0); // initialize with 0,1,2,
-        // sort indices of displaced tracks by momentum
-        std::sort(dispIdx.begin(), dispIdx.end(), [&](size_t a, size_t b) { return dispMom[a] > dispMom[b]; });
-        size_t nDispToUse = std::min<size_t>(3, dispIdx.size()); // get the first three indices
-
         for (size_t k = 0; k < nDispToUse; ++k) {
             size_t j = dispIdx[k];
+            int dispTrackIndex = displaced_indices[j];
+            if (dispTrackIndex < 0) continue; // if no valid index, skip
+
             const auto& tOut = displaced[j]; // current displaced track
 
             const edm4hep::ReconstructedParticleData* rpOut = nullptr;
             for (const auto& rp : reco) {
-                if (rp.tracks_begin == j) { rpOut = &rp; break; }
+                for (int it = rp.tracks_begin; it < rp.tracks_end; ++it) {
+                    if (it == dispTrackIndex) {
+                        rpOut = &rp;
+                        break;
+                    }
+                }
+                if (rpOut) break;
             }
-            if (!rpOut){ //this wont work now, i already check the reco particle
-                std::cout<<"WARNING: no reco particle associated to this displaced track, skipping kink candidate search for this track"<<std::endl;
-                continue;
-            }
-          
+            if (!rpOut) continue;
+            // auto dispMom_current = dispMom[j]; // use the current displaced momentum
+
             // check charge, impact parameters
             if (rpIn->charge != rpOut->charge) continue;
             if (std::abs(tIn.D0 - tOut.D0) < 0.05) continue;
@@ -57,11 +79,11 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
             ROOT::VecOps::RVec<edm4hep::TrackState> tracksToFit = { tIn, tOut };
             auto vtxObj = VertexFitterSimple::VertexFitter_Tk(2, tracksToFit); // flag 2 for SVs
             auto vtxData = VertexingUtils::get_VertexData(vtxObj);
-            // ROOT::VecOps::RVec<float> vertex(3);
-            // vertex[0] = vtxData.position.x;
-            // vertex[1] = vtxData.position.y;
-            // vertex[2] = vtxData.position.z;
-            ROOT::VecOps::RVec<float> vertex = {vtxData.position.x, vtxData.position.y, vtxData.position.z};
+            ROOT::VecOps::RVec<float> vertex = {
+                vtxData.position.x,
+                vtxData.position.y,
+                vtxData.position.z
+            };
 
             // removing duplicates- ig not needed when i only 2 leading displaced tracks, but just in case
             bool isDuplicate = false;
@@ -79,6 +101,85 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
 
             if (!isDuplicate)
             vertexCandidates.push_back(vertex);            
+        }
+    }
+    return vertexCandidates;
+  }
+/// Kink Finder- return vertex object
+ ROOT::VecOps::RVec<VertexingUtils::FCCAnalysesVertex> KinkCandidate_VertexObject(
+    const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+    const ROOT::VecOps::RVec<edm4hep::TrackState>& primary,
+    const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced,
+    const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks
+){
+    ROOT::VecOps::RVec<VertexingUtils::FCCAnalysesVertex> vertexCandidates;
+    auto primary_indices = ReconstructedTrack::get_indices(primary, fullTracks);
+    auto displaced_indices = ReconstructedTrack::get_indices(displaced, fullTracks);
+    // useful for background
+    if (displaced.empty()) return vertexCandidates;
+
+    auto primMom_mag = getRP2TRK_mom(reco, primary); // this gives the magnitude of the momentum
+    auto dispMom_mag = getRP2TRK_mom(reco, displaced);
+
+    // moved this out of the loop, as it only needs to be done once
+    std::vector<size_t> dispIdx(displaced.size()); //size of displaced tracks
+    std::iota(dispIdx.begin(), dispIdx.end(), 0); // initialize with 0,1,2,
+    // sort indices of displaced tracks by momentum
+    std::sort(dispIdx.begin(), dispIdx.end(), [&](size_t a, size_t b) { return dispMom_mag[a] > dispMom_mag[b]; });
+    size_t nDispToUse = std::min<size_t>(3, dispIdx.size()); // get the first three indices
+
+    // loop over primary tracks
+    for (size_t i = 0; i < primary.size(); ++i) {
+        int trackIndex = primary_indices[i]; // get the correct index
+        if (trackIndex < 0) continue; // if no valid index, skip
+        const auto& tIn = primary[i];
+
+        const edm4hep::ReconstructedParticleData* rpIn = nullptr; 
+        for (const auto& rp : reco) {
+            for (int it = rp.tracks_begin; it < rp.tracks_end; ++it) {
+                if (it == trackIndex) { // index of tracks and reco particles should match
+                    rpIn = &rp;
+                    break;
+                }
+            }
+            if (rpIn) break; // if we found the associated reco particle, no need to continue looping
+        }
+        if (!rpIn) continue; // if no reco particle associated to this track, skip
+        // auto primMom_current = primMom[i];
+        // doing the same for displaced tracks
+        for (size_t k = 0; k < nDispToUse; ++k) {
+            size_t j = dispIdx[k];
+            int dispTrackIndex = displaced_indices[j];
+            if (dispTrackIndex < 0) continue; // if no valid index, skip
+
+            const auto& tOut = displaced[j]; // current displaced track
+
+            const edm4hep::ReconstructedParticleData* rpOut = nullptr;
+            for (const auto& rp : reco) {
+                for (int it = rp.tracks_begin; it < rp.tracks_end; ++it) {
+                    if (it == dispTrackIndex) {
+                        rpOut = &rp;
+                        break;
+                    }
+                }
+                if (rpOut) break;
+            }
+            if (!rpOut) continue;
+            // auto dispMom_current = dispMom[j]; // use the current displaced momentum
+
+            // check charge, impact parameters
+            if (rpIn->charge != rpOut->charge) continue;
+            if (std::abs(tIn.D0 - tOut.D0) < 0.05) continue;
+            // vertex reconstruction
+            ROOT::VecOps::RVec<edm4hep::TrackState> tracksToFit = { tIn, tOut };
+            auto vtxObj = VertexFitterSimple::VertexFitter_Tk(2, tracksToFit); // flag 2 for SVs
+            auto vtxData = VertexingUtils::get_VertexData(vtxObj);
+            ROOT::VecOps::RVec<float> vertex = {
+                vtxData.position.x,
+                vtxData.position.y,
+                vtxData.position.z
+            };
+            vertexCandidates.push_back(vtxObj);            
         }
     }
     return vertexCandidates;

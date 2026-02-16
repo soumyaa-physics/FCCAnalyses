@@ -22,7 +22,7 @@ processList = {
         #######################################################
         #             CME: 240 GeV (ZH)- 3m                 #
         #######################################################
-        'FCCee_110_stau_3m_ctau_ecm_240'  : {'fraction': 1.0},
+        'FCCee_110_stau_3m_ctau_ecm_240_changed_delphes'  : {'fraction': 1.0},
 
         #######################################################
         #             CME: 240 GeV (ZH)- 20cm                 #
@@ -70,7 +70,7 @@ procDictAdd = {
         #######################################################
         #             CME: 240 GeV (ZH)- 3m                 #
         #######################################################
-        'FCCee_110_stau_3m_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 100000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        'FCCee_110_stau_3m_ctau_ecm_240_changed_delphes': {"numberOfEvents": 10000, "sumOfWeights": 100000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
 
         
         }
@@ -150,12 +150,12 @@ cutList = {
     #     " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
     # ),
 
-    "sel_semiLep_jetcut": (
-        "n_RecoTracks > -1"
-        " && RecoMissingEnergy_e > 18."
-        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
-        " && n_RecoJets < 4"
-    ),
+    # "sel_semiLep_jetcut": (
+    #     "n_RecoTracks > -1"
+    #     " && RecoMissingEnergy_e > 18."
+    #     " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+    #     " && n_RecoJets < 4"
+    # ),
 
     # "sel_semiLep_DVcut": (
     #     "n_RecoTracks > -1"
@@ -203,13 +203,13 @@ cutList = {
     # #     " && n_RecoMuons == 0"
     # # ),
 
-    "hadronic_cuts": (
-        "n_RecoTracks > -1"
-        " && RecoMissingEnergy_e > 40."
-        " && n_RecoElectrons == 0"
-        " && n_RecoMuons == 0"
-        " && n_RecoJets < 4"
-    ),
+    # "hadronic_cuts": (
+    #     "n_RecoTracks > -1"
+    #     " && RecoMissingEnergy_e > 40."
+    #     " && n_RecoElectrons == 0"
+    #     " && n_RecoMuons == 0"
+    #     " && n_RecoJets < 4"
+    # ),
 
 }
 cutLabels = {
@@ -222,12 +222,12 @@ cutLabels = {
     # # "sel_final": "Invariant mass of mm < 85 GeV",
     # # "sel_semiLepHad": "MET > 18 GeV + (0 or 1 reco lepton",
     # # "sel_semiLeptonic": "MET > 18 GeV + 1 reco lepton ",
-    "sel_semiLep_jetcut": "MET > 18 GeV +  1 reco lepton + < 4 jets",
-    # # "sel_semiLep_DVcut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV cut",
-    # # "sel_semiLep_ntrks_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks",
-    # "sel_semiLep_jet_energy_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks + jet_e < 120 GeV",
-    # # "fullyHadronic": "MET > 18 GeV + 0 reco leptons",
-    "hadronic_cuts": "MET > 40 GeV + 0 leptons + < 4 jets",
+    # "sel_semiLep_jetcut": "MET > 18 GeV +  1 reco lepton + < 4 jets",
+    # # # "sel_semiLep_DVcut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV cut",
+    # # # "sel_semiLep_ntrks_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks",
+    # # "sel_semiLep_jet_energy_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks + jet_e < 120 GeV",
+    # # # "fullyHadronic": "MET > 18 GeV + 0 reco leptons",
+    # "hadronic_cuts": "MET > 40 GeV + 0 leptons + < 4 jets",
 }
 
 '''
@@ -382,7 +382,9 @@ histoList = {
 
     "RecoVisibleEnergy": {"name":"RecoVisibleEnergy", "title":"Visible energy", "bin":120,"xmin":0,"xmax":240},
     "RecoMissingEnergy3D": {"name":"RecoMissingEnergy3D", "title":"Calculated Missing energy", "bin":120,"xmin":0,"xmax":240},
-
-
+    "KinkVertex_invMass": {"name":"KinkVertex_invMass", "title":"Invariant mass of kink vertex", "bin":50, "xmin":0, "xmax":10},
+    # "KinkVertex_SV": {"name":"KinkVertex_SV", "title":"SV of kink vertex", "bin":50, "xmin":0, "xmax":10},
+    # "KinkVertex_ntracks": {"name":"KinkVertex_ntracks", "title":"Number of tracks in kink vertex", "bin":10, "xmin":-0.5, "xmax":9.5},
+    "nKinkVertices": {"name":"nKinkVertices", "title":"Number of kink vertices", "bin":5, "xmin":-0.5, "xmax":4.5},
 }
 

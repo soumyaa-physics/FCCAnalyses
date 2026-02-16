@@ -24,6 +24,11 @@ namespace edm4hep {
 
 #include <TMath.h>
 #include <iostream>
+#include "VertexingUtils.h"
+
+#include "edm4hep/VertexData.h"
+#include "edm4hep/Vertex.h"
+
 
 namespace FCCAnalyses{
 
@@ -33,7 +38,15 @@ namespace ReconstructedParticle2Track{
   ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
       const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
       const ROOT::VecOps::RVec<edm4hep::TrackState>& primary,
-      const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced
+      const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced,
+      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks
+  );
+  
+ ROOT::VecOps::RVec<VertexingUtils::FCCAnalysesVertex> KinkCandidate_VertexObject(
+      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+      const ROOT::VecOps::RVec<edm4hep::TrackState>& primary,
+      const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced,
+      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks
   );
   //compute the magnetic field Bz
   ROOT::VecOps::RVec<float> getRP2TRK_Bz(const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& rps,

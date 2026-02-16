@@ -288,9 +288,24 @@ class Analysis():
             # KINK FINDER FROM SELECTED TRACKS - TARGETTING 1 PRONG TAU DECAYS 
             .Define("RecoedPrimaryTracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, RecoedPrimaryTracks)")
             .Define("sel_tracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, sel_tracks)")
-
-            .Define("KinkCandidates","ReconstructedParticle2Track::findKink_candidate(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
+            # old way:
+            .Define("KinkCandidates","ReconstructedParticle2Track::findKink_candidate(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates)")
             .Define("nKinkVertices", "KinkCandidates.size()")
+            # this gives us the vertex object:
+            .Define("KinkCandidates_VertexObject","ReconstructedParticle2Track::KinkCandidate_VertexObject(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates )")
+            .Define("KinkVertex_first",
+            "KinkCandidates_VertexObject.size() > 0 ? "
+            "KinkCandidates_VertexObject[0] : "
+            "FCCAnalyses::VertexingUtils::FCCAnalysesVertex()"
+            )            
+            .Define("KinkVertex_ntracks", "VertexingUtils::get_VertexNtrk(KinkVertex_first)") # number of tracks at the kink vertex (should be 2 for 1 prong tau decays)
+            .Define("KinkVertex_invMass", "VertexingUtils::get_invM(KinkVertex_first)")
+            # .Define("KinkVertex_SV", "VertexingUtils::get_position_SV(KinkVertex_first)") # SV position in 3D
+            # .Define("KinkVertex_dxy", "VertexingUtils::get_dxy_SV(KinkVertex_first, PrimaryVertexObject)") # get the vertex data (position, chi2, etc) of the kink candidates
+            .Define("KinkAngle", "VertexingUtils::get_PV2V0angle(KinkVertex_first, PrimaryVertexObject)")
+            .Define("KinkVertex_SV", 
+            "ROOT::VecOps::RVec<FCCAnalyses::VertexingUtils::FCCAnalysesVertex> tmp = {KinkCandidates_VertexObject[0]}; "
+            "return VertexingUtils::get_position_SV(tmp);")
             
             # .Define("KinkCandidates_angle","ROOT::VecOps::Map(KinkCandidates, [](const ROOT::VecOps::RVec<float>& v){ return v[0]; })")
             # .Define("KinkCandidates_x", "ReconstructedParticle2Track::findKink_x(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
@@ -301,8 +316,7 @@ class Analysis():
             # DISPLACED VERTICES FROM SELECTED TRACKS- TARGETTING 3 PRONG TAU DECAYS
             .Filter("sel_tracks.size()>0")
             # find the DVs from the selected tracks
-            .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, AcceptedTracks, PrimaryVertexObject, true, 9., 40., 5.)")
-            # number of DVs
+            .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, TrackStates, PrimaryVertexObject, true, 9., 40., 5.)")
             .Define('n_seltracks_DVs', 'VertexingUtils::get_n_SV(DV_evt_seltracks)')
             # number of tracks from the DVs
             .Define('n_trks_seltracks_DVs', 'VertexingUtils::get_VertexNtrk(DV_evt_seltracks)') 
@@ -687,6 +701,11 @@ class Analysis():
             # "GenTau_daughters",
             "KinkCandidates",
             "nKinkVertices",
+            "KinkVertex_invMass",
+            # "KinkVertex_SV",
+            # "KinkVertex_dxy",
+            "KinkVertex_ntracks",
+            "KinkAngle",    
             # "KinkCandidates_x",
             # "KinkCandidates_y",
             # "KinkCandidates_z",
