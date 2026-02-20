@@ -4,7 +4,7 @@ Final stage of the stau analysis
 
 # Input/output directories
 inputDir  = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1"
-outputDir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final/"
+outputDir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/NEW_FINAL/"
 
 # List of datasets used in the analysis
 processList = {
@@ -22,7 +22,8 @@ processList = {
         #######################################################
         #             CME: 240 GeV (ZH)- 3m                 #
         #######################################################
-        'FCCee_110_stau_3m_ctau_ecm_240_changed_delphes'  : {'fraction': 1.0},
+        'FCCee_110_stau_3m_ctau_ecm_240'  : {'fraction': 1.0},
+        'FCCee_110_stau_1p5m_ctau_ecm_240'  : {'fraction': 1.0},
 
         #######################################################
         #             CME: 240 GeV (ZH)- 20cm                 #
@@ -30,11 +31,11 @@ processList = {
         #######################################################
         #               WINTER 2023                           #
         #######################################################
-        # 'p8_ee_WW_ecm240': {'fraction': 1.0,'chunks':100},
-        # 'p8_ee_ZZ_ecm240': {'fraction': 1.0,'chunks':100},
-        # 'mgp8_ee_zh_ecm240_hbb': {'fraction': 1.0,'chunks':100},
-        # 'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
-        # 'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
+        'p8_ee_WW_ecm240': {'fraction': 1.0,'chunks':100},
+        'p8_ee_ZZ_ecm240': {'fraction': 1.0,'chunks':100},
+        'mgp8_ee_zh_ecm240_hbb': {'fraction': 1.0,'chunks':100},
+        'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
+        'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
 
         # old samples
         # 'p8_ee_WW_mumu_ecm240': {'fraction': 0.5,'chunks':100},
@@ -65,12 +66,12 @@ procDictAdd = {
         #######################################################
         #             CME: 240 GeV (ZH)- 1.5m                 # 
         #######################################################
-        # 'FCCee_110_stau_1p5m_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        'FCCee_110_stau_1p5m_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
 
         #######################################################
         #             CME: 240 GeV (ZH)- 3m                 #
         #######################################################
-        'FCCee_110_stau_3m_ctau_ecm_240_changed_delphes': {"numberOfEvents": 10000, "sumOfWeights": 100000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+        'FCCee_110_stau_3m_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
 
         
         }
@@ -102,143 +103,48 @@ saveJSON = True
 cutList = {
 
     "selNone": "n_RecoTracks > -1",
+   
+    "semiLepHad": (
+        "n_RecoTracks > -1"
+        "&& ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1) || (n_RecoElectrons == 0 && n_RecoMuons == 0))"
+    ),
 
-    # "sel_MET": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    # ),
+    "semiLeptonic": (
+        "n_RecoTracks > -1"
+        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+    ),
 
-    # "sel_nEle": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     " && n_RecoElectrons < 3"
-    # ),
+    "semiLep_KVDV": (
+        "n_RecoTracks > -1"
+        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+        " && ( nKinkVertices == 1 || n_seltracks_DVs == 1 )"
+        " && n_RecoJets < 4"
+    ),
 
-    # "sel_nEle_nMu": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     " && n_RecoElectrons < 3"
-    #     " && n_RecoMuons < 3"
-    # ),
+    "hadronic": (
+        "n_RecoTracks > -1"
+        " && n_RecoElectrons == 0"
+        " && n_RecoMuons == 0"
+    ),
 
-    # "sel_nEle_nMu_ee": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     " && n_RecoElectrons < 3"
-    #     " && n_RecoMuons < 3"
-    #     " && Reco_ee_invMass == -1."
-    # ),
-
-    # "sel_final": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     " && n_RecoElectrons < 3"
-    #     " && n_RecoMuons < 3"
-    #     " && Reco_ee_invMass == -1."
-    #     " && Reco_mumu_invMass == -1."
-    # ),
-    
-    # "sel_semiLepHad": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     "&& ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1) || (n_RecoElectrons == 0 && n_RecoMuons == 0))"
-    # ),
-
-    # "sel_semiLeptonic": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
-    # ),
-
-    # "sel_semiLep_jetcut": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
-    #     " && n_RecoJets < 4"
-    # ),
-
-    # "sel_semiLep_DVcut": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
-    #     " && n_RecoJets < 4"
-    #     # exactly one DV from selected tracks
-    #     " && n_seltracks_DVs == 1"
-    #     # with <= 3 tracks
-    #     # " && n_trks_seltracks_DVs.size() == 1" # ensure that there is only one DV
-        # " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
-    # )
-
-    # "sel_semiLep_ntrks_cut": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
-    #     " && n_RecoJets < 4"
-    #     # exactly one DV from selected tracks
-    #     # " && n_seltracks_DVs == 1"
-    #     # with <= 3 tracks
-    #     " && n_trks_seltracks_DVs.size() == 1" # ensure that there is only one DV
-    #     " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
-    # ),
-
-
-    # "sel_semiLep_jet_energy_cut": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 18."
-    #     " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
-    #     " && n_RecoJets < 4"
-    #     # exactly one DV from selected tracks
-    #     # " && n_seltracks_DVs == 1"
-    #     # with <= 3 tracks
-    #     " && n_trks_seltracks_DVs.size() == 1" # ensure that there is only one DV
-    #     " && n_trks_seltracks_DVs[0] <= 3" # cut on number of tracks in that one DV
-    #     " && RecoJet_e[0] < 120" # cut on leading jet energy to further suppress hadronic background
-    # ),
-
-
-    # # "fullyHadronic": (
-    # #     "n_RecoTracks > -1"
-    # #     " && RecoMissingEnergy_e > 18."
-    # #     " && n_RecoElectrons == 0"
-    # #     " && n_RecoMuons == 0"
-    # # ),
-
-    # "hadronic_cuts": (
-    #     "n_RecoTracks > -1"
-    #     " && RecoMissingEnergy_e > 40."
-    #     " && n_RecoElectrons == 0"
-    #     " && n_RecoMuons == 0"
-    #     " && n_RecoJets < 4"
-    # ),
+    "hadronic_KVDV": (
+        "n_RecoTracks > -1"
+        " && n_RecoElectrons == 0"
+        " && n_RecoMuons == 0"
+        " && n_RecoJets < 4"
+        " && (( nKinkVertices == 1 && n_seltracks_DVs == 1 ) || ( nKinkVertices == 0 && n_seltracks_DVs > 0 ) || ( nKinkVertices > 0 && n_seltracks_DVs == 0 ))"
+    ),
 
 }
 cutLabels = {
 
     "selNone": "Before selection",
-    # "sel_MET": "MET > 18 GeV",
-    # # "sel_nEle": "Number of reconstructed electrons < 3",
-    # # "sel_nEle_nMu": "Number of reconstructed muons < 3",
-    # # "sel_nEle_nMu_ee": "Invariant mass of ee < 85 GeV",
-    # # "sel_final": "Invariant mass of mm < 85 GeV",
-    # # "sel_semiLepHad": "MET > 18 GeV + (0 or 1 reco lepton",
-    # # "sel_semiLeptonic": "MET > 18 GeV + 1 reco lepton ",
-    # "sel_semiLep_jetcut": "MET > 18 GeV +  1 reco lepton + < 4 jets",
-    # # # "sel_semiLep_DVcut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV cut",
-    # # # "sel_semiLep_ntrks_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks",
-    # # "sel_semiLep_jet_energy_cut": "MET > 18 GeV +  1 reco lepton + < 4 jets + DV with <= 3 tracks + jet_e < 120 GeV",
-    # # # "fullyHadronic": "MET > 18 GeV + 0 reco leptons",
-    # "hadronic_cuts": "MET > 40 GeV + 0 leptons + < 4 jets",
+    "semiLepHad": "(0 or 1 reco lepton)",
+    "semiLeptonic": "1 reco lepton ",
+    "semiLep_KVDV": "1 reco lepton + 1 DV/KV + < 4 jets",
+    "hadronic": "0 reco leptons",
+    "hadronic_KVDV": "0 leptons + < 4 jets + DV/KV",
 }
-
-'''
-Dictionary for the output variables/histograms. 
-The key is the name of the variable in the output files. 
-"name" is the name of the variable in the input file, 
-"title" is the x-axis label of the histogram, 
-"bin" the number of bins of the histogram, 
-"xmin" the minimum x-axis value and 
-"xmax" the maximum x-axis value
-'''
 
 histoList = {
     # Gen-level stau
@@ -259,13 +165,13 @@ histoList = {
     "GenTau_pt":             {"name":"GenTau_pt",             "title":"Gen Tau pt",                      "bin":100,  "xmin":0,    "xmax":200},
     "GenTau_eta":            {"name":"GenTau_eta",            "title":"Gen Tau eta",                     "bin":100,  "xmin":-5,   "xmax":5},
     "GenTau_phi":            {"name":"GenTau_phi",            "title":"Gen Tau phi",                     "bin":100,  "xmin":-3.2, "xmax":3.2},
-    "GenTau_theta":          {"name":"GenTau_theta",          "title":"Gen Tau theta",                   "bin":100,  "xmin":0,    "xmax":3.2},
+    # "GenTau_theta":          {"name":"GenTau_theta",          "title":"Gen Tau theta",                   "bin":100,  "xmin":0,    "xmax":3.2},
     "GenTau_vx":             {"name":"GenTau_vx",             "title":"Gen Tau vx",                      "bin":100,  "xmin":-10,  "xmax":10},
     "GenTau_vy":             {"name":"GenTau_vy",             "title":"Gen Tau vy",                      "bin":100,  "xmin":-10,  "xmax":10},
     "GenTau_vz":             {"name":"GenTau_vz",             "title":"Gen Tau vz",                      "bin":100,  "xmin":-50,  "xmax":50},
-    "GenTau_cTau":           {"name":"GenTau_cTau",           "title":"cTau",                    "bin":150,   "xmin":0,    "xmax":300},
+    # "GenTau_cTau":           {"name":"GenTau_cTau",           "title":"cTau",                    "bin":150,   "xmin":0,    "xmax":300},
     # "decayLengthTau":        {"name": "decayLengthTau",    "title":"Gen Tau decay length",           "bin":50,   "xmin":0,    "xmax":50},
-    "GenStau_theta":          {"name":"GenStau_theta",          "title":"Gen Stau theta",                   "bin":100,  "xmin":0,    "xmax":3.2},
+    # "GenStau_theta":          {"name":"GenStau_theta",          "title":"Gen Stau theta",                   "bin":100,  "xmin":0,    "xmax":3.2},
     # Final-state muons
     "n_FSGenMuon":       {"name":"n_FSGenMuon",     "title":"Number of FS muons", "bin":11,   "xmin":-0.5,  "xmax":10.5},
     "FSGenMuon_e":      {"name":"FSGenMuon_e",      "title":"FS muon energy",     "bin":50, "xmin":0, "xmax":200},
@@ -356,8 +262,8 @@ histoList = {
     "DV_evt_seltracks_chi2": {"name":"DV_evt_seltracks_chi2",    "title":"DV fit chi2",    "bin":10, "xmin":0, "xmax":10},
     "DV_evt_seltracks_normchi2": {"name":"DV_evt_seltracks_normchi2",    "title":"DV fit normalized chi2",    "bin":50, "xmin":0, "xmax":10},
 
-    "Reco_DVs_merged_Lxy": {"name":"Reco_DVs_merged_Lxy","title":"DV L_{xy} [mm]","bin":250,"xmin":0,"xmax":250},
-    "Reco_DVs_merged_Lxyz": {"name":"Reco_DVs_merged_Lxyz","title":"DV L_{xyz} [mm]","bin":250,"xmin":0,"xmax":250},
+    "Reco_DVs_merged_Lxy": {"name":"Reco_DVs_merged_Lxy","title":"DV L_{xy} [mm]","bin":100,"xmin":0,"xmax":250},
+    "Reco_DVs_merged_Lxyz": {"name":"Reco_DVs_merged_Lxyz","title":"DV L_{xyz} [mm]","bin":100,"xmin":0,"xmax":250},
 
     # Reco dielectron system
     "Reco_ee_energy":  {"name":"Reco_ee_energy",  "title":"ee energy",   "bin":50, "xmin":0, "xmax":200},
@@ -382,8 +288,9 @@ histoList = {
 
     "RecoVisibleEnergy": {"name":"RecoVisibleEnergy", "title":"Visible energy", "bin":120,"xmin":0,"xmax":240},
     "RecoMissingEnergy3D": {"name":"RecoMissingEnergy3D", "title":"Calculated Missing energy", "bin":120,"xmin":0,"xmax":240},
-    "KinkVertex_invMass": {"name":"KinkVertex_invMass", "title":"Invariant mass of kink vertex", "bin":50, "xmin":0, "xmax":10},
-    # "KinkVertex_SV": {"name":"KinkVertex_SV", "title":"SV of kink vertex", "bin":50, "xmin":0, "xmax":10},
+    # "KinkVertex_invMass": {"name":"KinkVertex_invMass", "title":"Invariant mass of kink vertex", "bin":50, "xmin":0, "xmax":10},
+    "KinkVertex_dxy": {"name":"KinkVertex_dxy", "title":"dxy of kink vertex", "bin":100, "xmin":0, "xmax":2000},
+    "KinkVertex_d3d": {"name":"KinkVertex_d3d", "title":"d3d of kink vertex", "bin":100, "xmin":0, "xmax":2000},
     # "KinkVertex_ntracks": {"name":"KinkVertex_ntracks", "title":"Number of tracks in kink vertex", "bin":10, "xmin":-0.5, "xmax":9.5},
     "nKinkVertices": {"name":"nKinkVertices", "title":"Number of kink vertices", "bin":5, "xmin":-0.5, "xmax":4.5},
 }

@@ -740,6 +740,7 @@ get_position_SV(ROOT::VecOps::RVec<FCCAnalysesVertex> vertices) {
   for (FCCAnalysesVertex ivtx : vertices) {
     TVector3 xyz(ivtx.vertex.position[0], ivtx.vertex.position[1],
                  ivtx.vertex.position[2]);
+    // std::cout << "success: vertex position = ("<< xyz.X() << ", " << xyz.Y() << ", " << xyz.Z() << ")\n";
     result.push_back(xyz);
   }
   return result;

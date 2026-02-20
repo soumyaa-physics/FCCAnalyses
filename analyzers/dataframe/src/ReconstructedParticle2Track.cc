@@ -51,8 +51,10 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
         }
         if (!rpIn) continue; // if no reco particle associated to this track, skip
         // auto primMom_current = primMom[i];
+        bool kinkFound = false; 
         // doing the same for displaced tracks
         for (size_t k = 0; k < nDispToUse; ++k) {
+            if (kinkFound) break; 
             size_t j = dispIdx[k];
             int dispTrackIndex = displaced_indices[j];
             if (dispTrackIndex < 0) continue; // if no valid index, skip
@@ -100,7 +102,8 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
             }
 
             if (!isDuplicate)
-            vertexCandidates.push_back(vertex);            
+            vertexCandidates.push_back(vertex);   
+            kinkFound = true;           
         }
     }
     return vertexCandidates;
@@ -146,8 +149,12 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
         }
         if (!rpIn) continue; // if no reco particle associated to this track, skip
         // auto primMom_current = primMom[i];
+        bool kinkFound = false;  // flag per primary track
+
         // doing the same for displaced tracks
+
         for (size_t k = 0; k < nDispToUse; ++k) {
+            if (kinkFound) break; 
             size_t j = dispIdx[k];
             int dispTrackIndex = displaced_indices[j];
             if (dispTrackIndex < 0) continue; // if no valid index, skip
@@ -179,7 +186,8 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
                 vtxData.position.y,
                 vtxData.position.z
             };
-            vertexCandidates.push_back(vtxObj);            
+            vertexCandidates.push_back(vtxObj); 
+            kinkFound = true;           
         }
     }
     return vertexCandidates;
