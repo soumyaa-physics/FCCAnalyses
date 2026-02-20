@@ -19,8 +19,8 @@ class Analysis():
             # 'FCCee_110_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
 
             # "FCCee_110_stau_20cm_ctau_ecm_240"  : {'fraction': 1.0},
-            # "FCCee_110_stau_1p5m_ctau_ecm_240"  : {'fraction': 1.0},
-            "FCCee_110_stau_3m_ctau_ecm_240_changed_delphes"  : {'fraction': 1.0},
+            "FCCee_110_stau_1p5m_ctau_ecm_240"  : {'fraction': 1.0},
+            "FCCee_110_stau_3m_ctau_ecm_240"  : {'fraction': 1.0},
             
             #######################################################
             #               SPRING 2021                           #
@@ -240,7 +240,7 @@ class Analysis():
             .Define("FSGenPhoton_pz", "MCParticle::get_pz(FSGenPhoton)")
             .Define("FSGenPhoton_eta", "MCParticle::get_eta(FSGenPhoton)")
             .Define("FSGenPhoton_theta", "MCParticle::get_theta(FSGenPhoton)")
-            .Define("FSGenPhoton_phi", "MCParticle::get_phi(FSGenPhoton)")
+            .Define("FSG≠enPhoton_phi", "MCParticle::get_phi(FSGenPhoton)")
 
             # custon neutrino PID to include nu_e, nu_mu, nu_tau
             .Define("GenNeutrino_PID", "FCCAnalyses::MCParticle::sel_pdgID(16, true)(Particle) ")
@@ -299,7 +299,7 @@ class Analysis():
 
             .Define("sel_tracks", "VertexFitterSimple::get_NonPrimaryTracks(AcceptedTracks, RecoedPrimaryTracks)") # 100 events/sec
             .Define("selTracks_d0", "ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles, sel_tracks)")
-
+ 
             # KINK FINDER FROM SELECTED TRACKS - TARGETTING 1 PRONG TAU DECAYS 
             .Define("RecoedPrimaryTracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, RecoedPrimaryTracks)")
             .Define("sel_tracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, sel_tracks)")
@@ -323,11 +323,15 @@ class Analysis():
             "ROOT::VecOps::RVec<FCCAnalyses::VertexingUtils::FCCAnalysesVertex> tmp = {KinkCandidates_VertexObject[0]}; "
             "return VertexingUtils::get_position_SV(tmp);")
             
-            # .Define("KinkCandidates_angle","ROOT::VecOps::Map(KinkCandidates, [](const ROOT::VecOps::RVec<float>& v){ return v[0]; })")
-            # .Define("KinkCandidates_x", "ReconstructedParticle2Track::findKink_x(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
-            # .Define("KinkCandidates_y", "ReconstructedParticle2Track::findKink_y(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
-            # .Define("KinkCandidates_z", "ReconstructedParticle2Track::findKink_z(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
-            # .Define("KinkCandidates_angle", "ReconstructedParticle2Track::findKink_angle(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks)")
+            .Define("KinkVertex_ntracks", "VertexingUtils::get_VertexNtrk(KinkCandidates_VertexObject)") # number of tracks at the kink vertex (should be 2 for 1 prong tau decays)
+            # invariant mass of a two track vertex   // CAUTION: m1 -> first track; m2 -> second track
+            # .Define("KinkVertex_invMass", "VertexingUtils::get_invM_pairs(KinkCandidates_VertexObject, RecoedPrimaryTracks, sel_tracks)")
+            .Define("KinkVertex_SV" , "VertexingUtils::get_position_SV(KinkCandidates_VertexObject)")  
+            # vector of distances of all reconstructed SV from PV (in mm in xy plane)
+            .Define("KinkVertex_dxy", "VertexingUtils::get_dxy_SV(KinkCandidates_VertexObject, PrimaryVertexObject)")
+            # vector of distances of all reconstructed SV from PV (in mm in 3D)
+            .Define("KinkVertex_d3d", "VertexingUtils::get_d3d_SV(KinkCandidates_VertexObject, PrimaryVertexObject)")
+            # .Define("KinkAngle", "VertexingUtils::get_PV2vtx_angle(TrackStates, KinkCandidates_VertexObject, PrimaryVertexObject)")
 
             # DISPLACED VERTICES FROM SELECTED TRACKS- TARGETTING 3 PRONG TAU DECAYS
             .Filter("sel_tracks.size()>0")
@@ -454,7 +458,7 @@ class Analysis():
             # PHOTONS
             .Alias("Photon0", "PhotonIdx") 
             .Define("RecoPhotons",  "ReconstructedParticle::get(Photon0, ReconstructedParticles)")
-            .Define("n_RecoPhotons",  "ReconstructedParticle::get_n(RecoPhotons)") 
+            .Define("n_RecoPhotons",  "ReconstructedParticle::get_n(ßRecoPhotons)") 
             .Define("RecoPhoton_e",      "ReconstructedParticle::get_e(RecoPhotons)")
             .Define("RecoPhoton_p",      "ReconstructedParticle::get_p(RecoPhotons)")
             .Define("RecoPhoton_pt",      "ReconstructedParticle::get_pt(RecoPhotons)")
@@ -498,6 +502,9 @@ class Analysis():
         '''
         branch_list = [
             # Gen-level stau
+            "debug_xpos",
+            "debug_ypos",
+            "debug_zpos",
             "GenStau",
             "n_GenStau",
             "GenStau_status",
@@ -722,18 +729,12 @@ class Analysis():
             "KinkCandidates",
             "KinkCandidates_passInnerHitVeto",
             "nKinkVertices",
-            "KinkVertex_invMass",
-            # "KinkVertex_SV",
-            # "KinkVertex_dxy",
+            "KinkVertex_SV",
             "KinkVertex_ntracks",
-            "KinkAngle",    
-            # "KinkCandidates_x",
-            # "KinkCandidates_y",
-            # "KinkCandidates_z",
-            # "KinkCandidates_angle",
             "selTracks_d0",
             "RecoedPrimaryTracks_d0",
-            # "n_KinkCandidates"
+            "KinkVertex_dxy",
+            "KinkVertex_d3d",
         ]
 
         return branch_list
