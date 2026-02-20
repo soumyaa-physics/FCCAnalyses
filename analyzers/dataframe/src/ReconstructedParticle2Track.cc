@@ -2,17 +2,40 @@
 #include "FCCAnalyses/VertexFitterSimple.h"
 #include "FCCAnalyses/VertexingUtils.h"
 #include "FCCAnalyses/ReconstructedTrack.h"
-
+#include "FCCAnalyses/ReconstructedParticle2MC.h"
+#include <ROOT/RVec.hxx>
+#include <edm4hep/MCParticleData.h>
+#include <edm4hep/ReconstructedParticleData.h>
+#include <edm4hep/TrackState.h>
+#include <edm4hep/TrackerHit.h>
+#include <edm4hep/TrackerHit3DData.h>
 namespace FCCAnalyses{
 
 namespace ReconstructedParticle2Track{
+
+std::pair<int,int> getTrackIndex(const edm4hep::TrackState& state,
+    const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+    const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTrackStates
+){
+  auto primary_indices = ReconstructedTrack::get_indices({state}, fullTrackStates);
+  if (primary_indices.empty()) return std::make_pair(1,-1);
+  if (primary_indices.size() != 1){
+    std::cerr <<" bad track reco assignment! "<<std::endl; 
+  }
+  int primaryIndex = primary_indices.front(); 
+  const edm4hep::ReconstructedParticleData & theReco = reco.at(primaryIndex); 
+  // std::cout <<" Track indices for track : " <<theReco.tracks_begin<<" - "<<theReco.tracks_end<<std::endl; 
+  return std::make_pair(theReco.tracks_begin, theReco.tracks_end); 
+} 
+
 
 /// Kink Finder
 ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
     const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
     const ROOT::VecOps::RVec<edm4hep::TrackState>& primary,
     const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced,
-    const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks 
+    const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks,
+    const ROOT::VecOps::RVec<bool> & recoPassFlags
 ){
    // full tracks is needed to get the index
    // return the vertex data of the kink candidate, if any. If multiple candidates, return all of them. If none, return empty vector.
@@ -40,7 +63,11 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
         const auto& tIn = primary[i];
 
         const edm4hep::ReconstructedParticleData* rpIn = nullptr; 
-        for (const auto& rp : reco) {
+        for (int iRP = 0; iRP < reco.size(); ++iRP ) {
+            const auto & rp = reco[iRP]; 
+            // if the user provided a pass flag list, check the flag for our reco matches 
+            // and veto particles failing the cuts
+            if (recoPassFlags.size() == reco.size() && ! recoPassFlags[iRP]) continue; 
             for (int it = rp.tracks_begin; it < rp.tracks_end; ++it) {
                 if (it == trackIndex) { // index of tracks and reco particles should match
                     rpIn = &rp;
@@ -62,7 +89,11 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
             const auto& tOut = displaced[j]; // current displaced track
 
             const edm4hep::ReconstructedParticleData* rpOut = nullptr;
-            for (const auto& rp : reco) {
+            for (int iRP = 0; iRP < reco.size(); ++iRP ) {
+                const auto & rp = reco[iRP]; 
+                if (recoPassFlags.size() == reco.size() && ! recoPassFlags[iRP]) continue; 
+                // if the user provided a pass flag list, check the flag for our reco matches 
+                // and veto particles failing the cuts
                 for (int it = rp.tracks_begin; it < rp.tracks_end; ++it) {
                     if (it == dispTrackIndex) {
                         rpOut = &rp;
@@ -113,7 +144,8 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
     const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
     const ROOT::VecOps::RVec<edm4hep::TrackState>& primary,
     const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced,
-    const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks
+    const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks,
+    const ROOT::VecOps::RVec<bool> & recoPassFlags
 ){
     ROOT::VecOps::RVec<VertexingUtils::FCCAnalysesVertex> vertexCandidates;
     auto primary_indices = ReconstructedTrack::get_indices(primary, fullTracks);
@@ -138,7 +170,9 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
         const auto& tIn = primary[i];
 
         const edm4hep::ReconstructedParticleData* rpIn = nullptr; 
-        for (const auto& rp : reco) {
+        for (int iRP = 0; iRP < reco.size(); ++iRP ) {
+            const auto & rp = reco[iRP]; 
+            if (recoPassFlags.size() == reco.size() && ! recoPassFlags[iRP]) continue; 
             for (int it = rp.tracks_begin; it < rp.tracks_end; ++it) {
                 if (it == trackIndex) { // index of tracks and reco particles should match
                     rpIn = &rp;
@@ -162,7 +196,9 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
             const auto& tOut = displaced[j]; // current displaced track
 
             const edm4hep::ReconstructedParticleData* rpOut = nullptr;
-            for (const auto& rp : reco) {
+            for (int iRP = 0; iRP < reco.size(); ++iRP) {
+                const auto & rp = reco[iRP]; 
+                if (recoPassFlags.size() == reco.size() && ! recoPassFlags[iRP]) continue; 
                 for (int it = rp.tracks_begin; it < rp.tracks_end; ++it) {
                     if (it == dispTrackIndex) {
                         rpOut = &rp;
@@ -179,7 +215,7 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
             if (std::abs(tIn.D0 - tOut.D0) < 0.05) continue;
             // vertex reconstruction
             ROOT::VecOps::RVec<edm4hep::TrackState> tracksToFit = { tIn, tOut };
-            auto vtxObj = VertexFitterSimple::VertexFitter_Tk(2, tracksToFit); // flag 2 for SVs
+            auto vtxObj = VertexFitterSimple::VertexFitter_Tk(2, tracksToFit, fullTracks); // flag 2 for SVs
             auto vtxData = VertexingUtils::get_VertexData(vtxObj);
             ROOT::VecOps::RVec<float> vertex = {
                 vtxData.position.x,
@@ -191,6 +227,23 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
         }
     }
     return vertexCandidates;
+  }
+
+  /// reco particle indices for each track state
+  /// NB: This assumes that there is a 1:1 correspondence
+  /// between Tracks and TrackStates. Seems to be the case so far?! 
+  ROOT::VecOps::RVec<int> recoParticleIndices_forTracks(
+    const ROOT::VecOps::RVec<edm4hep::TrackState> & in, 
+    const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> & reco){
+    ROOT::VecOps::RVec<int> result(in.size(),-1);
+    for (int iReco = 0; iReco < reco.size(); ++iReco){
+      for (int it = reco[iReco].tracks_begin; it < reco[iReco].tracks_end; ++it){
+        if (it >= 0 && it < in.size()){
+          result[it] = iReco; 
+        }
+      }
+    }
+    return result; 
   }
 
   ROOT::VecOps::RVec<float> 

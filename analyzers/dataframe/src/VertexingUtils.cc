@@ -1,7 +1,14 @@
 #include "FCCAnalyses/VertexingUtils.h"
+#include "FCCAnalyses/ReconstructedParticle2Track.h"
+#include "FCCAnalyses/ReconstructedTrack.h"
 #include "FCCAnalyses/VertexFitterSimple.h"
-
+#include <ROOT/RVec.hxx>
+#include <edm4hep/ReconstructedParticleData.h>
+#include <set> 
 #include "TrkUtil.h" // from delphes
+#include "TrackCovariance/SolGeom.h"
+#include "TrackCovariance/SolTrack.h"
+#include <fstream>
 
 namespace FCCAnalyses {
 
@@ -391,6 +398,27 @@ ROOT::VecOps::RVec<int> get_VerticesRecoParticlesInd(
   }
   
   return result;
+}  
+
+int getVertex_matching_recoParticles(const ROOT::VecOps::RVec<FCCAnalysesVertex > & vertices,  
+                                       const ROOT::VecOps::RVec<int> & recoParticleIndices,
+                                       const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> &reco,
+                                       bool require_all){
+  std::set<int> indicesWeWant; 
+  indicesWeWant.insert(recoParticleIndices.begin(),recoParticleIndices.end()); 
+  // correct for "-1" representing missed tracks in the recoParticleIndices
+  int correctMissing = indicesWeWant.count(-1); 
+    if (indicesWeWant.size() - correctMissing < 2) return -1; // do not match vertices with fewer than 2 charged tracks
+  for (int iVX = 0; iVX < vertices.size(); ++iVX){
+    auto vxParticleIndices = get_VertexRecoParticlesInd(vertices[iVX],reco); 
+    int nFound = std::count_if(vxParticleIndices.begin(), vxParticleIndices.end(),[&](int recoIndex){
+      return indicesWeWant.count(recoIndex);
+    }) ; 
+    if ((require_all && nFound == indicesWeWant.size() - correctMissing) || (vxParticleIndices.size() >= 2 && nFound == vxParticleIndices.size())){
+       return iVX;
+    }
+  }
+  return -1; 
 }
 
 
@@ -1501,6 +1529,215 @@ get_invM_V0(ROOT::VecOps::RVec<double> invM, ROOT::VecOps::RVec<int> nSV_jet) {
     index += i;
   }
   return result;
+}
+
+static std::mutex mx_solGeo; 
+
+ROOT::VecOps::RVec<TVector3> getHitsOnTrack(int recoIndex,
+    const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+    const ROOT::VecOps::RVec<edm4hep::MCParticleData>& mc,
+    const ROOT::VecOps::RVec<int>& recind,
+    const ROOT::VecOps::RVec<int>& mcind
+){
+  ROOT::VecOps::RVec<TVector3> hits{}; 
+  static std::unique_ptr<SolGeom> fGeom (new SolGeom());
+  static bool firstCall = true; 
+  {
+    std::lock_guard lock(mx_solGeo); 
+    if (firstCall){
+      std::cout << " ==== Loading the delphes IDEA Geometry === "<<std::endl;  
+      std::ifstream inf("geometry.txt"); 
+      std::string theGeo;
+      char buf[500];  
+      while(!inf.eof()){
+        inf.getline(buf,500); 
+        theGeo+= std::string(buf)+"\n"; 
+      }
+
+      fGeom->Read(theGeo.c_str());
+      fGeom->SetBz(2.0); 
+      firstCall = false; 
+    }
+  }
+  auto mcIndices = ReconstructedParticle2MC::getRP2MC_index(recind, mcind, reco); 
+  if (recoIndex < 0 || recoIndex > mcIndices.size()){
+    std::cout << " failed truth matching "<<std::endl; 
+    return hits; 
+  }
+  int mcIndex = mcIndices.at(recoIndex); 
+  if (mcIndex < 0 || mcIndex > mc.size()){
+    std::cout <<" nonsensical MC index" << std::endl; 
+    return hits; 
+  }
+  edm4hep::ReconstructedParticleData theReco = reco.at(recoIndex);
+  edm4hep::MCParticleData theMC = mc.at(mcIndex);
+  TVector3 origin (theMC.vertex.x, theMC.vertex.y, theMC.vertex.z);
+  origin *= 1.e-3; // SolTrk uses meters
+  TVector3 endPoint(0,0,0); 
+  if (theMC.daughters_end > theMC.daughters_begin && theMC.daughters_begin >=0 && theMC.daughters_end < mc.size()){
+    edm4hep::MCParticleData daughter = mc.at(theMC.daughters_begin); 
+    endPoint.SetXYZ(daughter.vertex.x, daughter.vertex.y, daughter.vertex.z);
+    endPoint *= 1.e-3; 
+  }
+  TVector3 momentum{theReco.momentum.x,theReco.momentum.y,theReco.momentum.z};
+  SolTrack trk(origin, momentum,fGeom.get());
+
+  auto arcLength = [](SolTrack & tk, const TVector3 & loc){
+    double rh = loc.Perp();
+    return std::asin(tk.C() * std::sqrt((rh*rh-tk.D()*tk.D())/(1. + 2 * tk.C()*tk.D())))/tk.C(); 
+  };
+  double l_origin = arcLength(trk, origin); 
+  double direction = ((arcLength(trk, origin + 0.01 * momentum) - l_origin) > 0 ? 1 : -1); 
+  double l_end = 1.e9 ; 
+  if (endPoint.Mag() > 1.e-3){
+    l_end = arcLength(trk, endPoint); 
+  }
+  TVector3 hit; 
+  for (int il = 0; il < fGeom->Nl(); ++il){
+    double R=0, Z=0, phi=0;
+    if (trk.HitLayer(il, R, phi, Z) && fGeom->isMeasure(il)){
+      double l = arcLength(trk, TVector3(R*std::sin(phi), R*std::cos(phi), Z)); 
+      if (l_origin < l && l < l_end){
+      // if ((l - l_origin) * direction > 0 &&  (l_end - l) * direction > 0){
+        hit.SetXYZ(R * std::cos(phi)* 1.e3, R*std::sin(phi)* 1.e3, Z* 1.e3); 
+        hits.push_back(hit); 
+      }
+    }
+  }
+  return hits;
+}
+
+ROOT::VecOps::RVec<TVector3> getHitsOnTrack(const edm4hep::TrackState& state,
+    const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+    const ROOT::VecOps::RVec<edm4hep::MCParticleData>& mc,
+    const ROOT::VecOps::RVec<int>& recind,
+    const ROOT::VecOps::RVec<int>& mcind,
+    const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTrackStates
+){
+  ROOT::VecOps::RVec<TVector3> hits{}; 
+  // get the reco particle matching our track states
+  auto primary_indices = ReconstructedTrack::get_indices({state}, fullTrackStates);
+  if (primary_indices.empty()) return {};
+  if (primary_indices.size() != 1){
+    std::cerr <<" bad track reco assignment! "<<std::endl; 
+    return hits; 
+  }
+  int primaryIndex = primary_indices.front(); 
+  // now we can delegate the work 
+  return getHitsOnTrack(primaryIndex, reco, mc, recind, mcind);
+}
+
+hitPattern::hitPattern(const ROOT::VecOps::RVec<TVector3> & hits){
+  firstHit = {0,0,0};
+  lastHit = {0,0,0};
+  nHitsDC = -1;
+  nHitsTotal = -1;
+  const double dchzmin = -2.125e3;
+  const double dchzmax = 2.125e3;
+  const double dchrmin = 0.345e3;
+  const double dchrmax = 2.02e3;  
+  double first = 1.0e10, last = -1.; 
+  auto inDC = [&](const TVector3 & v){
+    double r = v.Perp();
+    double z = v.Z();
+    return (r > dchrmin && r < dchrmax && z > dchzmin && z < dchzmax); 
+  };
+  for (const TVector3 & hit: hits){
+    double loc = hit.Mag();
+    if (loc < first){
+      firstHit = hit;
+      first = loc;
+    }
+    if (loc > last){
+      lastHit = hit;
+      last = loc;
+    }
+    ++nHitsTotal;
+    if (inDC(hit)) ++nHitsDC;
+  }      
+
+}
+
+ROOT::VecOps::RVec<bool> passInnerHitVeto(
+                        const ROOT::VecOps::RVec<FCCAnalysesVertex> & vertices,
+                          const ROOT::VecOps::RVec<hitPattern> & hitPatternsPerReco,
+                          const ROOT::VecOps::RVec<int> & recoParticlesPerTrack,
+                        bool require_ingoing, bool require_outgoing,
+                        double tolerance_mm){
+  ROOT::VecOps::RVec<bool> out; 
+  out.reserve(vertices.size()); 
+  bool have_outgoing = false;
+  bool have_incoming = false; 
+  for (const FCCAnalysesVertex & vertex : vertices){
+    bool pass = true; 
+    for (int itrack = 0; itrack < vertex.ntracks; ++itrack){
+      int trackIndex = vertex.reco_ind[itrack]; 
+      int iReco = recoParticlesPerTrack[trackIndex]; 
+      if (iReco < 0) {
+        std::cerr << " Could not find track "<<trackIndex<<" in reco list "<<std::endl; 
+      }
+      const hitPattern & hp = hitPatternsPerReco[iReco]; 
+      double rLast = hp.lastHit.Mag();
+      double rFirst = hp.firstHit.Mag();
+      double rDV = std::sqrt(vertex.vertex.position.x*vertex.vertex.position.x
+                            +vertex.vertex.position.y*vertex.vertex.position.y 
+                            +vertex.vertex.position.z*vertex.vertex.position.z);  
+      // outgoing leg: the first hit is behind the DV position
+      bool isOutgoing = rDV - rFirst < tolerance_mm; 
+      // incoming: the last hit is before the DV position
+      bool isIncoming = rLast - rDV < tolerance_mm; 
+
+      if (isIncoming && isOutgoing){
+        std::cout << "Track rejected: first hit @ " <<hp.firstHit.Perp()<<" , last hit " <<hp.lastHit.Perp()<<", DV @ "<<std::hypot(vertex.vertex.position.x,vertex.vertex.position.y)<<std::endl; 
+        pass = false; 
+        break; 
+      }
+      if (isOutgoing) have_outgoing = true; 
+      if (isIncoming) have_incoming = true; 
+    }
+    pass = (pass && (!require_ingoing || have_incoming) && (!require_outgoing || have_outgoing)); 
+    out.push_back(pass);
+  }
+  return out; 
+}
+
+ROOT::VecOps::RVec<bool> passHitCount(
+                        const ROOT::VecOps::RVec<FCCAnalysesVertex> & vertices,
+                          const ROOT::VecOps::RVec<hitPattern> & hitPatternsPerReco,
+                        const ROOT::VecOps::RVec<int> & recoParticlesPerTrack,
+                        int min_total, int min_DC){
+  ROOT::VecOps::RVec<bool> out; 
+  out.reserve(vertices.size()); 
+  for (const FCCAnalysesVertex & vertex : vertices){
+    bool pass = true; 
+    for (int itrack = 0; itrack < vertex.ntracks; ++itrack){
+      int trackIndex = vertex.reco_ind[itrack]; 
+      int iReco = recoParticlesPerTrack[trackIndex]; 
+      if (iReco < 0) {
+        std::cerr << " Could not find track "<<trackIndex<<" in reco list "<<std::endl; 
+      }
+      const hitPattern & hp = hitPatternsPerReco[iReco]; 
+      int hits = hp.nHitsTotal;
+      int DChits = hp.nHitsDC;
+      pass &= (hits > min_total && DChits > min_DC); 
+    }
+    out.push_back(pass);
+  }
+  return out; 
+}
+
+ROOT::VecOps::RVec<bool> passHitCount(
+                        const ROOT::VecOps::RVec<hitPattern> & hitPatternsPerReco,
+                        int min_total, int min_DC){
+  ROOT::VecOps::RVec<bool> out; 
+  out.reserve(hitPatternsPerReco.size()); 
+  for (int iReco = 0; iReco < hitPatternsPerReco.size(); ++iReco){
+    const hitPattern & hp = hitPatternsPerReco[iReco]; 
+    int hits = hp.nHitsTotal;
+    int DChits = hp.nHitsDC;
+    out.push_back(hits > min_total && DChits > min_DC); 
+  }
+  return out; 
 }
 
 } // namespace VertexingUtils

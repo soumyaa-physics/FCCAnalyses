@@ -1,6 +1,8 @@
 #ifndef  VERTEXINGUTILS_ANALYZERS_H
 #define  VERTEXINGUTILS_ANALYZERS_H
 
+#include <TNamed.h>
+#include <TObject.h>
 #include <cmath>
 #include <vector>
 
@@ -18,7 +20,9 @@
 #include "TMatrixDSym.h"
 
 #include "fastjet/JetDefinition.hh"
+#include "edm4hep/MCParticleData.h"
 
+#include "FCCAnalyses/Utils.h"
 
 namespace FCCAnalyses{
 
@@ -111,6 +115,17 @@ namespace VertexingUtils{
   /// Retrieve the indices of the tracks fitted to a vector of vertices, but now in the collection of RecoParticles
   ROOT::VecOps::RVec<int> get_VerticesRecoParticlesInd( ROOT::VecOps::RVec<FCCAnalysesVertex > vertices, 
 						      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco );
+
+  /// @brief Find (by index) a vertex that is made of reco particles from a passed list.
+  /// @param vertices: List of possible vertices to match
+  /// @param recoParticleIndices: Indices of the reco particles to find in the vertex
+  /// @param reco: list of all reco particles (ReconstructedParticles)
+  /// @param require_all: If set, require one vertex to contain all recoParticleIndices (no 'missed' tracks). Else only require that all tracks in the vertex come from the vector (but allow for unused tracks) 
+  /// @return: Index within the list of the (first) vertex fulfilling the criteria. If none are found, return -1 
+  int getVertex_matching_recoParticles(const ROOT::VecOps::RVec<FCCAnalysesVertex > & vertices,  
+                                       const ROOT::VecOps::RVec<int> & recoParticleIndices,
+                                       const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> &reco,
+                                       bool require_all = false);
 
   /// Return the number of tracks in a given track collection
   int get_nTracks(ROOT::VecOps::RVec<edm4hep::TrackState> tracks);
@@ -323,6 +338,121 @@ namespace VertexingUtils{
   TVectorD ParToACTS(TVectorD Par);
   TMatrixDSym CovToACTS(TMatrixDSym Cov,TVectorD Par);
 
+  /// @brief a summary of the hit-on-track information for 
+  /// one given track. 
+
+  struct hitPattern{
+    /// c-tor from a list of hits (expressed as 3D spacepoints)
+    hitPattern(const ROOT::VecOps::RVec<TVector3> & hits);
+    int nHitsTotal; ///< total number of hits on track (2D count as one hit) 
+    int nHitsDC;    ///< number of drift chamber hits on track 
+    TVector3 firstHit;  ///< location of the first hit [in mm]
+    TVector3 lastHit;   ///< location of the final hit [in mm]
+  };
+
+
+  ROOT::VecOps::RVec<TVector3> getHitsOnTrack(const edm4hep::TrackState& state,
+      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+      const ROOT::VecOps::RVec<edm4hep::MCParticleData>& mc,
+      const ROOT::VecOps::RVec<int>& recind,
+      const ROOT::VecOps::RVec<int>& mcind,
+      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTrackStates
+  );
+
+  ROOT::VecOps::RVec<TVector3> getHitsOnTrack(int recoIndex,
+      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+      const ROOT::VecOps::RVec<edm4hep::MCParticleData>& mc,
+      const ROOT::VecOps::RVec<int>& recind,
+      const ROOT::VecOps::RVec<int>& mcind
+  );
+
+   inline ROOT::VecOps::RVec<ROOT::VecOps::RVec<TVector3>> getHitsOnTrack(const ROOT::VecOps::RVec<edm4hep::TrackState>& tracks,
+      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+      const ROOT::VecOps::RVec<edm4hep::MCParticleData>& mc,
+      const ROOT::VecOps::RVec<int>& recind,
+      const ROOT::VecOps::RVec<int>& mcind,
+      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTrackStates
+  ){
+    std::function <ROOT::VecOps::RVec<TVector3>(const edm4hep::TrackState &)> fcn = [&](const edm4hep::TrackState & t){return getHitsOnTrack(t,reco,mc,recind,mcind,fullTrackStates);}; 
+    return Utils::convertVec<ROOT::VecOps::RVec<TVector3>,edm4hep::TrackState>(tracks, fcn); 
+  }
+
+  inline ROOT::VecOps::RVec<ROOT::VecOps::RVec<TVector3>> getHitsOnTrack(const ROOT::VecOps::RVec<int> & recoIndices,
+      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+      const ROOT::VecOps::RVec<edm4hep::MCParticleData>& mc,
+      const ROOT::VecOps::RVec<int>& recind,
+      const ROOT::VecOps::RVec<int>& mcind
+  ){
+    std::function <ROOT::VecOps::RVec<TVector3>(int)> fcn = [&](int recIdx){return getHitsOnTrack(recIdx,reco,mc,recind,mcind);}; 
+    return Utils::convertVec<ROOT::VecOps::RVec<TVector3>,int>(recoIndices, fcn); 
+  }
+
+  inline ROOT::VecOps::RVec<ROOT::VecOps::RVec<TVector3>> getHitsOnTrack(const ROOT::VecOps::RVec<int> & trackStateIndices,
+      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+      const ROOT::VecOps::RVec<edm4hep::MCParticleData>& mc,
+      const ROOT::VecOps::RVec<int>& recind,
+      const ROOT::VecOps::RVec<int>& mcind,
+      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTrackStates
+  ){
+    std::function <ROOT::VecOps::RVec<TVector3>(int)> fcn = [&](int trackIdx){return getHitsOnTrack(fullTrackStates[trackIdx],reco,mc,recind,mcind,fullTrackStates);}; 
+    return Utils::convertVec<ROOT::VecOps::RVec<TVector3>,int>(trackStateIndices, fcn); 
+  }
+
+  namespace {
+    hitPattern hitListToPattern(const ROOT::VecOps::RVec<TVector3> & v){
+      return hitPattern(v); 
+    }
+    TVector3 hitPatToFirstHit(const hitPattern & h){
+      return h.firstHit; 
+    }
+    TVector3 hitPatToLastHit(const hitPattern & h){
+      return h.lastHit; 
+    }
+    int hitPatToNhits(const hitPattern & h){
+      return h.nHitsTotal; 
+    }
+    int hitPatToNDChits(const hitPattern & h){
+      return h.nHitsDC; 
+    }
+  }
+
+  inline ROOT::VecOps::RVec<hitPattern> toHitPatterns(const ROOT::VecOps::RVec<ROOT::VecOps::RVec<TVector3>>& hitsOnTrack){
+    return Utils::convertVec<hitPattern, ROOT::VecOps::RVec<TVector3>>(hitsOnTrack, hitListToPattern); 
+  }
+
+  inline ROOT::VecOps::RVec<TVector3> getFirstHits(const ROOT::VecOps::RVec<hitPattern>& hitPatterns){
+    return Utils::convertVec<TVector3, hitPattern>(hitPatterns, hitPatToFirstHit); 
+  }
+  inline ROOT::VecOps::RVec<TVector3> getLastHits(const ROOT::VecOps::RVec<hitPattern>& hitPatterns){
+    return Utils::convertVec<TVector3, hitPattern>(hitPatterns, hitPatToLastHit); 
+  }
+  inline ROOT::VecOps::RVec<int> getNHits(const ROOT::VecOps::RVec<hitPattern>& hitPatterns){
+    return Utils::convertVec<int, hitPattern>(hitPatterns, hitPatToNhits); 
+  }
+  inline ROOT::VecOps::RVec<int> getNDCHits(const ROOT::VecOps::RVec<hitPattern>& hitPatterns){
+    return Utils::convertVec<int, hitPattern>(hitPatterns, hitPatToNDChits); 
+  }
+
+  ROOT::VecOps::RVec<bool> passInnerHitVeto(
+                          const ROOT::VecOps::RVec<FCCAnalysesVertex> & vertices,
+                          const ROOT::VecOps::RVec<hitPattern> & hitPatternsPerReco,
+                          const ROOT::VecOps::RVec<int> & recoParticlesPerTrack,
+                          bool require_ingoing=false, bool require_outgoing=true,
+                          double tolerance_mm = 10.);
+
+  ROOT::VecOps::RVec<bool> passHitCount(
+                          const ROOT::VecOps::RVec<FCCAnalysesVertex> & vertices,
+                          const ROOT::VecOps::RVec<hitPattern> & hitPatternsPerReco,
+                          const ROOT::VecOps::RVec<int> & recoParticlesPerTrack,
+                          int min_total = 6, int min_DC = 0);
+
+  /// @brief flag for all tracks whether they pass the basic hit count
+  ROOT::VecOps::RVec<bool> passHitCount(
+                          const ROOT::VecOps::RVec<hitPattern> & hitPatternsPerReco,
+                          int min_total = 6, int min_DC = 0);
+
+
+  
 
 
 }//end NS VertexingUtils

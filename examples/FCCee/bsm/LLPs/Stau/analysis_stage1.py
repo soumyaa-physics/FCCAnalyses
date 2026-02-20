@@ -257,6 +257,21 @@ class Analysis():
             .Define("FSGenNeutrino_phi", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_phi(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
             .Define("FSGenNeutrino_charge", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_charge(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
 
+
+            # Hit information for the tracks 
+            .Define("RecoForTracks", "ReconstructedParticle2Track::recoParticleIndices_forTracks(TrackStates,ReconstructedParticles)")
+            .Define("RecoIndices", "Utils::index_range(ReconstructedParticles)")
+            .Define("RecoParticles_hitsOnTrack","VertexingUtils::getHitsOnTrack(" \
+            "RecoIndices, ReconstructedParticles, Particle, MCRecoAssociations0, MCRecoAssociations1)")
+            .Define("RecoParticles_hitPatterns","VertexingUtils::toHitPatterns(RecoParticles_hitsOnTrack)")
+            .Define("RecoParticles_firstHitLoc","VertexingUtils::getFirstHits(RecoParticles_hitPatterns)")
+            .Define("RecoParticles_lastHitLoc","VertexingUtils::getLastHits(RecoParticles_hitPatterns)")
+            .Define("RecoParticles_nHits","VertexingUtils::getNHits(RecoParticles_hitPatterns)")
+            .Define("RecoParticles_nDriftChamberHits","VertexingUtils::getNDCHits(RecoParticles_hitPatterns)")
+            # for the kink vertices, let's ask for at least 10 hits on track, of which at least 8 in the drift chamber. 
+            .Define("RecoParticles_passNhits_forKV","VertexingUtils::passHitCount(RecoParticles_hitPatterns, 10,8)")
+
+
             # --------------------------
             # Reconstructed particles
             # --------------------------
@@ -288,22 +303,25 @@ class Analysis():
             # KINK FINDER FROM SELECTED TRACKS - TARGETTING 1 PRONG TAU DECAYS 
             .Define("RecoedPrimaryTracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, RecoedPrimaryTracks)")
             .Define("sel_tracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, sel_tracks)")
-            # old way
-            .Define("KinkCandidates","ReconstructedParticle2Track::findKink_candidate(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates)")
-            .Define("nKinkVertices_old", "KinkCandidates.size()")
+            # old way:
+            .Define("KinkCandidates","ReconstructedParticle2Track::findKink_candidate(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates, RecoParticles_passNhits_forKV)")
+            .Define("nKinkVertices", "KinkCandidates.size()")
             # this gives us the vertex object:
-            .Define("KinkCanqdidates_VertexObject","ReconstructedParticle2Track::KinkCandidate_VertexObject(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates )")
-            .Define("nKinkVertices", "KinkCandidates_VertexObject.size()")
-            # .Define("KinkVertex_first",
-            # "KinkCandidates_VertexObject.size() > 0 ? "
-            # "KinkCandidates_VertexObject[0] : "
-            # "FCCAnalyses::VertexingUtils::FCCAnalysesVertex()"
-            # )            
-            .Define("debug_nTracks", "KinkCandidates_VertexObject.size()")
-            .Define("debug_xpos", "KinkCandidates_VertexObject.size() > 0 ? KinkCandidates_VertexObject[0].vertex.position.x : -999")
-            .Define("debug_ypos", "KinkCandidates_VertexObject.size() > 0 ? KinkCandidates_VertexObject[0].vertex.position.y : -999")
-            .Define("debug_zpos", "KinkCandidates_VertexObject.size() > 0 ? KinkCandidates_VertexObject[0].vertex.position.z : -999")
-            .Define("debug_vertices", "debug_print_vertices(KinkCandidates_VertexObject, ""KinkVertex_dxy, ""GenTau_vx, GenTau_vy, GenTau_vz)")
+            .Define("KinkCandidates_VertexObject","ReconstructedParticle2Track::KinkCandidate_VertexObject(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates, RecoParticles_passNhits_forKV )")
+            .Define("KinkCandidates_passInnerHitVeto","VertexingUtils::passInnerHitVeto(KinkCandidates_VertexObject, RecoParticles_hitPatterns, RecoForTracks, true,true)")
+            .Define("KinkVertex_first",
+            "KinkCandidates_VertexObject.size() > 0 ? "
+            "KinkCandidates_VertexObject[0] : "
+            "FCCAnalyses::VertexingUtils::FCCAnalysesVertex()"
+            )            
+            .Define("KinkVertex_ntracks", "VertexingUtils::get_VertexNtrk(KinkVertex_first)") # number of tracks at the kink vertex (should be 2 for 1 prong tau decays)
+            .Define("KinkVertex_invMass", "VertexingUtils::get_invM(KinkVertex_first)")
+            # .Define("KinkVertex_SV", "VertexingUtils::get_position_SV(KinkVertex_first)") # SV position in 3D
+            # .Define("KinkVertex_dxy", "VertexingUtils::get_dxy_SV(KinkVertex_first, PrimaryVertexObject)") # get the vertex data (position, chi2, etc) of the kink candidates
+            .Define("KinkAngle", "VertexingUtils::get_PV2V0angle(KinkVertex_first, PrimaryVertexObject)")
+            .Define("KinkVertex_SV", 
+            "ROOT::VecOps::RVec<FCCAnalyses::VertexingUtils::FCCAnalysesVertex> tmp = {KinkCandidates_VertexObject[0]}; "
+            "return VertexingUtils::get_position_SV(tmp);")
             
             .Define("KinkVertex_ntracks", "VertexingUtils::get_VertexNtrk(KinkCandidates_VertexObject)") # number of tracks at the kink vertex (should be 2 for 1 prong tau decays)
             # invariant mass of a two track vertex   // CAUTION: m1 -> first track; m2 -> second track
@@ -599,6 +617,10 @@ class Analysis():
             "n_nonprimary_tracks",
             "Reco_DVs_merged_Lxy",
             "Reco_DVs_merged_Lxyz",
+            "RecoParticles_firstHitLoc",
+            "RecoParticles_lastHitLoc",
+            "RecoParticles_nHits",
+            "RecoParticles_nDriftChamberHits",
 
             # Reco Jets
             "n_RecoJets",
@@ -705,6 +727,7 @@ class Analysis():
             # "GenStau_daughters",
             # "GenTau_daughters",
             "KinkCandidates",
+            "KinkCandidates_passInnerHitVeto",
             "nKinkVertices",
             "KinkVertex_SV",
             "KinkVertex_ntracks",
