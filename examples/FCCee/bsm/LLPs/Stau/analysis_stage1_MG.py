@@ -13,7 +13,9 @@ class Analysis(OriginalAnalysis):
 
             # "FCCee_110_stau_20cm_ctau_ecm_240"  : {'fraction': 1.0},
             # "FCCee_110_stau_1p5m_ctau_ecm_240"  : {'fraction': 1.0},
-            "FCCee_110_stau_3m_ctau_ecm_240_changed_delphes"  : {'fraction': 1.0},
+            # "FCCee_110_stau_3m_ctau_ecm_240_changed_delphes"  : {'fraction': 0.3},
+            # "FCCee_110_stau_3m_ctau_ecm_240_decayInDelphes"  : {'fraction': 0.3},
+            "FCCee_110_stau_3m_ctau_ecm_240_DBG"  : {'fraction': 0.1},
             
             #######################################################
             #               SPRING 2021                           #
@@ -46,7 +48,7 @@ class Analysis(OriginalAnalysis):
         # self.input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/spring2021/IDEA/'
 
         self.input_dir = '/home/goblirsc/Code/FccStudies/Delphes_dev/out'
-        self.output_dir = '/home/goblirsc/Code/FccStudies/Delphes_dev/output_stage1'
+        self.output_dir = '/home/goblirsc/Code/FccStudies/Delphes_dev/output_stage1b'
 
         # Optional: read the input files with podio::DataSource
         # self.use_data_source = True
@@ -58,7 +60,6 @@ class Analysis(OriginalAnalysis):
             .Define("GenStau_beta", "GenStau_p/GenStau_e")
             .Define("GenStau_gamma", "GenStau_e/GenStau_m")
             .Define("ParticleIndices", "Utils::index_range(Particle)")
-            .Define("RecoIndices", "Utils::index_range(ReconstructedParticles)")
             .Define("GenStauIndices","MCParticle::sel_pdgID(1000015,true)(ParticleIndices,Particle)")
             .Define("GenStauIndicesStat22","MCParticle::sel_genStatus(22)(GenStauIndices,Particle)")
             .Define("StauPDG","Particle.PDG[GenStauIndicesStat22]")
@@ -81,6 +82,10 @@ class Analysis(OriginalAnalysis):
             .Define("ChargedStauChildren2_vy","MCParticle::get_vertex_y(ChargedStauChildren2)")
             .Define("ChargedStauChildren1_vz","MCParticle::get_vertex_z(ChargedStauChildren1)")
             .Define("ChargedStauChildren2_vz","MCParticle::get_vertex_z(ChargedStauChildren2)")
+            .Define("ChargedStauChildren1_Lxy","sqrt(ChargedStauChildren1_vx*ChargedStauChildren1_vx+ChargedStauChildren1_vy*ChargedStauChildren1_vy)")
+            .Define("ChargedStauChildren1_Lxyz","sqrt(ChargedStauChildren1_Lxy*ChargedStauChildren1_Lxy+ChargedStauChildren1_vz*ChargedStauChildren1_vz)")
+            .Define("ChargedStauChildren2_Lxy","sqrt(ChargedStauChildren2_vx*ChargedStauChildren2_vx+ChargedStauChildren2_vy*ChargedStauChildren2_vy)")
+            .Define("ChargedStauChildren2_Lxyz","sqrt(ChargedStauChildren2_Lxy*ChargedStauChildren2_Lxy+ChargedStauChildren2_vz*ChargedStauChildren2_vz)")
             .Define("ChargedStauChildren1_n","Utils::getsize(ChargedStauChildren1)")
             .Define("ChargedStauChildren2_n","Utils::getsize(ChargedStauChildren2)")      
             .Define("Stau_nChildren","Utils::merge<unsigned long>({ChargedStauChildren1_n},{ChargedStauChildren2_n})")
@@ -113,7 +118,10 @@ class Analysis(OriginalAnalysis):
             .Define("ChargedStauChildren_vertex_x","MCParticle::get_vertex_x(ChargedStauChildren)")
             .Define("ChargedStauChildren_vertex_y","MCParticle::get_vertex_y(ChargedStauChildren)")
             .Define("ChargedStauChildren_vertex_z","MCParticle::get_vertex_z(ChargedStauChildren)")
-
+            .Define("ChargedStauChildren_vertex_Lxy","sqrt(ChargedStauChildren_vertex_y*ChargedStauChildren_vertex_y+ChargedStauChildren_vertex_x*ChargedStauChildren_vertex_x)")
+            .Define("ChargedStauChildren_vertex_Lxyz","sqrt(ChargedStauChildren_vertex_Lxy*ChargedStauChildren_vertex_Lxy+ChargedStauChildren_vertex_z*ChargedStauChildren_vertex_z)")
+            .Define("Stau1_KV_recoIndices","Stau1_kinkVertexMatch_ix >= 0 ? VertexingUtils::get_VertexRecoParticlesInd(KinkCandidates_VertexObject[Stau1_kinkVertexMatch_ix], ReconstructedParticles) : ROOT::VecOps::RVec<int>{}")
+            .Define("Stau2_KV_recoIndices","Stau2_kinkVertexMatch_ix >= 0 ? VertexingUtils::get_VertexRecoParticlesInd(KinkCandidates_VertexObject[Stau2_kinkVertexMatch_ix], ReconstructedParticles) : ROOT::VecOps::RVec<int>{}")
         )
         for prop in ["status",
                         "e",
@@ -132,6 +140,15 @@ class Analysis(OriginalAnalysis):
         df2 = df2.Define("Stau2_Lxyz","sqrt(Stau2_Lxy*Stau2_Lxy + ChargedStauChildren2_vz[0]*ChargedStauChildren2_vz[0])")
         df2 = df2.Define("Stau_Lxy","Utils::merge<float>({Stau1_Lxy},{Stau2_Lxy})")
         df2 = df2.Define("Stau_Lxyz","Utils::merge<float>({Stau1_Lxyz},{Stau2_Lxyz})")
+        df2 = df2.Define("Stau_recoMatch_ix","Utils::merge<int>({Stau1_recoMatch_ix},{Stau2_recoMatch_ix})")
+        df2 = df2.Define("GenTau_prodR","sqrt(GenTau_vx*GenTau_vx + GenTau_vy * GenTau_vy)")
+        df2 = df2.Define("GenTau_prodR3D","sqrt(GenTau_prodR*GenTau_prodR + GenTau_vz * GenTau_vz)")
+
+        # propagate to KV 
+        df2 = df2.Define("KV_passHitCount","VertexingUtils::passHitCount(KinkCandidates_VertexObject, RecoParticles_hitPatterns, RecoForTracks, 10,8)")
+        df2 = df2.Define("KV_passInnerHitVeto","VertexingUtils::passInnerHitVeto(KinkCandidates_VertexObject, RecoParticles_hitPatterns, RecoForTracks, true,true)")
+
+
 
         return df2
     
@@ -161,9 +178,15 @@ class Analysis(OriginalAnalysis):
         out += ["ChargedStauChildren_phi"]
         out += ["ChargedStauChildren_pdg"]
         out += ["ChargedStauChildren_charge"]
+        out += ["ChargedStauChildren1_Lxy"]
+        out += ["ChargedStauChildren1_Lxyz"]
+        out += ["ChargedStauChildren2_Lxy"]
+        out += ["ChargedStauChildren2_Lxyz"]
         out += ["ChargedStauChildren_vertex_x"]
         out += ["ChargedStauChildren_vertex_y"]
         out += ["ChargedStauChildren_vertex_z"]
+        out += ["ChargedStauChildren_vertex_Lxy"]
+        out += ["ChargedStauChildren_vertex_Lxyz"]
         out += ["Stau1_recoMatch_ix"]
         out += ["Stau2_recoMatch_ix"]
         out += ["Stau1_reco_for_KinkVx_ix"]
@@ -171,9 +194,16 @@ class Analysis(OriginalAnalysis):
         out += ["Stau1_kinkVertexMatch_ix"]
         out += ["Stau2_kinkVertexMatch_ix"]
         out += ["Stau_nChildren"]
+        out += ["Stau_recoMatch_ix"]
         out += ["Stau_nRecoTracks"]
+        out += ["Stau1_KV_recoIndices"]
+        out += ["Stau2_KV_recoIndices"]
+        out += ["GenTau_prodR"]
+        out += ["GenTau_prodR3D"]
         out += ["Stau_DVmatch_index"]
         out += ["Stau_KVmatch_index"]
+        out += ["KV_passHitCount"]
+        out += ["KV_passInnerHitVeto"]
         out += [f"Stau_{prop}" for prop in ["status",
                         "e",
                         "time",

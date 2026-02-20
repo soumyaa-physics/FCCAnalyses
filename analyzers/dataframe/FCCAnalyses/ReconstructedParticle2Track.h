@@ -28,25 +28,51 @@ namespace edm4hep {
 
 #include "edm4hep/VertexData.h"
 #include "edm4hep/Vertex.h"
-
+#include <tuple>
 
 namespace FCCAnalyses{
 
 namespace ReconstructedParticle2Track{
+
+  std::pair<int,int> getTrackIndex(const edm4hep::TrackState& state,
+      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTrackStates
+  ); 
+
+  ROOT::VecOps::RVec<int> getHitsOnTrack(
+      const ROOT::VecOps::RVec<edm4hep::TrackState> & tracksToCheck,
+      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
+      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTrackStates,
+      const ROOT::VecOps::RVec<edm4hep::TrackData> & fullTracks,
+      const ROOT::VecOps::RVec<edm4hep::TrackerHit3DData> & fullHits
+  );
+  
+  /// @brief get the indices of the reco particle belonging
+  /// to each TrackState. 
+  /// NOTE: Assumes there is an exact 1:1 correspondence between
+  ///       Tracks and TrackStates (only == 1 state saved per track in same order) 
+  /// @param in: Full list of track states
+  /// @param reco: Full list of reco particles
+  /// @return list of indices of matching reco. -1 indicates no match. 
+  ROOT::VecOps::RVec<int> recoParticleIndices_forTracks(
+    const ROOT::VecOps::RVec<edm4hep::TrackState> & in, 
+    const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> & reco);
   
   // now all in one vector
   ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
       const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
       const ROOT::VecOps::RVec<edm4hep::TrackState>& primary,
       const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced,
-      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks
+      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks,
+      const ROOT::VecOps::RVec<bool> & recoPassFlags = {}
   );
   
  ROOT::VecOps::RVec<VertexingUtils::FCCAnalysesVertex> KinkCandidate_VertexObject(
       const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& reco,
       const ROOT::VecOps::RVec<edm4hep::TrackState>& primary,
       const ROOT::VecOps::RVec<edm4hep::TrackState>& displaced,
-      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks
+      const ROOT::VecOps::RVec<edm4hep::TrackState> & fullTracks,
+      const ROOT::VecOps::RVec<bool> & recoPassFlags = {}
   );
   //compute the magnetic field Bz
   ROOT::VecOps::RVec<float> getRP2TRK_Bz(const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& rps,

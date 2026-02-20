@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include "ROOT/RVec.hxx"
 
 namespace FCCAnalyses {
   namespace Utils {
@@ -47,7 +48,52 @@ namespace FCCAnalyses {
       merged.insert(merged.end(), y.begin(), y.end());  
       return merged; 
     }
-  }
+
+    template <typename outType, typename inType> inline ROOT::VecOps::RVec<outType> convertVec ( const ROOT::RVec<inType> & in, 
+                 std::function<outType(const inType&)> convertor){
+      ROOT::VecOps::RVec<outType> out;
+      out.reserve(in.size());
+      for (const inType & input : in){
+        out.push_back(std::move(convertor(input))); 
+      }
+      return out; 
+    }
+
+    /// @brief Helper struct to select entries matching a certain predicate. 
+    /// Supports two signatures - either a list of candidates is passed and a list of accepted candidates returned,
+    /// Or a list of indices in a vector of candidates is passed and a list of accepted indices returned. 
+    /// The latter is more compatible with index-based selection logic.  
+    template <class content> struct selByPredicate{
+      selByPredicate(std::function<bool(const content &)> thePredicate):m_predicate(thePredicate){}
+      std::function<bool(const content &)> m_predicate; 
+      ROOT::VecOps::RVec<content>  operator() (const ROOT::VecOps::RVec<content> & in){
+          ROOT::VecOps::RVec<content> result;
+          result.reserve(in.size());
+          for (auto & p : in) {
+            if (m_predicate(p)) result.emplace_back(p);
+          } 
+          return result; 
+      }
+      ROOT::VecOps::RVec<int> operator() (const ROOT::VecOps::RVec<int> & indices, const ROOT::VecOps::RVec<content> & in){
+        ROOT::VecOps::RVec<int> result;
+        result.reserve(in.size());
+        for (int index : indices) {
+          if (index < 0 || index >= in.size()) continue; 
+          if (m_predicate(in[index])) result.emplace_back(index);
+        } 
+        return result; 
+      }
+      ROOT::VecOps::RVec<ROOT::VecOps::RVec<int>> operator() (
+        const ROOT::VecOps::RVec<ROOT::VecOps::RVec<int>> & setsOfIndices, 
+        const ROOT::VecOps::RVec<content> & in){
+        ROOT::VecOps::RVec<ROOT::VecOps::RVec<int>> result(setsOfIndices.size());
+        for (int elem = 0; elem <  setsOfIndices.size(); ++elem){
+          result[elem] = this->operator()(setsOfIndices[elem], in); 
+        }
+        return result; 
+      }
+    };
+    }
 }
 
 #endif

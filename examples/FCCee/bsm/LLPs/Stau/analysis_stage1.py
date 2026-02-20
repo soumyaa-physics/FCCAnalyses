@@ -257,6 +257,21 @@ class Analysis():
             .Define("FSGenNeutrino_phi", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_phi(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
             .Define("FSGenNeutrino_charge", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_charge(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
 
+
+            # Hit information for the tracks 
+            .Define("RecoForTracks", "ReconstructedParticle2Track::recoParticleIndices_forTracks(TrackStates,ReconstructedParticles)")
+            .Define("RecoIndices", "Utils::index_range(ReconstructedParticles)")
+            .Define("RecoParticles_hitsOnTrack","VertexingUtils::getHitsOnTrack(" \
+            "RecoIndices, ReconstructedParticles, Particle, MCRecoAssociations0, MCRecoAssociations1)")
+            .Define("RecoParticles_hitPatterns","VertexingUtils::toHitPatterns(RecoParticles_hitsOnTrack)")
+            .Define("RecoParticles_firstHitLoc","VertexingUtils::getFirstHits(RecoParticles_hitPatterns)")
+            .Define("RecoParticles_lastHitLoc","VertexingUtils::getLastHits(RecoParticles_hitPatterns)")
+            .Define("RecoParticles_nHits","VertexingUtils::getNHits(RecoParticles_hitPatterns)")
+            .Define("RecoParticles_nDriftChamberHits","VertexingUtils::getNDCHits(RecoParticles_hitPatterns)")
+            # for the kink vertices, let's ask for at least 10 hits on track, of which at least 8 in the drift chamber. 
+            .Define("RecoParticles_passNhits_forKV","VertexingUtils::passHitCount(RecoParticles_hitPatterns, 10,8)")
+
+
             # --------------------------
             # Reconstructed particles
             # --------------------------
@@ -289,10 +304,11 @@ class Analysis():
             .Define("RecoedPrimaryTracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, RecoedPrimaryTracks)")
             .Define("sel_tracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, sel_tracks)")
             # old way:
-            .Define("KinkCandidates","ReconstructedParticle2Track::findKink_candidate(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates)")
+            .Define("KinkCandidates","ReconstructedParticle2Track::findKink_candidate(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates, RecoParticles_passNhits_forKV)")
             .Define("nKinkVertices", "KinkCandidates.size()")
             # this gives us the vertex object:
-            .Define("KinkCandidates_VertexObject","ReconstructedParticle2Track::KinkCandidate_VertexObject(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates )")
+            .Define("KinkCandidates_VertexObject","ReconstructedParticle2Track::KinkCandidate_VertexObject(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates, RecoParticles_passNhits_forKV )")
+            .Define("KinkCandidates_passInnerHitVeto","VertexingUtils::passInnerHitVeto(KinkCandidates_VertexObject, RecoParticles_hitPatterns, RecoForTracks, true,true)")
             .Define("KinkVertex_first",
             "KinkCandidates_VertexObject.size() > 0 ? "
             "KinkCandidates_VertexObject[0] : "
@@ -594,6 +610,10 @@ class Analysis():
             "n_nonprimary_tracks",
             "Reco_DVs_merged_Lxy",
             "Reco_DVs_merged_Lxyz",
+            "RecoParticles_firstHitLoc",
+            "RecoParticles_lastHitLoc",
+            "RecoParticles_nHits",
+            "RecoParticles_nDriftChamberHits",
 
             # Reco Jets
             "n_RecoJets",
@@ -700,6 +720,7 @@ class Analysis():
             # "GenStau_daughters",
             # "GenTau_daughters",
             "KinkCandidates",
+            "KinkCandidates_passInnerHitVeto",
             "nKinkVertices",
             "KinkVertex_invMass",
             # "KinkVertex_SV",

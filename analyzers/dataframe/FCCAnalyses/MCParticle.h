@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 
+#include "FCCAnalyses/Utils.h"
 #include "ROOT/RVec.hxx"
 #include "TLorentzVector.h"
 #include "edm4hep/MCParticleData.h"
@@ -30,41 +31,30 @@ namespace MCParticle{
     bool m_abs;//> Use absolute value for pdgig
     bool  operator() (ROOT::VecOps::RVec<edm4hep::MCParticleData> in);
   };
-
-  /// @brief Helper struct to select entries matching a certain predicate. 
-  /// Supports two signatures - either a list of candidates is passed and a list of accepted candidates returned,
-  /// Or a list of indices in a vector of candidates is passed and a list of accepted indices returned. 
-  /// The latter is more compatible with index-based selection logic.  
-  struct selByPredicate{
-    selByPredicate(std::function<bool(const edm4hep::MCParticleData &)> thePredicate):m_predicate(thePredicate){}
-    std::function<bool(const edm4hep::MCParticleData &)> m_predicate; 
-    ROOT::VecOps::RVec<edm4hep::MCParticleData>  operator() (const ROOT::VecOps::RVec<edm4hep::MCParticleData> & in);
-    ROOT::VecOps::RVec<int> operator() (const ROOT::VecOps::RVec<int> & indices, const ROOT::VecOps::RVec<edm4hep::MCParticleData> & in);
-    ROOT::VecOps::RVec<ROOT::VecOps::RVec<int>> operator() (const ROOT::VecOps::RVec<ROOT::VecOps::RVec<int>> & indices, const ROOT::VecOps::RVec<edm4hep::MCParticleData> & in);
-  };
+  using mcSelection = Utils::selByPredicate<edm4hep::MCParticleData>;
 
   /// select MCParticles with transverse momentum greater than a minimum value [GeV]
-  struct sel_pt : selByPredicate{
+  struct sel_pt : mcSelection{
     sel_pt(float arg_min_pt);
   };
 
   /// select MCParticles with absolute pseudorapidity less than a max value
-  struct sel_eta : selByPredicate {
+  struct sel_eta : mcSelection {
     sel_eta(float arg_max_eta);
   };
 
   /// select MCParticles with their status
-  struct sel_genStatus : selByPredicate {
+  struct sel_genStatus : mcSelection {
     sel_genStatus(int arg_status);
   };
 
   /// select MCParticles with their PDG id
-  struct sel_pdgID : selByPredicate {
+  struct sel_pdgID : mcSelection {
     sel_pdgID(int arg_pdg, bool arg_chargeconjugate);
   };
 
   /// select MCParticles with a non-zero charge
-  struct sel_charged : selByPredicate {
+  struct sel_charged : mcSelection {
     sel_charged();
   };
 
