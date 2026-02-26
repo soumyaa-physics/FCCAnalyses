@@ -240,7 +240,7 @@ class Analysis():
             .Define("FSGenPhoton_pz", "MCParticle::get_pz(FSGenPhoton)")
             .Define("FSGenPhoton_eta", "MCParticle::get_eta(FSGenPhoton)")
             .Define("FSGenPhoton_theta", "MCParticle::get_theta(FSGenPhoton)")
-            .Define("FSG≠enPhoton_phi", "MCParticle::get_phi(FSGenPhoton)")
+            .Define("FSGenPhoton_phi", "MCParticle::get_phi(FSGenPhoton)")
 
             # custon neutrino PID to include nu_e, nu_mu, nu_tau
             .Define("GenNeutrino_PID", "FCCAnalyses::MCParticle::sel_pdgID(16, true)(Particle) ")
@@ -308,20 +308,16 @@ class Analysis():
             .Define("nKinkVertices", "KinkCandidates.size()")
             # this gives us the vertex object:
             .Define("KinkCandidates_VertexObject","ReconstructedParticle2Track::KinkCandidate_VertexObject(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates, RecoParticles_passNhits_forKV )")
-            .Define("KinkCandidates_passInnerHitVeto","VertexingUtils::passInnerHitVeto(KinkCandidates_VertexObject, RecoParticles_hitPatterns, RecoForTracks, true,true)")
+            .Define("KinkCandidates_passInnerHitVeto","VertexingUtils::passInnerHitVeto(KinkCandidates_VertexObject, RecoParticles_hitPatterns, RecoForTracks, true,true,false,false)")
             .Define("KinkVertex_first",
             "KinkCandidates_VertexObject.size() > 0 ? "
             "KinkCandidates_VertexObject[0] : "
             "FCCAnalyses::VertexingUtils::FCCAnalysesVertex()"
             )            
-            .Define("KinkVertex_ntracks", "VertexingUtils::get_VertexNtrk(KinkVertex_first)") # number of tracks at the kink vertex (should be 2 for 1 prong tau decays)
             .Define("KinkVertex_invMass", "VertexingUtils::get_invM(KinkVertex_first)")
             # .Define("KinkVertex_SV", "VertexingUtils::get_position_SV(KinkVertex_first)") # SV position in 3D
             # .Define("KinkVertex_dxy", "VertexingUtils::get_dxy_SV(KinkVertex_first, PrimaryVertexObject)") # get the vertex data (position, chi2, etc) of the kink candidates
             .Define("KinkAngle", "VertexingUtils::get_PV2V0angle(KinkVertex_first, PrimaryVertexObject)")
-            .Define("KinkVertex_SV", 
-            "ROOT::VecOps::RVec<FCCAnalyses::VertexingUtils::FCCAnalysesVertex> tmp = {KinkCandidates_VertexObject[0]}; "
-            "return VertexingUtils::get_position_SV(tmp);")
             
             .Define("KinkVertex_ntracks", "VertexingUtils::get_VertexNtrk(KinkCandidates_VertexObject)") # number of tracks at the kink vertex (should be 2 for 1 prong tau decays)
             # invariant mass of a two track vertex   // CAUTION: m1 -> first track; m2 -> second track
@@ -458,7 +454,7 @@ class Analysis():
             # PHOTONS
             .Alias("Photon0", "PhotonIdx") 
             .Define("RecoPhotons",  "ReconstructedParticle::get(Photon0, ReconstructedParticles)")
-            .Define("n_RecoPhotons",  "ReconstructedParticle::get_n(ßRecoPhotons)") 
+            .Define("n_RecoPhotons",  "ReconstructedParticle::get_n(RecoPhotons)") 
             .Define("RecoPhoton_e",      "ReconstructedParticle::get_e(RecoPhotons)")
             .Define("RecoPhoton_p",      "ReconstructedParticle::get_p(RecoPhotons)")
             .Define("RecoPhoton_pt",      "ReconstructedParticle::get_pt(RecoPhotons)")
@@ -502,9 +498,6 @@ class Analysis():
         '''
         branch_list = [
             # Gen-level stau
-            "debug_xpos",
-            "debug_ypos",
-            "debug_zpos",
             "GenStau",
             "n_GenStau",
             "GenStau_status",
@@ -583,7 +576,6 @@ class Analysis():
             "FSGenPhoton_pz",
             "FSGenPhoton_eta",
             "FSGenPhoton_theta",
-            "FSGenPhoton_phi",
 
             # Neutrinos
             "FSGenNeutrino",
