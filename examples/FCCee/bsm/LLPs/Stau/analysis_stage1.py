@@ -11,35 +11,42 @@ class Analysis():
 
         # Mandatory: List of datasets used in the analysis
         self.process_list = {
-            # uncomment the samples you want to run over
-            #######################################################
-            #               CME: 240 GeV (ZH)                     #
-            #######################################################
-            # 'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
-            # 'FCCee_110_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
+            # 20 cm
+            # "FCCee_100_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_105_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_110_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_115_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
 
-            # "FCCee_110_stau_20cm_ctau_ecm_240"  : {'fraction': 1.0},
-            "FCCee_110_stau_1p5m_ctau_ecm_240"  : {'fraction': 1.0},
-            "FCCee_110_stau_3m_ctau_ecm_240"  : {'fraction': 1.0},
-            
-            #######################################################
-            #               SPRING 2021                           #
-            #######################################################
-            # 'p8_ee_WW_mumu_ecm240':{'fraction': 0.5,'chunks':100},
+            # # 50 cm
+            # "FCCee_100_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_105_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_110_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_115_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
 
-            #######################################################
-            #               WINTER 2023                           #
-            #######################################################
-            # 'p8_ee_WW_ecm240': {'fraction': 0.01,'chunks':100},
-            # "p8_ee_ZZ_ecm240": {'fraction': 0.1,'chunks':100},
-            # "mgp8_ee_zh_ecm240_hbb": {'fraction': 0.5,'chunks':100},
-            # 'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 0.5,'chunks':100},
-            # 'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 0.5,'chunks':100},
+            # # 1 m
+            # "FCCee_100_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_105_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_110_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_115_stau_1m_ctau_ecm_240": {'fraction': 1.0},
 
+            # # 2 m
+            "FCCee_100_stau_2m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_105_stau_2m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_110_stau_2m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_115_stau_2m_ctau_ecm_240": {'fraction': 1.0},
 
-            # 'p8_ee_WW_ee_ecm240': {'fraction': 0.1,'chunks':100},
-            # 'p8_ee_Zbb_ecm91_EvtGen_Bd2KstarTauTau' : {'fraction': 0.5},
-            } 
+            # 3 m
+            "FCCee_100_stau_3m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_105_stau_3m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_110_stau_3m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_115_stau_3m_ctau_ecm_240": {'fraction': 1.0},
+
+            # 4 m
+            "FCCee_100_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_105_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_110_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_115_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+        }
 
         # prodTag     = "FCCee/winter2023/IDEA/"
         # prodTag     = "FCCee/spring2021/IDEA/"
@@ -52,29 +59,29 @@ class Analysis():
         # self.input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023_training/IDEA/'
         # self.input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/spring2021/IDEA/'
 
-        self.input_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/edm4hep_output'
-        self.output_dir = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1'
+        self.input_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/edm4hep_output'
+        self.output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/without_batch'
 
         # for batch
-        # self.output_dir = './output_stage1/'
+        # self.output_dir = '.output/condor_jobs/'
 
-        # Optional: output directory on eos, if specified files will be copied
-        # there once the batch job is done, default is empty
-        # self.output_dir_eos = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1'
+        # # Optional: output directory on eos, if specified files will be copied
+        # # there once the batch job is done, default is empty
+        # self.output_dir_eos = '/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/condor_jobs'
         # eosType = "eosuser"
 
         self.tree_name = "events"
         print(f"Using tree: {self.tree_name}")
 
-        # self.should_transfe÷r_files = True
+        # # self.should_transfer_files = True
 
-        # Optional HTCondor settings
-        # self.run_batch = True # does not exist anymore
+        # # Optional HTCondor settings
+        # # self.run_batch = True # does not exist anymore
         # self.batch_queue = 'tomorrow'
         # self.comp_group = 'group_u_FCC.local_gen'
         # # self.
-        # # Optional: number of threads
-        self.n_threads = 4
+        # # # Optional: number of threads
+        # self.n_threads = 4
 
     # Mandatory: analyzers function to define the analysis graph
     def analyzers(self, df):
@@ -195,41 +202,40 @@ class Analysis():
             .Define("GenPhoton_PID", "MCParticle::sel_pdgID(22, false)(Particle)")
             .Define("FSGenPhoton", "MCParticle::sel_genStatus(1)(GenPhoton_PID)") 
 
-
             # Kinematics helper for FSGen electrons and positrons
             .Define("n_FSGenElectron", "MCParticle::get_n(FSGenElectron)")
-            .Define("FSGenElectron_e", "if (n_FSGenElectron>0) return MCParticle::get_e(FSGenElectron); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_p", "if (n_FSGenElectron>0) return MCParticle::get_p(FSGenElectron); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_pt", "if (n_FSGenElectron>0) return MCParticle::get_pt(FSGenElectron); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_px", "if (n_FSGenElectron>0) return MCParticle::get_px(FSGenElectron); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_py", "if (n_FSGenElectron>0) return MCParticle::get_py(FSGenElectron); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_pz", "if (n_FSGenElectron>0) return MCParticle::get_pz(FSGenElectron); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_eta", "if (n_FSGenElectron>0) return MCParticle::get_eta(FSGenElectron); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_theta", "if (n_FSGenElectron>0) return MCParticle::get_theta(FSGenElectron); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_phi", "if (n_FSGenElectron>0) return MCParticle::get_phi(FSGenElectron); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_charge", "if (n_FSGenElectron>0) return MCParticle::get_charge(FSGenElectron); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_vx", "if (n_FSGenElectron>0) return MCParticle::get_vertex_x( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_vy", "if (n_FSGenElectron>0) return MCParticle::get_vertex_y( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_vz", "if (n_FSGenElectron>0) return MCParticle::get_vertex_z( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
-            .Define("FSGenElectron_time", "if (n_FSGenElectron>0) return MCParticle::get_time( FSGenElectron ); else return MCParticle::get_genStatus(GenElectron_PID);")
+            .Define("FSGenElectron_e", "MCParticle::get_e(FSGenElectron)")
+            .Define("FSGenElectron_p", "MCParticle::get_p(FSGenElectron)")
+            .Define("FSGenElectron_pt", "MCParticle::get_pt(FSGenElectron)")
+            .Define("FSGenElectron_px", "MCParticle::get_px(FSGenElectron)")
+            .Define("FSGenElectron_py", "MCParticle::get_py(FSGenElectron)")
+            .Define("FSGenElectron_pz", "MCParticle::get_pz(FSGenElectron)")
+            .Define("FSGenElectron_eta", "MCParticle::get_eta(FSGenElectron)")
+            .Define("FSGenElectron_theta", "MCParticle::get_theta(FSGenElectron)")
+            .Define("FSGenElectron_phi", "MCParticle::get_phi(FSGenElectron)")
+            .Define("FSGenElectron_charge", "MCParticle::get_charge(FSGenElectron)")
+            .Define("FSGenElectron_vx", "MCParticle::get_vertex_x(FSGenElectron)")
+            .Define("FSGenElectron_vy", "MCParticle::get_vertex_y(FSGenElectron)")
+            .Define("FSGenElectron_vz", "MCParticle::get_vertex_z(FSGenElectron)")
+            .Define("FSGenElectron_time", "MCParticle::get_time(FSGenElectron)")
 
             # Kinematics for FSGen muons and anti-muons
             .Define("n_FSGenMuon", "MCParticle::get_n(FSGenMuon)")
-            .Define("FSGenMuon_e", "if (n_FSGenMuon>0) return MCParticle::get_e(FSGenMuon); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_p", "if (n_FSGenMuon>0) return MCParticle::get_p(FSGenMuon); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_pt", "if (n_FSGenMuon>0) return MCParticle::get_pt(FSGenMuon); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_px", "if (n_FSGenMuon>0) return MCParticle::get_px(FSGenMuon); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_py", "if (n_FSGenMuon>0) return MCParticle::get_py(FSGenMuon); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_pz", "if (n_FSGenMuon>0) return MCParticle::get_pz(FSGenMuon); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_eta", "if (n_FSGenMuon>0) return MCParticle::get_eta(FSGenMuon); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_theta", "if (n_FSGenMuon>0) return MCParticle::get_theta(FSGenMuon); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_phi", "if (n_FSGenMuon>0) return MCParticle::get_phi(FSGenMuon); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_charge", "if (n_FSGenMuon>0) return MCParticle::get_charge(FSGenMuon); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_vx", "if (n_FSGenMuon>0) return MCParticle::get_vertex_x( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_vy", "if (n_FSGenMuon>0) return MCParticle::get_vertex_y( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_vz", "if (n_FSGenMuon>0) return MCParticle::get_vertex_z( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
-            .Define("FSGenMuon_time", "if (n_FSGenMuon>0) return MCParticle::get_time( FSGenMuon ); else return MCParticle::get_genStatus(GenMuon_PID);")
-            
+            .Define("FSGenMuon_e", "MCParticle::get_e(FSGenMuon)")
+            .Define("FSGenMuon_p", "MCParticle::get_p(FSGenMuon)")
+            .Define("FSGenMuon_pt", "MCParticle::get_pt(FSGenMuon)")
+            .Define("FSGenMuon_px", "MCParticle::get_px(FSGenMuon)")
+            .Define("FSGenMuon_py", "MCParticle::get_py(FSGenMuon)")
+            .Define("FSGenMuon_pz", "MCParticle::get_pz(FSGenMuon)")
+            .Define("FSGenMuon_eta", "MCParticle::get_eta(FSGenMuon)")
+            .Define("FSGenMuon_theta", "MCParticle::get_theta(FSGenMuon)")
+            .Define("FSGenMuon_phi", "MCParticle::get_phi(FSGenMuon)")
+            .Define("FSGenMuon_charge", "MCParticle::get_charge(FSGenMuon)")
+            .Define("FSGenMuon_vx", "MCParticle::get_vertex_x(FSGenMuon)")
+            .Define("FSGenMuon_vy", "MCParticle::get_vertex_y(FSGenMuon)")
+            .Define("FSGenMuon_vz", "MCParticle::get_vertex_z(FSGenMuon)")
+            .Define("FSGenMuon_time", "MCParticle::get_time(FSGenMuon)")
+        
             #Kinematics for FSGen photons
             .Define("n_FSGenPhoton", "MCParticle::get_n(FSGenPhoton)")
             .Define("FSGenPhoton_e", "MCParticle::get_e(FSGenPhoton)")
@@ -240,23 +246,22 @@ class Analysis():
             .Define("FSGenPhoton_pz", "MCParticle::get_pz(FSGenPhoton)")
             .Define("FSGenPhoton_eta", "MCParticle::get_eta(FSGenPhoton)")
             .Define("FSGenPhoton_theta", "MCParticle::get_theta(FSGenPhoton)")
-            .Define("FSG≠enPhoton_phi", "MCParticle::get_phi(FSGenPhoton)")
+            .Define("FSGenPhoton_phi", "MCParticle::get_phi(FSGenPhoton)")
 
             # custon neutrino PID to include nu_e, nu_mu, nu_tau
-            .Define("GenNeutrino_PID", "FCCAnalyses::MCParticle::sel_pdgID(16, true)(Particle) ")
-            .Define("FSGenNeutrino", "FCCAnalyses::MCParticle::sel_genStatus(1)(GenNeutrino_PID)") #gen status==1 means final state particle (FS)
+            .Define("GenNeutrino_PID", "FCCAnalyses::MCParticle::sel_pdgID(16, true)(Particle)")
+            .Define("FSGenNeutrino", "FCCAnalyses::MCParticle::sel_genStatus(1)(GenNeutrino_PID)") # gen status==1 means final state particle (FS)
             .Define("n_FSGenNeutrino", "FCCAnalyses::MCParticle::get_n(FSGenNeutrino)")
-            .Define("FSGenNeutrino_e", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_e(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
-            .Define("FSGenNeutrino_p", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_p(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
-            .Define("FSGenNeutrino_pt", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_pt(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
-            .Define("FSGenNeutrino_px", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_px(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
-            .Define("FSGenNeutrino_py", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_py(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
-            .Define("FSGenNeutrino_pz", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_pz(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
-            .Define("FSGenNeutrino_eta", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_eta(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
-            .Define("FSGenNeutrino_theta", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_theta(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
-            .Define("FSGenNeutrino_phi", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_phi(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
-            .Define("FSGenNeutrino_charge", "if (n_FSGenNeutrino>0) return FCCAnalyses::MCParticle::get_charge(FSGenNeutrino); else return FCCAnalyses::MCParticle::get_genStatus(GenNeutrino_PID);")
-
+            .Define("FSGenNeutrino_e", "FCCAnalyses::MCParticle::get_e(FSGenNeutrino)")
+            .Define("FSGenNeutrino_p", "FCCAnalyses::MCParticle::get_p(FSGenNeutrino)")
+            .Define("FSGenNeutrino_pt", "FCCAnalyses::MCParticle::get_pt(FSGenNeutrino)")
+            .Define("FSGenNeutrino_px", "FCCAnalyses::MCParticle::get_px(FSGenNeutrino)")
+            .Define("FSGenNeutrino_py", "FCCAnalyses::MCParticle::get_py(FSGenNeutrino)")
+            .Define("FSGenNeutrino_pz", "FCCAnalyses::MCParticle::get_pz(FSGenNeutrino)")
+            .Define("FSGenNeutrino_eta", "FCCAnalyses::MCParticle::get_eta(FSGenNeutrino)")
+            .Define("FSGenNeutrino_theta", "FCCAnalyses::MCParticle::get_theta(FSGenNeutrino)")
+            .Define("FSGenNeutrino_phi", "FCCAnalyses::MCParticle::get_phi(FSGenNeutrino)")
+            .Define("FSGenNeutrino_charge", "FCCAnalyses::MCParticle::get_charge(FSGenNeutrino)")
 
             # Hit information for the tracks 
             .Define("RecoForTracks", "ReconstructedParticle2Track::recoParticleIndices_forTracks(TrackStates,ReconstructedParticles)")
@@ -298,70 +303,68 @@ class Analysis():
             # .Filter("PrimaryVertex_ntracks > 2")
 
             .Define("sel_tracks", "VertexFitterSimple::get_NonPrimaryTracks(AcceptedTracks, RecoedPrimaryTracks)") # 100 events/sec
-            .Define("selTracks_d0", "ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles, sel_tracks)")
- 
+            .Define("sel_tracks_D0_DV", "ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles, sel_tracks)")
+            .Define("sel_tracks_Z0_DV", "ReconstructedParticle2Track::getRP2TRK_Z0(ReconstructedParticles, sel_tracks)")
+            .Define("n_nonprimary_tracks", "ReconstructedParticle2Track::getTK_n(sel_tracks)")
+            .Define('sel_tracks_pt_DV', 'ReconstructedParticle2Track::getRP2TRK_mom(ReconstructedParticles ,sel_tracks)') 
+
             # KINK FINDER FROM SELECTED TRACKS - TARGETTING 1 PRONG TAU DECAYS 
             .Define("RecoedPrimaryTracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, RecoedPrimaryTracks)")
             .Define("sel_tracks_charge", "ReconstructedParticle2Track::getRP2TRK_charge(ReconstructedParticles, sel_tracks)")
             # old way:
             .Define("KinkCandidates","ReconstructedParticle2Track::findKink_candidate(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates, RecoParticles_passNhits_forKV)")
-            .Define("nKinkVertices", "KinkCandidates.size()")
+            .Define("nKinkVertices_old", "KinkCandidates.size()")
             # this gives us the vertex object:
             .Define("KinkCandidates_VertexObject","ReconstructedParticle2Track::KinkCandidate_VertexObject(ReconstructedParticles, RecoedPrimaryTracks, sel_tracks, TrackStates, RecoParticles_passNhits_forKV )")
-            .Define("KinkCandidates_passInnerHitVeto","VertexingUtils::passInnerHitVeto(KinkCandidates_VertexObject, RecoParticles_hitPatterns, RecoForTracks, true,true)")
-            .Define("KinkVertex_first",
-            "KinkCandidates_VertexObject.size() > 0 ? "
-            "KinkCandidates_VertexObject[0] : "
-            "FCCAnalyses::VertexingUtils::FCCAnalysesVertex()"
-            )            
-            .Define("KinkVertex_ntracks", "VertexingUtils::get_VertexNtrk(KinkVertex_first)") # number of tracks at the kink vertex (should be 2 for 1 prong tau decays)
-            .Define("KinkVertex_invMass", "VertexingUtils::get_invM(KinkVertex_first)")
-            # .Define("KinkVertex_SV", "VertexingUtils::get_position_SV(KinkVertex_first)") # SV position in 3D
-            # .Define("KinkVertex_dxy", "VertexingUtils::get_dxy_SV(KinkVertex_first, PrimaryVertexObject)") # get the vertex data (position, chi2, etc) of the kink candidates
-            .Define("KinkAngle", "VertexingUtils::get_PV2V0angle(KinkVertex_first, PrimaryVertexObject)")
-            .Define("KinkVertex_SV", 
-            "ROOT::VecOps::RVec<FCCAnalyses::VertexingUtils::FCCAnalysesVertex> tmp = {KinkCandidates_VertexObject[0]}; "
-            "return VertexingUtils::get_position_SV(tmp);")
-            
-            .Define("KinkVertex_ntracks", "VertexingUtils::get_VertexNtrk(KinkCandidates_VertexObject)") # number of tracks at the kink vertex (should be 2 for 1 prong tau decays)
-            # invariant mass of a two track vertex   // CAUTION: m1 -> first track; m2 -> second track
-            # .Define("KinkVertex_invMass", "VertexingUtils::get_invM_pairs(KinkCandidates_VertexObject, RecoedPrimaryTracks, sel_tracks)")
-            .Define("KinkVertex_SV" , "VertexingUtils::get_position_SV(KinkCandidates_VertexObject)")  
+            .Define("nKinkVertices", "KinkCandidates_VertexObject.size()")
+
+            .Define("KinkCandidates_passInnerHitVeto","VertexingUtils::passInnerHitVeto(KinkCandidates_VertexObject, RecoParticles_hitPatterns, RecoForTracks, true,true,false,false)")            
+            .Define("nKinkCandidates_passVeto", "ROOT::VecOps::Sum(KinkCandidates_passInnerHitVeto)")
+            .Define("KinkCandidates_VertexObject_passVeto", "KinkCandidates_VertexObject[KinkCandidates_passInnerHitVeto]")
+            # number of tracks at the kink vertex (should be 2 for 1 prong tau decays)
+            .Define("KinkVertex_ntracks", "VertexingUtils::get_VertexNtrk(KinkCandidates_VertexObject_passVeto)") 
+            # invariant mass of a two track vertex   # CAUTION: m1 -> first track; m2 -> second track
+            .Define("KinkVertex_invMass", "VertexingUtils::get_kink_mass(KinkCandidates_VertexObject_passVeto)")
+            .Define("KinkVertex_SV" , "VertexingUtils::get_position_SV(KinkCandidates_VertexObject_passVeto)")  
             # vector of distances of all reconstructed SV from PV (in mm in xy plane)
-            .Define("KinkVertex_dxy", "VertexingUtils::get_dxy_SV(KinkCandidates_VertexObject, PrimaryVertexObject)")
+            .Define("KinkVertex_dxy", "VertexingUtils::get_dxy_SV(KinkCandidates_VertexObject_passVeto, PrimaryVertexObject)")
             # vector of distances of all reconstructed SV from PV (in mm in 3D)
-            .Define("KinkVertex_d3d", "VertexingUtils::get_d3d_SV(KinkCandidates_VertexObject, PrimaryVertexObject)")
-            # .Define("KinkAngle", "VertexingUtils::get_PV2vtx_angle(TrackStates, KinkCandidates_VertexObject, PrimaryVertexObject)")
+            .Define("KinkVertex_d3d", "VertexingUtils::get_d3d_SV(KinkCandidates_VertexObject_passVeto, PrimaryVertexObject)")
+            .Define("KinkCosAngle", 
+                    "nKinkCandidates_passVeto > 0 ? "
+                    "VertexingUtils::get_PV2V0angle(KinkCandidates_VertexObject_passVeto[0], PrimaryVertexObject) "
+                    ": -2.0")  # cos of the angle between r_PVtoKV and p_KV
+            .Define("KinkAngle", "TMath::ACos(KinkCosAngle)*180/3.14")            
 
-            # DISPLACED VERTICES FROM SELECTED TRACKS- TARGETTING 3 PRONG TAU DECAYS
+            # DISPLACED VERTICES FROM SELECTED TRACKS- TARGETTING 3 PRONG TAU DECAY
             .Filter("sel_tracks.size()>0")
-            # find the DVs from the selected tracks
-            .Define("DV_evt_seltracks", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, TrackStates, PrimaryVertexObject, true, 9., 40., 5.)")
-            .Define('n_seltracks_DVs', 'VertexingUtils::get_n_SV(DV_evt_seltracks)')
+            # find the DVs from the non-primary tracks
+            .Define("Displaced_Vertex", "VertexFinderLCFIPlus::get_SV_event(sel_tracks, TrackStates, PrimaryVertexObject, true, 9., 40., 5.)")
+            # number of displaced vertices found
+            .Define('nDisplaced_Vertices', 'VertexingUtils::get_n_SV(Displaced_Vertex)')
             # number of tracks from the DVs
-            .Define('n_trks_seltracks_DVs', 'VertexingUtils::get_VertexNtrk(DV_evt_seltracks)') 
-            .Define("n_nonprimary_tracks", "ReconstructedParticle2Track::getTK_n(sel_tracks)")
+            .Define('nTracks_DV', 'VertexingUtils::get_VertexNtrk(Displaced_Vertex)') 
             # momentum of the selected tracks`  `
-            .Define('sel_tracks_pt_DV', 'ReconstructedParticle2Track::getRP2TRK_mom(ReconstructedParticles ,sel_tracks)') 
-            .Define("sel_tracks_D0_DV", 
-                    "ROOT::VecOps::RVec<float> tmp; for (auto x : ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles, sel_tracks)) tmp.push_back(x==-9. ? 0. : abs(x)); return tmp;")
-            .Define("sel_tracks_Z0_DV", 
-                    "ROOT::VecOps::RVec<float> tmp; for (auto x : ReconstructedParticle2Track::getRP2TRK_Z0(ReconstructedParticles, sel_tracks)) tmp.push_back(x==-9. ? 0. : abs(x)); return tmp;")
-
+            # Hit pattern check- only take displaced vertices which fail this criteria (if DV passes hit criteria it is actually a KV)
+            # require only outgoing tracks, no incoming tracks - veto them
+            .Define("DisplacedVertices_failInnerHitVeto","VertexingUtils::passInnerHitVeto(Displaced_Vertex, RecoParticles_hitPatterns, RecoForTracks, false, true, true, false)")
+            # .Define("Displaced_VertexObject_failVeto", "Displaced_Vertex[!DisplacedVertices_passInnerHitVeto]")
+            # fail mask = logical NOT of pass mask
+            # .Define("DisplacedVertices_failInnerHitVeto", "!DisplacedVertices_passInnerHitVeto")
+            # get only the vertices that failed the veto
+            .Define("Displaced_VertexObject_failVeto", "Displaced_Vertex[DisplacedVertices_failInnerHitVeto]")
+            # count how many failed- sum of bool
+            .Define("nDisplacedVertices_failInnerHitVeto", "ROOT::VecOps::Sum(DisplacedVertices_failInnerHitVeto)")   
+            .Define('nTracks_DV_failInnerHitVeto', 'VertexingUtils::get_VertexNtrk(Displaced_VertexObject_failVeto)')
            # invariant mass at the DVs (assuming the tracks to be pions)
-            .Define('invMass_seltracks_DVs', 'VertexingUtils::get_invM(DV_evt_seltracks)')
-
+            .Define('invMass_seltracks_DVs', 'VertexingUtils::get_invM(Displaced_VertexObject_failVeto)')
             # get the chi2 distributions of the DVs from selected tracks - to check if tracks originate from the same physical point
-            .Define("DV_evt_seltracks_chi2",    "VertexingUtils::get_chi2_SV(DV_evt_seltracks)")
-            .Define("DV_evt_seltracks_normchi2","VertexingUtils::get_norm_chi2_SV(DV_evt_seltracks)") # DV chi2 (normalised)
+            .Define("DV_evt_seltracks_chi2",    "VertexingUtils::get_chi2_SV(Displaced_VertexObject_failVeto)")
+            .Define("DV_evt_seltracks_normchi2","VertexingUtils::get_norm_chi2_SV(Displaced_VertexObject_failVeto)") # DV chi2 (normalised)
 
             # # get the decay radius and full 3D distance of all the DVs from selected tracks
-            .Define("Reco_seltracks_DVs_Lxy","VertexingUtils::get_dxy_SV(DV_evt_seltracks, PrimaryVertexObject)")
-            .Define("Reco_seltracks_DVs_Lxyz","VertexingUtils::get_d3d_SV(DV_evt_seltracks, PrimaryVertexObject)")
-
-            # get the decay radius of all the merged DVs
-            .Define("Reco_DVs_merged_Lxy","VertexingUtils::get_dxy_SV(DV_evt_seltracks, PrimaryVertexObject)")
-            .Define("Reco_DVs_merged_Lxyz","VertexingUtils::get_d3d_SV(DV_evt_seltracks, PrimaryVertexObject)")
+            .Define("Reco_seltracks_DVs_Lxy","VertexingUtils::get_dxy_SV(Displaced_VertexObject_failVeto, PrimaryVertexObject)")
+            .Define("Reco_seltracks_DVs_Lxyz","VertexingUtils::get_d3d_SV(Displaced_VertexObject_failVeto, PrimaryVertexObject)")
 
             # .Define("RecoTauTracks", "VertexingUtils::get_tracksInJets(Jet, _EFlowTrack_trackStates, Jet_to_Track_indices, 0)")
             # .Define("RecoTauDecayVertexObject", "VertexFitterSimple::VertexFitter_Tk(2, RecoTauTracks)")
@@ -458,7 +461,7 @@ class Analysis():
             # PHOTONS
             .Alias("Photon0", "PhotonIdx") 
             .Define("RecoPhotons",  "ReconstructedParticle::get(Photon0, ReconstructedParticles)")
-            .Define("n_RecoPhotons",  "ReconstructedParticle::get_n(ßRecoPhotons)") 
+            .Define("n_RecoPhotons",  "ReconstructedParticle::get_n(RecoPhotons)") 
             .Define("RecoPhoton_e",      "ReconstructedParticle::get_e(RecoPhotons)")
             .Define("RecoPhoton_p",      "ReconstructedParticle::get_p(RecoPhotons)")
             .Define("RecoPhoton_pt",      "ReconstructedParticle::get_pt(RecoPhotons)")
@@ -502,9 +505,9 @@ class Analysis():
         '''
         branch_list = [
             # Gen-level stau
-            "debug_xpos",
-            "debug_ypos",
-            "debug_zpos",
+            # "debug_xpos",
+            # "debug_ypos",
+            # "debug_zpos",
             "GenStau",
             "n_GenStau",
             "GenStau_status",
@@ -607,16 +610,21 @@ class Analysis():
             "sel_tracks_pt_DV",
             "sel_tracks_D0_DV",
             "sel_tracks_Z0_DV",
-            "n_seltracks_DVs",
-            "n_trks_seltracks_DVs",
+            "n_nonprimary_tracks",
+            
+            ## DV information
+            "nDisplaced_Vertices",
+            "nTracks_DV",
+            "nDisplacedVertices_failInnerHitVeto",
+
+            "nTracks_DV_failInnerHitVeto",
             "invMass_seltracks_DVs",
             "DV_evt_seltracks_chi2",
             "DV_evt_seltracks_normchi2",
             "Reco_seltracks_DVs_Lxy",
             "Reco_seltracks_DVs_Lxyz",
-            "n_nonprimary_tracks",
-            "Reco_DVs_merged_Lxy",
-            "Reco_DVs_merged_Lxyz",
+
+            # Hit pattern information
             "RecoParticles_firstHitLoc",
             "RecoParticles_lastHitLoc",
             "RecoParticles_nHits",
@@ -720,21 +728,25 @@ class Analysis():
             "RecoMissingEnergy3D",
             "RecoedPrimaryTracks_charge",
             "sel_tracks_charge",
-
+            "RecoedPrimaryTracks_d0",
             "RecoedPrimaryTracks_phi",
-            # "RecoedPrim÷aryTracks_theta",
+            # "RecoedPrimaryTracks_theta",
             "RecoedPrimaryTracks_p",
             # "GenStau_daughters",
             # "GenTau_daughters",
+            ## Kinked candidates :
+         
             "KinkCandidates",
             "KinkCandidates_passInnerHitVeto",
+            "nKinkCandidates_passVeto",
+            "KinkVertex_invMass",
             "nKinkVertices",
             "KinkVertex_SV",
             "KinkVertex_ntracks",
-            "selTracks_d0",
-            "RecoedPrimaryTracks_d0",
+            "KinkAngle",
             "KinkVertex_dxy",
             "KinkVertex_d3d",
+
         ]
 
         return branch_list

@@ -1,33 +1,63 @@
 '''
 Final stage of the stau analysis
 '''
-
 # Input/output directories
-inputDir  = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/output_stage1"
-outputDir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/NEW_FINAL/"
+inputDir  = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/without_batch"
+outputDir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final_0303/"
 
 # List of datasets used in the analysis
 processList = {
         #######################################################
-        #             CME: 240 GeV (ZH)- 10mm                 #
+        #                      SIGNAL                         #
         #######################################################
-        # 'FCCee_100_stau_10mm_ctau_ecm_240'  : {'fraction': 1.0},
-        # 'FCCee_110_stau_10mm_ctau_ecm_240' : {'fraction': 1.0},
+        #######################################################
+        #             CME: 240 GeV (ZH) - 20 cm               #
+        #######################################################
+        'FCCee_100_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_105_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_110_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_115_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
 
         #######################################################
-        #             CME: 240 GeV (ZH)- 20cm                 #
+        #             CME: 240 GeV (ZH) - 50 cm               #
         #######################################################
-        # 'FCCee_110_stau_20cm_ctau_ecm_240'  : {'fraction': 1.0},
+        'FCCee_100_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_105_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_110_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_115_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
 
         #######################################################
-        #             CME: 240 GeV (ZH)- 3m                 #
+        #             CME: 240 GeV (ZH) - 1 m                 #
         #######################################################
-        'FCCee_110_stau_3m_ctau_ecm_240'  : {'fraction': 1.0},
-        'FCCee_110_stau_1p5m_ctau_ecm_240'  : {'fraction': 1.0},
+        'FCCee_100_stau_1m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_105_stau_1m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_110_stau_1m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_115_stau_1m_ctau_ecm_240': {'fraction': 1.0},
 
         #######################################################
-        #             CME: 240 GeV (ZH)- 20cm                 #
+        #             CME: 240 GeV (ZH) - 2 m                 #
         #######################################################
+        'FCCee_100_stau_2m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_105_stau_2m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_110_stau_2m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_115_stau_2m_ctau_ecm_240': {'fraction': 1.0},
+
+        #######################################################
+        #             CME: 240 GeV (ZH) - 3 m                 #
+        #######################################################
+        'FCCee_100_stau_3m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_105_stau_3m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_110_stau_3m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_115_stau_3m_ctau_ecm_240': {'fraction': 1.0},
+
+        #######################################################
+        #             CME: 240 GeV (ZH) - 4 m                 #
+        #######################################################
+        'FCCee_100_stau_4m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_105_stau_4m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_110_stau_4m_ctau_ecm_240': {'fraction': 1.0},
+        'FCCee_115_stau_4m_ctau_ecm_240': {'fraction': 1.0},
+
         #######################################################
         #               WINTER 2023                           #
         #######################################################
@@ -37,10 +67,6 @@ processList = {
         'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
         'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
 
-        # old samples
-        # 'p8_ee_WW_mumu_ecm240': {'fraction': 0.5,'chunks':100},
-        # 'p8_ee_WW_ee_ecm240': {'fraction': 0.5,'chunks':100},
-        # 'p8_ee_Zbb_ecm91_EvtGen_Bd2KstarTauTau': {'fraction': 1.0,'chunks':100},
         } 
 
 prodTag = "FCCee/winter2023/IDEA/"
@@ -50,34 +76,48 @@ procDict = "FCCee_procDict_winter2023_IDEA.json"
 
 # Add samples which are not part of the offical process
 procDictAdd = {
-        #######################################################
-        #             CME: 240 GeV (ZH)- 10mm                 #
-        #######################################################
-        # 'FCCee_100_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.07733 ,     "kfactor": 1.0, "matchingEfficiency": 1.0},
-        # # # 'FCCee_105_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
-        # 'FCCee_110_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
-        # # # 'FCCee_115_stau_10mm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection": 0.02048,     "kfactor": 1.0, "matchingEfficiency": 1.0},
 
-        # #######################################################
-        # #             CME: 240 GeV (ZH)- 20cm                 #
-        # #######################################################
-        # 'FCCee_110_stau_20cm_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+    # 20 cm
+    'FCCee_100_stau_20cm_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.07735, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_105_stau_20cm_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.05196, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_110_stau_20cm_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.02923, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_115_stau_20cm_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.01067, "kfactor": 1.0, "matchingEfficiency": 1.0},
 
-        #######################################################
-        #             CME: 240 GeV (ZH)- 1.5m                 # 
-        #######################################################
-        'FCCee_110_stau_1p5m_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+    # 50 cm
+    'FCCee_100_stau_50cm_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.07735, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_105_stau_50cm_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.05196, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_110_stau_50cm_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.02923, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_115_stau_50cm_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.01067, "kfactor": 1.0, "matchingEfficiency": 1.0},
 
-        #######################################################
-        #             CME: 240 GeV (ZH)- 3m                 #
-        #######################################################
-        'FCCee_110_stau_3m_ctau_ecm_240': {"numberOfEvents": 10000, "sumOfWeights": 10000, "crossSection":  0.02923,     "kfactor": 1.0, "matchingEfficiency": 1.0},
+    # 1 m
+    'FCCee_100_stau_1m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.07735, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_105_stau_1m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.05196, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_110_stau_1m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.02923, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_115_stau_1m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.01067, "kfactor": 1.0, "matchingEfficiency": 1.0},
 
-        
-        }
+    # 2 m
+    'FCCee_100_stau_2m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.07735, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_105_stau_2m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.05196, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_110_stau_2m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.02923, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_115_stau_2m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.01067, "kfactor": 1.0, "matchingEfficiency": 1.0},
 
-intLumi = 2.05e8
-#intLumi = 1.92e7
+    # 3 m
+    'FCCee_100_stau_3m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.07735, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_105_stau_3m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.05196, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_110_stau_3m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.02923, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_115_stau_3m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.01067, "kfactor": 1.0, "matchingEfficiency": 1.0},
+
+    # 4 m
+    'FCCee_100_stau_4m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.07735, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_105_stau_4m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.05196, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_110_stau_4m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.02923, "kfactor": 1.0, "matchingEfficiency": 1.0},
+    'FCCee_115_stau_4m_ctau_ecm_240': {"numberOfEvents": 100000, "sumOfWeights": 100000, "crossSection": 0.01067, "kfactor": 1.0, "matchingEfficiency": 1.0},
+
+    }
+
+# from madgraph: -Cross-section :   0.02923 +- 5.14e-06 pb
+
+intLumi = 1.92e7
 #intLumi = 1.08e7
 #intLumi = 2.7e6
 doScale = True
@@ -102,59 +142,82 @@ saveJSON = True
 # Dictionary with the list of cuts. The key is the name of the selection that will be added to the output file
 cutList = {
 
-    "selNone": "n_RecoTracks > -1",
+    # "selNone": "n_RecoTracks > -1",
    
-    "semiLepHad": (
+    # "semiLepHad": ( 
+    #     "n_RecoTracks > -1"
+    #     "&& ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1) || (n_RecoElectrons == 0 && n_RecoMuons == 0))"
+    # ),
+
+    # "semiLeptonic": (
+    #     "n_RecoTracks > -1"
+    #     " && ((n_RecoElectrons > 0 && n_RecoMuons == 0) || (n_RecoElectrons ==0 && n_RecoMuons > 0))"
+    # ),
+
+    "semiLeptonic_KV": (
         "n_RecoTracks > -1"
-        "&& ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1) || (n_RecoElectrons == 0 && n_RecoMuons == 0))"
+        " && ((n_RecoElectrons > 0 && n_RecoMuons == 0) || (n_RecoElectrons ==0 && n_RecoMuons > 0))"
+        " && nKinkCandidates_passVeto > 0 "
+        # " && KinkVertex_ntracks < 3 "
     ),
 
-    "semiLeptonic": (
+    "semiLep_DV": (
         "n_RecoTracks > -1"
         " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
+        " && nKinkCandidates_passVeto == 0"
+        " && nDisplacedVertices_failInnerHitVeto > 0 &&  nDisplacedVertices_failInnerHitVeto < 3"
+        # " && Reco_seltracks_DVs_Lxyz > 10.0"
     ),
 
-    "semiLep_KVDV": (
-        "n_RecoTracks > -1"
-        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
-        " && ( nKinkVertices == 1 || n_seltracks_DVs == 1 )"
-        " && n_RecoJets < 4"
-    ),
+    ## diving signal sample into two regions-> ONE DV AND ONE KV REGION
+    ## small beta gamma ctau- both taus to one-prong decay
 
-    "hadronic": (
+    # "hadronic_short_KV": (
+    #     " n_RecoTracks > -1"
+    #     # " && n_RecoElectrons == 0"
+    #     # " && n_RecoMuons == 0"
+    #     " && nKinkCandidates_passVeto > 0 "
+    #     # " && KinkVertex_ntracks == 2 "
+    # ),  
+    ## DV region is better for small beta gamma ctau
+    "hadronic_DV": (
         "n_RecoTracks > -1"
         " && n_RecoElectrons == 0"
         " && n_RecoMuons == 0"
+        " && nKinkCandidates_passVeto == 0"
+        " && nDisplacedVertices_failInnerHitVeto > 0 &&  nDisplacedVertices_failInnerHitVeto < 3"
+        # " && Reco_seltracks_DVs_Lxyz > 10.0"
+        # " && nTracks_DV_failInnerHitVeto > 2"
+    ), 
+
+    ## large beta gamma ctau
+    "hadronic_KV": (
+        " n_RecoTracks > -1"
+        " && nKinkCandidates_passVeto > 0 "
     ),
 
-    "hadronic_KVDV": (
-        "n_RecoTracks > -1"
-        " && n_RecoElectrons == 0"
-        " && n_RecoMuons == 0"
-        " && n_RecoJets < 4"
-        " && (( nKinkVertices == 1 && n_seltracks_DVs == 1 ) || ( nKinkVertices == 0 && n_seltracks_DVs > 0 ) || ( nKinkVertices > 0 && n_seltracks_DVs == 0 ))"
-    ),
 
 }
 cutLabels = {
-
-    "selNone": "Before selection",
-    "semiLepHad": "(0 or 1 reco lepton)",
-    "semiLeptonic": "1 reco lepton ",
-    "semiLep_KVDV": "1 reco lepton + 1 DV/KV + < 4 jets",
-    "hadronic": "0 reco leptons",
-    "hadronic_KVDV": "0 leptons + < 4 jets + DV/KV",
+    "selNone": "selNone",
+    # "semiLepHad": "(0 or 1 reco lepton)",
+    "semiLeptonic": "semiLeptonic",
+    "semiLeptonic_KV": "semiLeptonic_KV",
+    "semiLep_DV": "semiLep_DV",
+    "hadronic_KV":  "≥1 KV",
+    "hadronic_DV": "hadronic_DV ",
+    # "hadronic_allchannels": "testing all channel versions",
 }
 
 histoList = {
     # Gen-level stau
-    "n_GenStau":           {"name":"n_GenStau",          "title":"Number of gen staus",             "bin":5,   "xmin":-0.5,  "xmax":4.5},
-    "GenStau_vx":          {"name":"GenStau_vx",         "title":"Stau vertex x",                   "bin":50,  "xmin":-10,   "xmax":10},
-    "GenStau_vy":          {"name":"GenStau_vy",         "title":"Stau vertex y",                   "bin":50,  "xmin":-10,   "xmax":10},
-    "GenStau_vz":          {"name":"GenStau_vz",         "title":"Stau vertex z",                   "bin":50,  "xmin":-50,   "xmax":50},
-    "GenStau_Lxy":         {"name":"GenStau_Lxy",        "title":"Transverse decay length Lxy",     "bin":50,  "xmin":0,     "xmax":10},
-    "GenStau_Lxyz":        {"name":"GenStau_Lxyz",       "title":"3D decay length Lxyz",            "bin":50,  "xmin":0,     "xmax":10},
-    # "GenStau_observed_lifetime_xyz":   {"name":"GenStau_observed_lifetime_xyz",   "title":"Observed stau lifetime (xyz)",    "bin":50,  "xmin":0,     "xmax":100},
+    # "n_GenStau":           {"name":"n_GenStau",          "title":"Number of gen staus",             "bin":5,   "xmin":-0.5,  "xmax":4.5},
+    # "GenStau_vx":          {"name":"GenStau_vx",         "title":"Stau vertex x",                   "bin":50,  "xmin":-10,   "xmax":10},
+    # "GenStau_vy":          {"name":"GenStau_vy",         "title":"Stau vertex y",                   "bin":50,  "xmin":-10,   "xmax":10},
+    # "GenStau_vz":          {"name":"GenStau_vz",         "title":"Stau vertex z",                   "bin":50,  "xmin":-50,   "xmax":50},
+    # "GenStau_Lxy":         {"name":"GenStau_Lxy",        "title":"Transverse decay length Lxy",     "bin":50,  "xmin":0,     "xmax":10},
+    # "GenStau_Lxyz":        {"name":"GenStau_Lxyz",       "title":"3D decay length Lxyz",            "bin":50,  "xmin":0,     "xmax":10},
+    # # "GenStau_observed_lifetime_xyz":   {"name":"GenStau_observed_lifetime_xyz",   "title":"Observed stau lifetime (xyz)",    "bin":50,  "xmin":0,     "xmax":100},
     # "n_StauDaughters":       {"name":"n_StauDaughters",        "title":"Number of Stau Daughters",        "bin":5,   "xmin":-0.5, "xmax":9.5},
     "GenGravitino_e":        {"name":"GenGravitino_e",        "title":"Gen Gravitino energy",            "bin":100,  "xmin":0,    "xmax":200},
     # Tau
@@ -250,20 +313,22 @@ histoList = {
     "RecoMissingEnergy_phi": {"name":"RecoMissingEnergy_phi", "title":"Missing ET phi",    "bin":64,"xmin":-3.2,"xmax":3.2},
 
     # Reco DVs from selected tracks
-    "n_seltracks_DVs": {"name":"n_seltracks_DVs",   "title":"Number of reconstructed DVs",  "bin":11 , "xmin":-0.5, "xmax":10.5},
+    "nDisplaced_Vertices": {"name":"nDisplaced_Vertices",   "title":"Number of reconstructed DVs",  "bin":11 , "xmin":-0.5, "xmax":10.5},
     "n_nonprimary_tracks": {"name":"n_nonprimary_tracks",   "title":"Number of non-primary tracks DVs",  "bin":20, "xmin":-0.5, "xmax":19.5},
     "n_RecoedPrimaryTracks": {"name":"n_RecoedPrimaryTracks",   "title":"Number of primary tracks DVs",  "bin":25, "xmin":-0.5, "xmax":50.5},
+    
     "sel_tracks_pt_DV": {"name": "sel_tracks_pt_DV", "title": "pt of non-primary tracks", "bin":40, "xmin":0.0, "xmax": 80},
     "sel_tracks_D0_DV": {"name": "sel_tracks_D0_DV", "title": "D0 of non-primary tracks", "bin":200, "xmin":0.0, "xmax": 200.0},
     "sel_tracks_Z0_DV": {"name": "sel_tracks_Z0_DV", "title": "Z0 of non-primary tracks", "bin":200, "xmin":0.0, "xmax": 200.0},
 
-    "n_trks_seltracks_DVs": {"name":"n_trks_seltracks_DVs",  "title":"Number of tracks per DV",   "bin":10, "xmin":-0.5, "xmax":9.5},
+    "nDisplacedVertices_failInnerHitVeto" :  {"name":"nDisplacedVertices_failInnerHitVeto",  "title":"#DV failing the hit veto",   "bin":10, "xmin":-0.5, "xmax":9.5},
+    "nTracks_DV_failInnerHitVeto": {"name":"nTracks_DV_failInnerHitVeto",  "title":"Number of tracks per DV (fail hit veto)",   "bin":10, "xmin":-0.5, "xmax":9.5},
     "invMass_seltracks_DVs": {"name":"invMass_seltracks_DVs",  "title":"DV invariant mass [GeV]",    "bin":100, "xmin":0,    "xmax":10},
+    "invMass_seltracks_DVs_zoom": {"name":"invMass_seltracks_DVs",  "title":"DV invariant mass [GeV]",    "bin":10, "xmin":0,    "xmax":2},
     "DV_evt_seltracks_chi2": {"name":"DV_evt_seltracks_chi2",    "title":"DV fit chi2",    "bin":10, "xmin":0, "xmax":10},
     "DV_evt_seltracks_normchi2": {"name":"DV_evt_seltracks_normchi2",    "title":"DV fit normalized chi2",    "bin":50, "xmin":0, "xmax":10},
-
-    "Reco_DVs_merged_Lxy": {"name":"Reco_DVs_merged_Lxy","title":"DV L_{xy} [mm]","bin":100,"xmin":0,"xmax":250},
-    "Reco_DVs_merged_Lxyz": {"name":"Reco_DVs_merged_Lxyz","title":"DV L_{xyz} [mm]","bin":100,"xmin":0,"xmax":250},
+    "Reco_seltracks_DVs_Lxy": {"name":"Reco_seltracks_DVs_Lxy","title":"DV L_{xy} [mm]","bin":100,"xmin":0,"xmax":250},
+    "Reco_seltracks_DVs_Lxyz": {"name":"Reco_seltracks_DVs_Lxyz","title":"DV L_{xyz} [mm]","bin":100,"xmin":0,"xmax":250},
 
     # Reco dielectron system
     "Reco_ee_energy":  {"name":"Reco_ee_energy",  "title":"ee energy",   "bin":50, "xmin":0, "xmax":200},
@@ -288,10 +353,14 @@ histoList = {
 
     "RecoVisibleEnergy": {"name":"RecoVisibleEnergy", "title":"Visible energy", "bin":120,"xmin":0,"xmax":240},
     "RecoMissingEnergy3D": {"name":"RecoMissingEnergy3D", "title":"Calculated Missing energy", "bin":120,"xmin":0,"xmax":240},
-    # "KinkVertex_invMass": {"name":"KinkVertex_invMass", "title":"Invariant mass of kink vertex", "bin":50, "xmin":0, "xmax":10},
+    
+    "KinkCandidates_passInnerHitVeto": {"name":"KinkCandidates_passInnerHitVeto", "title":"Number of kink vertices", "bin":5, "xmin":-0.5, "xmax":4.5},
+    "nKinkCandidates_passVeto" : {"name":"nKinkCandidates_passVeto", "title":"Number of kink vertices passing the hit veto", "bin":5, "xmin":-0.5, "xmax":4.5},
+    "KinkVertex_invMass": {"name":"KinkVertex_invMass", "title":"Invariant mass of kink vertex", "bin":150, "xmin":0, "xmax":150},
     "KinkVertex_dxy": {"name":"KinkVertex_dxy", "title":"dxy of kink vertex", "bin":100, "xmin":0, "xmax":2000},
     "KinkVertex_d3d": {"name":"KinkVertex_d3d", "title":"d3d of kink vertex", "bin":100, "xmin":0, "xmax":2000},
-    # "KinkVertex_ntracks": {"name":"KinkVertex_ntracks", "title":"Number of tracks in kink vertex", "bin":10, "xmin":-0.5, "xmax":9.5},
-    "nKinkVertices": {"name":"nKinkVertices", "title":"Number of kink vertices", "bin":5, "xmin":-0.5, "xmax":4.5},
+    "KinkVertex_ntracks": {"name":"KinkVertex_ntracks", "title":"Number of tracks in kink vertex", "bin":10, "xmin":-0.5, "xmax":9.5},
+    "nKinkVertices": {"name":"nKinkVertices", "title":"Number of kink vertices before hit veto", "bin":5, "xmin":-0.5, "xmax":4.5},
+    "KinkAngle": {"name": "KinkAngle", "title": "angle between the r_pvkv and P_kv", "bin":180, "xmin":0, "xmax":180},
 }
 

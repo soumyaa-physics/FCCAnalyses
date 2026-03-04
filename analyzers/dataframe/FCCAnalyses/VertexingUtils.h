@@ -145,6 +145,8 @@ namespace VertexingUtils{
   ROOT::VecOps::RVec<FCCAnalysesVertex> get_all_vertices( FCCAnalysesVertex PV,
 							  ROOT::VecOps::RVec<ROOT::VecOps::RVec<FCCAnalysesVertex>> SV ); 
 
+  ROOT::VecOps::RVec<double> get_kink_mass(ROOT::VecOps::RVec<FCCAnalysesVertex> vertices);
+
   /** returns the invariant mass of a two-track vertex
    *  CAUTION: m1 -> mass of first track, m2 -> mass of second track
    *  by default both pions
@@ -345,7 +347,8 @@ namespace VertexingUtils{
     /// c-tor from a list of hits (expressed as 3D spacepoints)
     hitPattern(const ROOT::VecOps::RVec<TVector3> & hits);
     int nHitsTotal; ///< total number of hits on track (2D count as one hit) 
-    int nHitsDC;    ///< number of drift chamber hits on track 
+    int nHitsDC;    ///< number of drift chamber hits on track
+    bool haveInnerMost;  
     TVector3 firstHit;  ///< location of the first hit [in mm]
     TVector3 lastHit;   ///< location of the final hit [in mm]
   };
@@ -438,6 +441,7 @@ namespace VertexingUtils{
                           const ROOT::VecOps::RVec<hitPattern> & hitPatternsPerReco,
                           const ROOT::VecOps::RVec<int> & recoParticlesPerTrack,
                           bool require_ingoing=false, bool require_outgoing=true,
+                          bool veto_ingoing=false, bool veto_outgoing=false,
                           double tolerance_mm = 10.);
 
   ROOT::VecOps::RVec<bool> passHitCount(

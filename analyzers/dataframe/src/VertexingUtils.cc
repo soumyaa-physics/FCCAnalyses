@@ -513,6 +513,20 @@ ROOT::VecOps::RVec<FCCAnalysesVertex> get_all_SVs(
 
 // internal fns for SV finder
 
+ROOT::VecOps::RVec<double> get_kink_mass(ROOT::VecOps::RVec<FCCAnalysesVertex> vertices) {
+    ROOT::VecOps::RVec<double> result;
+    double m_chg = 0.13957039; // pion mass
+    double m_neu = 0.0;     // gravitino
+    for (auto &vtx : vertices) {
+        TVector3 p_par = vtx.updated_track_momentum_at_vertex[0];
+        TVector3 p_chg = vtx.updated_track_momentum_at_vertex[1];
+        TVector3 p_neu = p_par - p_chg;
+        double E_chg = std::sqrt(p_chg.Mag2() + m_chg*m_chg);
+        double E_neu = std::sqrt(p_neu.Mag2() + m_neu*m_neu);
+        result.push_back(std::sqrt(std::pow(E_chg + E_neu,2) - p_par.Mag2()));
+    }
+    return result;
+}
 // invariant mass of a two track vertex
 double get_invM_pairs(FCCAnalysesVertex vertex, double m1, double m2) {
   // CAUTION: m1 -> first track; m2 -> second track
@@ -1632,15 +1646,32 @@ hitPattern::hitPattern(const ROOT::VecOps::RVec<TVector3> & hits){
   lastHit = {0,0,0};
   nHitsDC = -1;
   nHitsTotal = -1;
+  haveInnerMost = false; 
+
+  const double r_innerBarrel = 0.012;
+  const double z_innerDisk = 0.2575;
+  const std::pair<double, double> z_innerBarrel = {-0.0965,0.0965};
+  const std::pair<double, double> r_innerDisk = {0.0365,0.2515};
   const double dchzmin = -2.125e3;
   const double dchzmax = 2.125e3;
   const double dchrmin = 0.345e3;
   const double dchrmax = 2.02e3;  
+
   double first = 1.0e10, last = -1.; 
   auto inDC = [&](const TVector3 & v){
     double r = v.Perp();
     double z = v.Z();
     return (r > dchrmin && r < dchrmax && z > dchzmin && z < dchzmax); 
+  };
+  auto onInnerBarrel =  [&](const TVector3 & v){
+    double r = v.Perp();
+    double z = std::abs(v.Z());
+    return (std::abs(r - r_innerBarrel) < 0.001 && z < z_innerBarrel.second + 1.e-3); 
+  };
+  auto onInnerDisk =  [&](const TVector3 & v){
+    double r = v.Perp();
+    double z = std::abs(v.Z());
+    return (std::abs(z - z_innerDisk) < 0.001 && r > r_innerDisk.first - 1.e-3 && r < r_innerDisk.second+ 1.e-3); 
   };
   for (const TVector3 & hit: hits){
     double loc = hit.Mag();
@@ -1652,6 +1683,7 @@ hitPattern::hitPattern(const ROOT::VecOps::RVec<TVector3> & hits){
       lastHit = hit;
       last = loc;
     }
+    if (onInnerBarrel(hit) || onInnerDisk(hit)) haveInnerMost = true; 
     ++nHitsTotal;
     if (inDC(hit)) ++nHitsDC;
   }      
@@ -1663,13 +1695,17 @@ ROOT::VecOps::RVec<bool> passInnerHitVeto(
                           const ROOT::VecOps::RVec<hitPattern> & hitPatternsPerReco,
                           const ROOT::VecOps::RVec<int> & recoParticlesPerTrack,
                         bool require_ingoing, bool require_outgoing,
+                        bool veto_ingoing, bool veto_outgoing,
                         double tolerance_mm){
   ROOT::VecOps::RVec<bool> out; 
   out.reserve(vertices.size()); 
-  bool have_outgoing = false;
-  bool have_incoming = false; 
   for (const FCCAnalysesVertex & vertex : vertices){
+    bool have_outgoing = false;
+    bool have_incoming = false; 
     bool pass = true; 
+    double rDV = std::sqrt(vertex.vertex.position.x*vertex.vertex.position.x
+                          +vertex.vertex.position.y*vertex.vertex.position.y 
+                          +vertex.vertex.position.z*vertex.vertex.position.z);  
     for (int itrack = 0; itrack < vertex.ntracks; ++itrack){
       int trackIndex = vertex.reco_ind[itrack]; 
       int iReco = recoParticlesPerTrack[trackIndex]; 
@@ -1679,11 +1715,8 @@ ROOT::VecOps::RVec<bool> passInnerHitVeto(
       const hitPattern & hp = hitPatternsPerReco[iReco]; 
       double rLast = hp.lastHit.Mag();
       double rFirst = hp.firstHit.Mag();
-      double rDV = std::sqrt(vertex.vertex.position.x*vertex.vertex.position.x
-                            +vertex.vertex.position.y*vertex.vertex.position.y 
-                            +vertex.vertex.position.z*vertex.vertex.position.z);  
       // outgoing leg: the first hit is behind the DV position
-      bool isOutgoing = rDV - rFirst < tolerance_mm; 
+      bool isOutgoing = rDV - rFirst < tolerance_mm && !hp.haveInnerMost; // tracks with hits on the inner-most layers can not be classified as outgoing.
       // incoming: the last hit is before the DV position
       bool isIncoming = rLast - rDV < tolerance_mm; 
 
@@ -1692,10 +1725,13 @@ ROOT::VecOps::RVec<bool> passInnerHitVeto(
         pass = false; 
         break; 
       }
-      if (isOutgoing) have_outgoing = true; 
-      if (isIncoming) have_incoming = true; 
+      have_outgoing |= isOutgoing; 
+      have_incoming |= isIncoming; 
     }
-    pass = (pass && (!require_ingoing || have_incoming) && (!require_outgoing || have_outgoing)); 
+    pass &= (!require_ingoing || have_incoming);
+    pass &= (!require_outgoing || have_outgoing); 
+    pass &= (!veto_ingoing || !have_incoming); 
+    pass &= (!veto_outgoing || !have_outgoing); 
     out.push_back(pass);
   }
   return out; 
