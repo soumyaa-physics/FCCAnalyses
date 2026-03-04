@@ -3,7 +3,7 @@ import json
 import os
 
 input_json = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final_0303/results.json"
-output_dir = "datacards"
+output_dir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/combine/datacards"
 os.makedirs(output_dir, exist_ok=True)
 
 channels = ["hadronic_KV"]
@@ -17,31 +17,34 @@ backgrounds = [
 ]
 
 signals = [
-    'FCCee_100_stau_20cm_ctau_ecm_240',
-    'FCCee_105_stau_20cm_ctau_ecm_240',
-    'FCCee_110_stau_20cm_ctau_ecm_240',
-    'FCCee_115_stau_20cm_ctau_ecm_240',
-    'FCCee_100_stau_50cm_ctau_ecm_240',
-    'FCCee_105_stau_50cm_ctau_ecm_240',
-    'FCCee_110_stau_50cm_ctau_ecm_240',
-    'FCCee_115_stau_50cm_ctau_ecm_240',
-    'FCCee_100_stau_1m_ctau_ecm_240',
-    'FCCee_105_stau_1m_ctau_ecm_240',
-    'FCCee_110_stau_1m_ctau_ecm_240',
-    'FCCee_115_stau_1m_ctau_ecm_240',
-    'FCCee_100_stau_2m_ctau_ecm_240',
-    'FCCee_105_stau_2m_ctau_ecm_240',
-    'FCCee_110_stau_2m_ctau_ecm_240',
-    'FCCee_115_stau_2m_ctau_ecm_240',
-    'FCCee_100_stau_3m_ctau_ecm_240',
-    'FCCee_105_stau_3m_ctau_ecm_240',
-    'FCCee_110_stau_3m_ctau_ecm_240',
-    'FCCee_115_stau_3m_ctau_ecm_240',
+    # 'FCCee_100_stau_20cm_ctau_ecm_240',
+    # 'FCCee_105_stau_20cm_ctau_ecm_240',
+    # 'FCCee_110_stau_20cm_ctau_ecm_240',
+    # 'FCCee_115_stau_20cm_ctau_ecm_240',
+    # 'FCCee_100_stau_50cm_ctau_ecm_240',
+    # 'FCCee_105_stau_50cm_ctau_ecm_240',
+    # 'FCCee_110_stau_50cm_ctau_ecm_240',
+    # 'FCCee_115_stau_50cm_ctau_ecm_240',
+    # 'FCCee_100_stau_1m_ctau_ecm_240',
+    # 'FCCee_105_stau_1m_ctau_ecm_240',
+    # 'FCCee_110_stau_1m_ctau_ecm_240',
+    # 'FCCee_115_stau_1m_ctau_ecm_240',
+    # 'FCCee_100_stau_2m_ctau_ecm_240',
+    # 'FCCee_105_stau_2m_ctau_ecm_240',
+    # 'FCCee_110_stau_2m_ctau_ecm_240',
+    # 'FCCee_115_stau_2m_ctau_ecm_240',
+    # 'FCCee_100_stau_3m_ctau_ecm_240',
+    # 'FCCee_105_stau_3m_ctau_ecm_240',
+    # 'FCCee_110_stau_3m_ctau_ecm_240',
+    # 'FCCee_115_stau_3m_ctau_ecm_240',
     'FCCee_100_stau_4m_ctau_ecm_240',
     'FCCee_105_stau_4m_ctau_ecm_240',
     'FCCee_110_stau_4m_ctau_ecm_240',
     'FCCee_115_stau_4m_ctau_ecm_240',
 ]
+
+SCALE_THRESHOLD = 1e4      # if S/B is more than this
+SCALE_FACTOR    = 1e4      # then divide signal by this
 
 def make_label(s):
     parts = s.split("_")
@@ -51,20 +54,39 @@ with open(input_json) as f:
     results = json.load(f)
 
 def get_rate(proc, chan):
-    val = results.get(proc, {}).get(chan, {}).get("n_events_raw", 0)
-    return max(float(val), 5)  # never exactly zero
+    val = results.get(proc, {}).get(chan, {}).get("n_events", 0)
+    return max(float(val), 1)  # never exactly zero
 
 # ── One datacard per signal ───────────────────────────────────────────────────
 for sig_proc in signals:
+
     sig_label = make_label(sig_proc)
 
-    # Observation = sum of backgrounds (background-only hypothesis)
+    # --- Background-only observation ---
     obs_per_chan = {}
-    for chan in channels:
-        obs_per_chan[chan] = sum(get_rate(b, chan) for b in backgrounds)
+    bkg_totals = {}
 
-    # All processes for this datacard: backgrounds + ONE signal
-    # Signal gets process index 0, backgrounds get 1,2,3,...
+    for chan in channels:
+        total_bkg = sum(get_rate(b, chan) for b in backgrounds)
+        obs_per_chan[chan] = total_bkg
+        bkg_totals[chan] = total_bkg
+
+    # --- Check if signal needs scaling ---
+    scale_signal = False
+    scale_value = 1.0
+
+    for chan in channels:
+        sig_rate = get_rate(sig_proc, chan)
+        bkg_rate = bkg_totals[chan]
+
+        if bkg_rate > 0 and sig_rate / bkg_rate > SCALE_THRESHOLD:
+            scale_signal = True
+            scale_value = SCALE_FACTOR
+            break
+
+    if scale_signal:
+        print(f"[INFO] Scaling signal {sig_label} by 1/{int(scale_value)}")
+
     all_proc_names  = backgrounds + [sig_label]
     all_proc_keys   = backgrounds + [sig_proc]
     # Signal = 0, backgrounds = 1..N  (matching the template exactly)
@@ -99,9 +121,16 @@ for sig_proc in signals:
         dc.write("process".ljust(15) + "  ".join(col_names)             + "\n")
         dc.write("process".ljust(15) + "  ".join(str(x) for x in col_nums) + "\n")
 
+        # --- Rates ---
         rates = []
         for key, chan in zip(col_keys, col_chans):
-            rates.append(get_rate(key, chan))
+            r = get_rate(key, chan)
+
+            # scale only signal
+            if key == sig_proc and scale_signal:
+                r = r / scale_value
+
+            rates.append(r)
 
         dc.write("rate".ljust(15)
                  + "  ".join(f"{r:.3f}" for r in rates) + "\n")
@@ -114,22 +143,3 @@ for sig_proc in signals:
 
     print(f"Written: {fname}")
 
-# # ── Shell script to run all limits ───────────────────────────────────────────
-# run_script = os.path.join(output_dir, "run_limits.sh")
-# with open(run_script, "w") as sh:
-#     sh.write("#!/bin/bash\n")
-#     sh.write("mkdir -p results\n\n")
-#     for sig_proc in signals:
-#         label = make_label(sig_proc)
-#         dc    = f"datacard_{label}.txt"
-#         sh.write(f"echo 'Running limit for {label}'\n")
-#         sh.write(
-#             f"combine -M AsymptoticLimits {dc} "
-#             f"--name _{label} "
-#             f"-m 125 "           # placeholder mass; change as needed
-#             f"--rMin 0 --rMax 200 "
-#             f"> results/log_{label}.txt 2>&1\n\n"
-#         )
-# sh.write("echo 'All done. Results in higgsCombine_*.root'\n")
-# os.chmod(run_script, 0o755)
-# print(f"\nRun all limits with:  cd {output_dir} && ./run_limits.sh")
