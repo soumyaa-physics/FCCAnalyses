@@ -2,8 +2,11 @@
 Final stage of the stau analysis
 '''
 # Input/output directories
-inputDir  = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/without_batch"
-outputDir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final_0303/"
+# for signal:
+# inputDir  = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/stage1_0603"
+# for background:
+inputDir  = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/condor_0603"
+outputDir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final_0603/"
 
 # List of datasets used in the analysis
 processList = {
@@ -116,10 +119,8 @@ procDictAdd = {
     }
 
 # from madgraph: -Cross-section :   0.02923 +- 5.14e-06 pb
+intLumi = 1.08e7
 
-intLumi = 1.92e7
-#intLumi = 1.08e7
-#intLumi = 2.7e6
 doScale = True
 # saveMetaData = True
 
@@ -142,21 +143,21 @@ saveJSON = True
 # Dictionary with the list of cuts. The key is the name of the selection that will be added to the output file
 cutList = {
 
-    # "selNone": "n_RecoTracks > -1",
+    "selNone": "n_RecoTracks > -1",
    
-    # "semiLepHad": ( 
-    #     "n_RecoTracks > -1"
-    #     "&& ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1) || (n_RecoElectrons == 0 && n_RecoMuons == 0))"
-    # ),
+    # # "semiLepHad": ( 
+    # #     "n_RecoTracks > -1"
+    # #     "&& ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1) || (n_RecoElectrons == 0 && n_RecoMuons == 0))"
+    # # ),
 
-    # "semiLeptonic": (
-    #     "n_RecoTracks > -1"
-    #     " && ((n_RecoElectrons > 0 && n_RecoMuons == 0) || (n_RecoElectrons ==0 && n_RecoMuons > 0))"
-    # ),
+    # # "semiLeptonic": (
+    # #     "n_RecoTracks > -1"
+    # #     " && ((n_RecoElectrons > 0 && n_RecoMuons == 0) || (n_RecoElectrons ==0 && n_RecoMuons > 0))"
+    # # ),
 
     "semiLeptonic_KV": (
         "n_RecoTracks > -1"
-        " && ((n_RecoElectrons > 0 && n_RecoMuons == 0) || (n_RecoElectrons ==0 && n_RecoMuons > 0))"
+        " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons ==0 && n_RecoMuons == 1))"
         " && nKinkCandidates_passVeto > 0 "
         # " && KinkVertex_ntracks < 3 "
     ),
@@ -166,46 +167,41 @@ cutList = {
         " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1))"
         " && nKinkCandidates_passVeto == 0"
         " && nDisplacedVertices_failInnerHitVeto > 0 &&  nDisplacedVertices_failInnerHitVeto < 3"
-        # " && Reco_seltracks_DVs_Lxyz > 10.0"
     ),
 
-    ## diving signal sample into two regions-> ONE DV AND ONE KV REGION
-    ## small beta gamma ctau- both taus to one-prong decay
-
-    # "hadronic_short_KV": (
-    #     " n_RecoTracks > -1"
-    #     # " && n_RecoElectrons == 0"
-    #     # " && n_RecoMuons == 0"
-    #     " && nKinkCandidates_passVeto > 0 "
-    #     # " && KinkVertex_ntracks == 2 "
-    # ),  
-    ## DV region is better for small beta gamma ctau
+    # ## DV region is better for small beta gamma ctau
     "hadronic_DV": (
         "n_RecoTracks > -1"
         " && n_RecoElectrons == 0"
         " && n_RecoMuons == 0"
         " && nKinkCandidates_passVeto == 0"
         " && nDisplacedVertices_failInnerHitVeto > 0 &&  nDisplacedVertices_failInnerHitVeto < 3"
-        # " && Reco_seltracks_DVs_Lxyz > 10.0"
-        # " && nTracks_DV_failInnerHitVeto > 2"
     ), 
 
-    ## large beta gamma ctau
+    # ## large beta gamma ctau
     "hadronic_KV": (
         " n_RecoTracks > -1"
+        # " && n_RecoElectrons == 0"
+        # " && n_RecoMuons == 0"
         " && nKinkCandidates_passVeto > 0 "
     ),
+        
+    # "hadronic_KV_lepallowed": (
+    #     " n_RecoTracks > -1"
+    #     " && nKinkCandidates_passVeto > 0 "
+    # ),
 
 
 }
 cutLabels = {
     "selNone": "selNone",
     # "semiLepHad": "(0 or 1 reco lepton)",
-    "semiLeptonic": "semiLeptonic",
+    # "semiLeptonic": "semiLeptonic",
     "semiLeptonic_KV": "semiLeptonic_KV",
     "semiLep_DV": "semiLep_DV",
-    "hadronic_KV":  "≥1 KV",
+    "hadronic_KV":  "hadronic KV",
     "hadronic_DV": "hadronic_DV ",
+    # "hadronic_KV_lepallowed" : "hadronic_KV_lepallowed",
     # "hadronic_allchannels": "testing all channel versions",
 }
 
@@ -329,27 +325,6 @@ histoList = {
     "DV_evt_seltracks_normchi2": {"name":"DV_evt_seltracks_normchi2",    "title":"DV fit normalized chi2",    "bin":50, "xmin":0, "xmax":10},
     "Reco_seltracks_DVs_Lxy": {"name":"Reco_seltracks_DVs_Lxy","title":"DV L_{xy} [mm]","bin":100,"xmin":0,"xmax":250},
     "Reco_seltracks_DVs_Lxyz": {"name":"Reco_seltracks_DVs_Lxyz","title":"DV L_{xyz} [mm]","bin":100,"xmin":0,"xmax":250},
-
-    # Reco dielectron system
-    "Reco_ee_energy":  {"name":"Reco_ee_energy",  "title":"ee energy",   "bin":50, "xmin":0, "xmax":200},
-    "Reco_ee_px":      {"name":"Reco_ee_px",      "title":"ee px",       "bin":50, "xmin":-100, "xmax":100},
-    "Reco_ee_py":      {"name":"Reco_ee_py",      "title":"ee py",       "bin":50, "xmin":-100, "xmax":100},
-    "Reco_ee_pz":      {"name":"Reco_ee_pz",      "title":"ee pz",       "bin":50, "xmin":-100, "xmax":100},
-    "Reco_ee_invMass": {"name":"Reco_ee_invMass","title":"ee inv mass","bin":50,"xmin":0,"xmax":100},
-
-    # Reco dimuon system
-    "Reco_mumu_energy":  {"name":"Reco_mumu_energy",  "title":"mu mu energy",   "bin":50, "xmin":0, "xmax":200},
-    "Reco_mumu_px":      {"name":"Reco_mumu_px",      "title":"mu mu px",       "bin":50, "xmin":-100, "xmax":100},
-    "Reco_mumu_py":      {"name":"Reco_mumu_py",      "title":"mu mu py",       "bin":50, "xmin":-100, "xmax":100},
-    "Reco_mumu_pz":      {"name":"Reco_mumu_pz",      "title":"mu mu pz",       "bin":50, "xmin":-100, "xmax":100},
-    "Reco_mumu_invMass": {"name":"Reco_mumu_invMass", "title":"mu mu inv mass", "bin":50, "xmin":0, "xmax":100},
-    "muon_electron_overlap": {
-        "name":"muon_electron_overlap",
-        "title":"muon-electron overlap flag",
-        "bin":2,
-        "xmin":0,
-        "xmax":2
-    },
 
     "RecoVisibleEnergy": {"name":"RecoVisibleEnergy", "title":"Visible energy", "bin":120,"xmin":0,"xmax":240},
     "RecoMissingEnergy3D": {"name":"RecoMissingEnergy3D", "title":"Calculated Missing energy", "bin":120,"xmin":0,"xmax":240},

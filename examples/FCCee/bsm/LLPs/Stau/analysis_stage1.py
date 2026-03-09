@@ -12,22 +12,22 @@ class Analysis():
         # Mandatory: List of datasets used in the analysis
         self.process_list = {
             # 20 cm
-            # "FCCee_100_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_105_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_110_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_115_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_100_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_105_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_110_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_115_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
 
-            # # 50 cm
-            # "FCCee_100_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_105_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_110_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_115_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            # 50 cm
+            "FCCee_100_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_105_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_110_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_115_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
 
-            # # 1 m
-            # "FCCee_100_stau_1m_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_105_stau_1m_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_110_stau_1m_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_115_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            # 1 m
+            "FCCee_100_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_105_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_110_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_115_stau_1m_ctau_ecm_240": {'fraction': 1.0},
 
             # # 2 m
             "FCCee_100_stau_2m_ctau_ecm_240": {'fraction': 1.0},
@@ -60,7 +60,7 @@ class Analysis():
         # self.input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/spring2021/IDEA/'
 
         self.input_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/edm4hep_output'
-        self.output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/without_batch'
+        self.output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/stage1_0603'
 
         # for batch
         # self.output_dir = '.output/condor_jobs/'
@@ -262,6 +262,64 @@ class Analysis():
             .Define("FSGenNeutrino_theta", "FCCAnalyses::MCParticle::get_theta(FSGenNeutrino)")
             .Define("FSGenNeutrino_phi", "FCCAnalyses::MCParticle::get_phi(FSGenNeutrino)")
             .Define("FSGenNeutrino_charge", "FCCAnalyses::MCParticle::get_charge(FSGenNeutrino)")
+            
+            # # JETS
+            .Define("n_RecoJets", "ReconstructedParticle::get_n(Jet)")
+            .Define("RecoJet_e",      "ReconstructedParticle::get_e(Jet)")
+            .Define("RecoJet_p",      "ReconstructedParticle::get_p(Jet)") 
+            .Define("RecoJet_pt",      "ReconstructedParticle::get_pt(Jet)")
+            .Define("RecoJet_px",      "ReconstructedParticle::get_px(Jet)")
+            .Define("RecoJet_py",      "ReconstructedParticle::get_py(Jet)")
+            .Define("RecoJet_pz",      "ReconstructedParticle::get_pz(Jet)")
+		    .Define("RecoJet_eta",     "ReconstructedParticle::get_eta(Jet)") 
+            .Define("RecoJet_theta",   "ReconstructedParticle::get_theta(Jet)")
+		    .Define("RecoJet_phi",     "ReconstructedParticle::get_phi(Jet)") 
+            .Define("RecoJet_charge",  "ReconstructedParticle::get_charge(Jet)")
+            .Define("RecoJet_mvis",     "ReconstructedParticle::get_P4vis(Jet)")
+            .Define("RecoJetTrack_absD0", "return abs(ReconstructedParticle2Track::getRP2TRK_D0(Jet,TrackStates))")
+            .Define("RecoJetTrack_absZ0", "return abs(ReconstructedParticle2Track::getRP2TRK_Z0(Jet,TrackStates))")
+            .Define("RecoJetTrack_absD0sig", "return abs(ReconstructedParticle2Track::getRP2TRK_D0_sig(Jet,TrackStates))") 
+            .Define("RecoJetTrack_absZ0sig", "return abs(ReconstructedParticle2Track::getRP2TRK_Z0_sig(Jet,TrackStates))")
+            .Define("RecoJetTrack_D0cov", "ReconstructedParticle2Track::getRP2TRK_D0_cov(Jet,TrackStates)") 
+            .Define("RecoJetTrack_Z0cov", "ReconstructedParticle2Track::getRP2TRK_Z0_cov(Jet,TrackStates)")
+
+            # Electrons
+            .Alias("Electron0", "ElectronIdx")
+            .Define("RecoElectrons",  "ReconstructedParticle::get(Electron0, ReconstructedParticles)") 
+            .Define("n_RecoElectrons", "ReconstructedParticle::get_n(RecoElectrons)")
+            .Define("RecoElectrons_p", "ReconstructedParticle::get_p(RecoElectrons)")
+            # Muons
+            .Alias("Muon0", "MuonIdx")
+            .Define("RecoMuons",  "ReconstructedParticle::get(Muon0, ReconstructedParticles)") 
+            .Define("n_RecoMuons", "ReconstructedParticle::get_n(RecoMuons)")
+            .Define("RecoMuons_p", "ReconstructedParticle::get_p(RecoMuons)")
+
+            # PHOTONS
+            .Alias("Photon0", "PhotonIdx") 
+            .Define("RecoPhotons",  "ReconstructedParticle::get(Photon0, ReconstructedParticles)")
+            .Define("n_RecoPhotons",  "ReconstructedParticle::get_n(RecoPhotons)") 
+            .Define("RecoPhoton_e",      "ReconstructedParticle::get_e(RecoPhotons)")
+            .Define("RecoPhoton_p",      "ReconstructedParticle::get_p(RecoPhotons)")
+            .Define("RecoPhoton_pt",      "ReconstructedParticle::get_pt(RecoPhotons)")
+            .Define("RecoPhoton_px",      "ReconstructedParticle::get_px(RecoPhotons)")
+            .Define("RecoPhoton_py",      "ReconstructedParticle::get_py(RecoPhotons)")
+            .Define("RecoPhoton_pz",      "ReconstructedParticle::get_pz(RecoPhotons)")
+		    .Define("RecoPhoton_eta",     "ReconstructedParticle::get_eta(RecoPhotons)")
+            .Define("RecoPhoton_theta",   "ReconstructedParticle::get_theta(RecoPhotons)")
+		    .Define("RecoPhoton_phi",     "ReconstructedParticle::get_phi(RecoPhotons)") 
+            .Define("RecoPhoton_charge",  "ReconstructedParticle::get_charge(RecoPhotons)")
+
+            # MET
+            .Define("hasMissingET", "MissingET.size() > 0")
+            .Define("RecoMissingEnergy_e", "hasMissingET ? ReconstructedParticle::get_e(MissingET)[0] : 0.f")
+            .Define("RecoMissingEnergy_p",  "hasMissingET ? ReconstructedParticle::get_p(MissingET)[0] : 0.f")
+            .Define("RecoMissingEnergy_pt",  "hasMissingET ? ReconstructedParticle::get_pt(MissingET)[0] : 0.f")
+            .Define("RecoMissingEnergy_px", "hasMissingET ? ReconstructedParticle::get_px(MissingET)[0] : 0.f")
+            .Define("RecoMissingEnergy_py", "hasMissingET ? ReconstructedParticle::get_py(MissingET)[0] : 0.f")
+            .Define("RecoMissingEnergy_pz", "hasMissingET ? ReconstructedParticle::get_pz(MissingET)[0] : 0.f")
+            .Define("RecoMissingEnergy_eta", "hasMissingET ? ReconstructedParticle::get_eta(MissingET)[0] : 0.f")
+            .Define("RecoMissingEnergy_theta",  "hasMissingET ? ReconstructedParticle::get_theta(MissingET)[0] : 0.f")
+            .Define("RecoMissingEnergy_phi",  "hasMissingET ? ReconstructedParticle::get_phi(MissingET)[0] : 0.f")
 
             # Hit information for the tracks 
             .Define("RecoForTracks", "ReconstructedParticle2Track::recoParticleIndices_forTracks(TrackStates,ReconstructedParticles)")
@@ -287,6 +345,7 @@ class Analysis():
             .Define("n_RecoTracks",  "ReconstructedParticle2Track::getTK_n(TrackStates)")
             .Define("AcceptedTracks", "VertexFitterSimple::getSelectedTracks(TrackStates, 2.0)")
             .Define("n_AcceptedTracks",  "ReconstructedParticle2Track::getTK_n(AcceptedTracks)")
+
             # Select the tracks that are reconstructed  as primaries, so it removes all long lived decay tracks
             # this would be our stau tracks
             .Define("RecoedPrimaryTracks",  "VertexFitterSimple::get_PrimaryTracks( AcceptedTracks, true, 4.5, 20e-3, 300, 0., 0., 0.)")
@@ -296,14 +355,24 @@ class Analysis():
             .Define("RecoedPrimaryTracks_p",  "ReconstructedParticle2Track::getRP2TRK_mom(ReconstructedParticles, RecoedPrimaryTracks)")
             .Define("n_RecoedPrimaryTracks",  "ReconstructedParticle2Track::getTK_n( RecoedPrimaryTracks )")
 
-            # the final primary vertex : final/refined fit
+            .Define("Recoed_Primary_D0sig", "ReconstructedParticle2Track::getRP2TRK_D0_sig(ReconstructedParticles, RecoedPrimaryTracks)")
             .Define("PrimaryVertexObject",   "VertexFitterSimple::VertexFitter_Tk ( 1, RecoedPrimaryTracks, true, 4.5, 20e-3, 300 ) ") 
             .Define("PrimaryVertex",   "VertexingUtils::get_VertexData( PrimaryVertexObject )")
             .Define("PrimaryVertex_ntracks", "FCCAnalyses::VertexingUtils::get_VertexNtrk( PrimaryVertexObject )")
-            # .Filter("PrimaryVertex_ntracks > 2")
 
+            ############################################################################################
+            # Additional filters:
+            .Define("RecoElectronsAbove10","RecoElectrons[RecoElectrons_p > 10.]")
+            .Define("n_RecoElectronsAbove10", "ReconstructedParticle::get_n(RecoElectronsAbove10)")
+            .Define("RecoMuonsAbove10","RecoMuons[RecoMuons_p > 10.]")
+            .Define("n_RecoMuonsAbove10", "ReconstructedParticle::get_n(RecoMuonsAbove10)")
+            .Filter("n_RecoElectronsAbove10 < 2 && n_RecoMuonsAbove10 < 2")
+            .Filter("n_RecoTracks < 9")
+            ############################################################################################
+            
             .Define("sel_tracks", "VertexFitterSimple::get_NonPrimaryTracks(AcceptedTracks, RecoedPrimaryTracks)") # 100 events/sec
             .Define("sel_tracks_D0_DV", "ReconstructedParticle2Track::getRP2TRK_D0(ReconstructedParticles, sel_tracks)")
+            .Define("sel_tracks_D0sig_DV", "ReconstructedParticle2Track::getRP2TRK_D0_sig(ReconstructedParticles, sel_tracks)")
             .Define("sel_tracks_Z0_DV", "ReconstructedParticle2Track::getRP2TRK_Z0(ReconstructedParticles, sel_tracks)")
             .Define("n_nonprimary_tracks", "ReconstructedParticle2Track::getTK_n(sel_tracks)")
             .Define('sel_tracks_pt_DV', 'ReconstructedParticle2Track::getRP2TRK_mom(ReconstructedParticles ,sel_tracks)') 
@@ -326,6 +395,9 @@ class Analysis():
             # invariant mass of a two track vertex   # CAUTION: m1 -> first track; m2 -> second track
             .Define("KinkVertex_invMass", "VertexingUtils::get_kink_mass(KinkCandidates_VertexObject_passVeto)")
             .Define("KinkVertex_SV" , "VertexingUtils::get_position_SV(KinkCandidates_VertexObject_passVeto)")  
+
+            # the final primary vertex : final/refined fit
+
             # vector of distances of all reconstructed SV from PV (in mm in xy plane)
             .Define("KinkVertex_dxy", "VertexingUtils::get_dxy_SV(KinkCandidates_VertexObject_passVeto, PrimaryVertexObject)")
             # vector of distances of all reconstructed SV from PV (in mm in 3D)
@@ -366,127 +438,31 @@ class Analysis():
             .Define("Reco_seltracks_DVs_Lxy","VertexingUtils::get_dxy_SV(Displaced_VertexObject_failVeto, PrimaryVertexObject)")
             .Define("Reco_seltracks_DVs_Lxyz","VertexingUtils::get_d3d_SV(Displaced_VertexObject_failVeto, PrimaryVertexObject)")
 
-            # .Define("RecoTauTracks", "VertexingUtils::get_tracksInJets(Jet, _EFlowTrack_trackStates, Jet_to_Track_indices, 0)")
-            # .Define("RecoTauDecayVertexObject", "VertexFitterSimple::VertexFitter_Tk(2, RecoTauTracks)")
-            # .Define("RecoTauDecayVertex", "VertexingUtils::get_VertexData(RecoTauDecayVertexObject)")
-            # .Define("RecoTau_Lxy", "sqrt(RecoTauDecayVertex.position.x*RecoTauDecayVertex.position.x + RecoTauDecayVertex.position.y*RecoTauDecayVertex.position.y)")
-            # .Define("RecoTau_Lxyz", "sqrt(RecoTauDecayVertex.position.x*RecoTauDecayVertex.position.x + RecoTauDecayVertex.position.y*RecoTauDecayVertex.position.y + RecoTauDecayVertex.position.z*RecoTauDecayVertex.position.z)")
+            # FILTERED ELECTRON COLLECTION:
+            .Define("RecoElectrons_p_NEW",      "ReconstructedParticle::get_p(RecoElectronsAbove10)")
+            .Define("RecoElectrons_px",     "ReconstructedParticle::get_px(RecoElectronsAbove10)")
+            .Define("RecoElectrons_py",     "ReconstructedParticle::get_py(RecoElectronsAbove10)")
+            .Define("RecoElectrons_pz",     "ReconstructedParticle::get_pz(RecoElectronsAbove10)")
+            .Define("RecoElectrons_pt",     "ReconstructedParticle::get_pt(RecoElectronsAbove10)")
+            .Define("RecoElectrons_eta",    "ReconstructedParticle::get_eta(RecoElectronsAbove10)")
+            .Define("RecoElectrons_phi",    "ReconstructedParticle::get_phi(RecoElectronsAbove10)")
+            .Define("RecoElectrons_e",      "ReconstructedParticle::get_e(RecoElectronsAbove10)")
+            .Define("RecoElectrons_charge", "ReconstructedParticle::get_charge(RecoElectronsAbove10)")
+            .Define("RecoElectrons_theta",  "ReconstructedParticle::get_theta(RecoElectronsAbove10)")
 
-            # # JETS
-            .Define("n_RecoJets", "ReconstructedParticle::get_n(Jet)")
-            .Define("RecoJet_e",      "ReconstructedParticle::get_e(Jet)")
-            .Define("RecoJet_p",      "ReconstructedParticle::get_p(Jet)") 
-            .Define("RecoJet_pt",      "ReconstructedParticle::get_pt(Jet)")
-            .Define("RecoJet_px",      "ReconstructedParticle::get_px(Jet)")
-            .Define("RecoJet_py",      "ReconstructedParticle::get_py(Jet)")
-            .Define("RecoJet_pz",      "ReconstructedParticle::get_pz(Jet)")
-		    .Define("RecoJet_eta",     "ReconstructedParticle::get_eta(Jet)") 
-            .Define("RecoJet_theta",   "ReconstructedParticle::get_theta(Jet)")
-		    .Define("RecoJet_phi",     "ReconstructedParticle::get_phi(Jet)") 
-            .Define("RecoJet_charge",  "ReconstructedParticle::get_charge(Jet)")
-            .Define("RecoJet_mvis",     "ReconstructedParticle::get_P4vis(Jet)")
-            .Define("RecoJetTrack_absD0", "return abs(ReconstructedParticle2Track::getRP2TRK_D0(Jet,TrackStates))")
-            .Define("RecoJetTrack_absZ0", "return abs(ReconstructedParticle2Track::getRP2TRK_Z0(Jet,TrackStates))")
-            .Define("RecoJetTrack_absD0sig", "return abs(ReconstructedParticle2Track::getRP2TRK_D0_sig(Jet,TrackStates))") 
-            .Define("RecoJetTrack_absZ0sig", "return abs(ReconstructedParticle2Track::getRP2TRK_Z0_sig(Jet,TrackStates))")
-            .Define("RecoJetTrack_D0cov", "ReconstructedParticle2Track::getRP2TRK_D0_cov(Jet,TrackStates)") 
-            .Define("RecoJetTrack_Z0cov", "ReconstructedParticle2Track::getRP2TRK_Z0_cov(Jet,TrackStates)")
-
-            # Electrons
-            .Alias("Electron0", "ElectronIdx")
-            .Define("RecoElectrons",  "ReconstructedParticle::get(Electron0, ReconstructedParticles)") 
-            .Define("n_RecoElectrons", "ReconstructedParticle::get_n(RecoElectrons)")
-            .Define("RecoElectrons_p", "ReconstructedParticle::get_p(RecoElectrons)")
-            .Define("RecoElectrons_px", "ReconstructedParticle::get_px(RecoElectrons)")
-            .Define("RecoElectrons_py", "ReconstructedParticle::get_py(RecoElectrons)")
-            .Define("RecoElectrons_pz", "ReconstructedParticle::get_pz(RecoElectrons)")
-            .Define("RecoElectrons_pt", "ReconstructedParticle::get_pt(RecoElectrons)")
-            .Define("RecoElectrons_eta", "ReconstructedParticle::get_eta(RecoElectrons)")
-            .Define("RecoElectrons_phi", "ReconstructedParticle::get_phi(RecoElectrons)")
-            .Define("RecoElectrons_e", "ReconstructedParticle::get_e(RecoElectrons)")
-            .Define("RecoElectrons_charge", "ReconstructedParticle::get_charge(RecoElectrons)")
-            .Define("RecoElectrons_theta", "ReconstructedParticle::get_theta(RecoElectrons)")
-            # invariant mass information
-            .Define("Reco_ee_energy", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_e.at(0) + RecoElectrons_e.at(1)); else return float(-1.);")
-            .Define("Reco_ee_px", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_px.at(0) + RecoElectrons_px.at(1)); else return float(-1.);")
-            .Define("Reco_ee_py", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_py.at(0) + RecoElectrons_py.at(1)); else return float(-1.);")
-            .Define("Reco_ee_pz", "if ((n_RecoElectrons>1) && (RecoElectrons_charge.at(0) != RecoElectrons_charge.at(1))) return (RecoElectrons_pz.at(0) + RecoElectrons_pz.at(1)); else return float(-1.);")
-            .Define("Reco_ee_invMass", 
-                "float invMass = -1.;"
-                "if (n_RecoElectrons > 1 && RecoElectrons_charge[0] != RecoElectrons_charge[1]) {"
-                "   float E  = RecoElectrons_e[0]  + RecoElectrons_e[1];"
-                "   float px = RecoElectrons_px[0] + RecoElectrons_px[1];"
-                "   float py = RecoElectrons_py[0] + RecoElectrons_py[1];"
-                "   float pz = RecoElectrons_pz[0] + RecoElectrons_pz[1];"
-                "   invMass = sqrt(E*E - px*px - py*py - pz*pz);"
-                "}"
-                "return invMass;"
-            )
-
-            # Muons
-            .Alias("Muon0", "MuonIdx")
-            .Define("RecoMuons",  "ReconstructedParticle::get(Muon0, ReconstructedParticles)") 
-            .Define("n_RecoMuons", "ReconstructedParticle::get_n(RecoMuons)")
-            .Define("RecoMuons_p", "ReconstructedParticle::get_p(RecoMuons)")
-            .Define("RecoMuons_px", "ReconstructedParticle::get_px(RecoMuons)")
-            .Define("RecoMuons_py", "ReconstructedParticle::get_py(RecoMuons)")
-            .Define("RecoMuons_pz", "ReconstructedParticle::get_pz(RecoMuons)")
-            .Define("RecoMuons_pt", "ReconstructedParticle::get_pt(RecoMuons)")
-            .Define("RecoMuons_eta", "ReconstructedParticle::get_eta(RecoMuons)")
-            .Define("RecoMuons_phi", "ReconstructedParticle::get_phi(RecoMuons)")
-            .Define("RecoMuons_e", "ReconstructedParticle::get_e(RecoMuons)")
-            .Define("RecoMuons_charge", "ReconstructedParticle::get_charge(RecoMuons)")
-            .Define("RecoMuons_theta", "ReconstructedParticle::get_theta(RecoMuons)")
-            # invariant mass information
-            .Define("Reco_mumu_energy", "if ((n_RecoMuons>1) && (RecoMuons_charge.at(0) != RecoMuons_charge.at(1))) return (RecoMuons_e.at(0) + RecoMuons_e.at(1)); else return float(-1.);")
-            .Define("Reco_mumu_px", "if ((n_RecoMuons>1) && (RecoMuons_charge.at(0) != RecoMuons_charge.at(1))) return (RecoMuons_px.at(0) + RecoMuons_px.at(1)); else return float(-1.);")
-            .Define("Reco_mumu_py", "if ((n_RecoMuons>1) && (RecoMuons_charge.at(0) != RecoMuons_charge.at(1))) return (RecoMuons_py.at(0) + RecoMuons_py.at(1)); else return float(-1.);")
-            .Define("Reco_mumu_pz", "if ((n_RecoMuons>1) && (RecoMuons_charge.at(0) != RecoMuons_charge.at(1))) return (RecoMuons_pz.at(0) + RecoMuons_pz.at(1)); else return float(-1.);")
-            .Define("Reco_mumu_invMass", 
-                "float invMass = -1.;"
-                "if (n_RecoMuons > 1 && RecoMuons_charge[0] != RecoMuons_charge[1]) {"
-                "   float E  = RecoMuons_e[0]  + RecoMuons_e[1];"
-                "   float px = RecoMuons_px[0] + RecoMuons_px[1];"
-                "   float py = RecoMuons_py[0] + RecoMuons_py[1];"
-                "   float pz = RecoMuons_pz[0] + RecoMuons_pz[1];"
-                "   invMass = sqrt(E*E - px*px - py*py - pz*pz);"
-                "}"
-                "return invMass;"
-            )
-
-            # # only ZZ -> llll events would have this overlap
-            .Define("muon_electron_overlap", "return (Reco_mumu_invMass>0 && Reco_ee_invMass>0);")
-            .Define("ZZ_veto", "return !(Reco_mumu_invMass>80 && Reco_mumu_invMass<100) && !(Reco_ee_invMass>80 && Reco_ee_invMass<100);")
-
-            # PHOTONS
-            .Alias("Photon0", "PhotonIdx") 
-            .Define("RecoPhotons",  "ReconstructedParticle::get(Photon0, ReconstructedParticles)")
-            .Define("n_RecoPhotons",  "ReconstructedParticle::get_n(RecoPhotons)") 
-            .Define("RecoPhoton_e",      "ReconstructedParticle::get_e(RecoPhotons)")
-            .Define("RecoPhoton_p",      "ReconstructedParticle::get_p(RecoPhotons)")
-            .Define("RecoPhoton_pt",      "ReconstructedParticle::get_pt(RecoPhotons)")
-            .Define("RecoPhoton_px",      "ReconstructedParticle::get_px(RecoPhotons)")
-            .Define("RecoPhoton_py",      "ReconstructedParticle::get_py(RecoPhotons)")
-            .Define("RecoPhoton_pz",      "ReconstructedParticle::get_pz(RecoPhotons)")
-		    .Define("RecoPhoton_eta",     "ReconstructedParticle::get_eta(RecoPhotons)")
-            .Define("RecoPhoton_theta",   "ReconstructedParticle::get_theta(RecoPhotons)")
-		    .Define("RecoPhoton_phi",     "ReconstructedParticle::get_phi(RecoPhotons)") 
-            .Define("RecoPhoton_charge",  "ReconstructedParticle::get_charge(RecoPhotons)")
-
-            # MET
-            .Define("hasMissingET", "MissingET.size() > 0")
-            .Define("RecoMissingEnergy_e", "hasMissingET ? ReconstructedParticle::get_e(MissingET)[0] : 0.f")
-            .Define("RecoMissingEnergy_p",  "hasMissingET ? ReconstructedParticle::get_p(MissingET)[0] : 0.f")
-            .Define("RecoMissingEnergy_pt",  "hasMissingET ? ReconstructedParticle::get_pt(MissingET)[0] : 0.f")
-            .Define("RecoMissingEnergy_px", "hasMissingET ? ReconstructedParticle::get_px(MissingET)[0] : 0.f")
-            .Define("RecoMissingEnergy_py", "hasMissingET ? ReconstructedParticle::get_py(MissingET)[0] : 0.f")
-            .Define("RecoMissingEnergy_pz", "hasMissingET ? ReconstructedParticle::get_pz(MissingET)[0] : 0.f")
-            .Define("RecoMissingEnergy_eta", "hasMissingET ? ReconstructedParticle::get_eta(MissingET)[0] : 0.f")
-            .Define("RecoMissingEnergy_theta",  "hasMissingET ? ReconstructedParticle::get_theta(MissingET)[0] : 0.f")
-            .Define("RecoMissingEnergy_phi",  "hasMissingET ? ReconstructedParticle::get_phi(MissingET)[0] : 0.f")
+            # FILTERED MUON COLLECTION:
+            .Define("RecoMuons_p_NEW",      "ReconstructedParticle::get_p(RecoMuonsAbove10)")
+            .Define("RecoMuons_px",     "ReconstructedParticle::get_px(RecoMuonsAbove10)")
+            .Define("RecoMuons_py",     "ReconstructedParticle::get_py(RecoMuonsAbove10)")
+            .Define("RecoMuons_pz",     "ReconstructedParticle::get_pz(RecoMuonsAbove10)")
+            .Define("RecoMuons_pt",     "ReconstructedParticle::get_pt(RecoMuonsAbove10)")
+            .Define("RecoMuons_eta",    "ReconstructedParticle::get_eta(RecoMuonsAbove10)")
+            .Define("RecoMuons_phi",    "ReconstructedParticle::get_phi(RecoMuonsAbove10)")
+            .Define("RecoMuons_e",      "ReconstructedParticle::get_e(RecoMuonsAbove10)")
+            .Define("RecoMuons_charge", "ReconstructedParticle::get_charge(RecoMuonsAbove10)")
+            .Define("RecoMuons_theta",  "ReconstructedParticle::get_theta(RecoMuonsAbove10)")
 
             # Visible energy
-            # need to look at what lepton does it pick up- is it accidentally a ISR or FSR electron
             .Define("RecoVisibleEnergy",
                 "float visE = 0.;"
                 "for (size_t i = 0; i < n_RecoJets; i++) { visE += RecoJet_e[i]; }"
@@ -495,7 +471,14 @@ class Analysis():
                 "return visE;"
             )
             .Define("RecoMissingEnergy3D", "240. - RecoVisibleEnergy")
+        
+            # .Define("RecoTauTracks", "VertexingUtils::get_tracksInJets(Jet, _EFlowTrack_trackStates, Jet_to_Track_indices, 0)")
+            # .Define("RecoTauDecayVertexObject", "VertexFitterSimple::VertexFitter_Tk(2, RecoTauTracks)")
+            # .Define("RecoTauDecayVertex", "VertexingUtils::get_VertexData(RecoTauDecayVertexObject)")
+            # .Define("RecoTau_Lxy", "sqrt(RecoTauDecayVertex.position.x*RecoTauDecayVertex.position.x + RecoTauDecayVertex.position.y*RecoTauDecayVertex.position.y)")
+            # .Define("RecoTau_Lxyz", "sqrt(RecoTauDecayVertex.position.x*RecoTauDecayVertex.position.x + RecoTauDecayVertex.position.y*RecoTauDecayVertex.position.y + RecoTauDecayVertex.position.z*RecoTauDecayVertex.position.z)")
         )
+
         return df2
 
 # Mandatory: output function
@@ -611,6 +594,8 @@ class Analysis():
             "sel_tracks_D0_DV",
             "sel_tracks_Z0_DV",
             "n_nonprimary_tracks",
+            "Recoed_Primary_D0sig",
+            "sel_tracks_D0sig_DV",
             
             ## DV information
             "nDisplaced_Vertices",
@@ -655,6 +640,7 @@ class Analysis():
             "n_RecoElectrons",
             "RecoElectrons_e",
             "RecoElectrons_p",
+            "RecoElectrons_p_NEW",
             "RecoElectrons_pt",
             "RecoElectrons_px",
             "RecoElectrons_py",
@@ -663,17 +649,18 @@ class Analysis():
             "RecoElectrons_theta",
             "RecoElectrons_phi",
             "RecoElectrons_charge",
-            "Reco_ee_energy",
-            "Reco_ee_px",
-            "Reco_ee_py",
-            "Reco_ee_pz",
-            "Reco_ee_invMass",
+            # "Reco_ee_energy",
+            # "Reco_ee_px",
+            # "Reco_ee_py",
+            # "Reco_ee_pz",
+            # "Reco_ee_invMass",
 
             # Reco Muons
             "RecoMuons",
             "n_RecoMuons",
             "RecoMuons_e",
             "RecoMuons_p",
+            "RecoMuons_p_NEW",
             "RecoMuons_pt",
             "RecoMuons_px",
             "RecoMuons_py",
@@ -682,12 +669,12 @@ class Analysis():
             "RecoMuons_theta",
             "RecoMuons_phi",
             "RecoMuons_charge",
-            "Reco_mumu_energy",
-            "Reco_mumu_px",
-            "Reco_mumu_py",
-            "Reco_mumu_pz",
-            "Reco_mumu_invMass",
-            "muon_electron_overlap",
+            # "Reco_mumu_energy",
+            # "Reco_mumu_px",
+            # "Reco_mumu_py",
+            # "Reco_mumu_pz",
+            # "Reco_mumu_invMass",
+            # "muon_electron_overlap",
 
             # Reco Photons
             "RecoPhotons",

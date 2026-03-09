@@ -6,8 +6,9 @@ from array import array
 pastel_green  = ROOT.TColor.GetColor("#A6CEE3")
 pastel_yellow = ROOT.TColor.GetColor("#FFF2A8")
 
-lifetime     = "4m"       # choose: 20cm, 50cm, 1m, 2m, 3m, 4m
-SCALE_FACTOR = 0.1
+lifetimes = ["20cm", "50cm", "1m", "2m", "3m", "4m"]
+
+SCALE_FACTOR = 0.001 # taken from datacards
 
 cross_sections = {
     "100": 0.07735,
@@ -19,7 +20,7 @@ cross_sections = {
 masses = ["100", "105", "110", "115"]
 xvals  = array('d', [float(m) for m in masses])
 
-limits_dir = "/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/combine/limits"
+limits_dir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/combine/limits"
 json_path  = os.path.join(limits_dir, "limits.json")
 
 with open(json_path) as f:
@@ -32,78 +33,89 @@ def get_entry(mass, lt):
         raise KeyError(f"Key {key} not found in limits.json")
     return data[key]
 
-def sigma_limit(mass, key):
-    entry = get_entry(mass, lifetime)
-    return entry[key] * SCALE_FACTOR * cross_sections[mass]
+for lifetime in lifetimes:
 
-n = len(masses)
+    def sigma_limit(mass, key): # rescale the limits with the scalefactor
+        entry = get_entry(mass, lifetime)
+        return entry[key] * SCALE_FACTOR * cross_sections[mass]
 
-obs_y  = array('d', [sigma_limit(m, "obs")   for m in masses])
-exp_y  = array('d', [sigma_limit(m, "exp0")  for m in masses])
-exp_m1 = array('d', [sigma_limit(m, "exp-1") for m in masses])
-exp_p1 = array('d', [sigma_limit(m, "exp+1") for m in masses])
-exp_m2 = array('d', [sigma_limit(m, "exp-2") for m in masses])
-exp_p2 = array('d', [sigma_limit(m, "exp+2") for m in masses])
+    n = len(masses)
 
-# Theory curve — one point per mass
-theory_y = array('d', [cross_sections[m] for m in masses])
+    obs_y  = array('d', [sigma_limit(m, "obs")   for m in masses])
+    exp_y  = array('d', [sigma_limit(m, "exp0")  for m in masses])
+    exp_m1 = array('d', [sigma_limit(m, "exp-1") for m in masses])
+    exp_p1 = array('d', [sigma_limit(m, "exp+1") for m in masses])
+    exp_m2 = array('d', [sigma_limit(m, "exp-2") for m in masses])
+    exp_p2 = array('d', [sigma_limit(m, "exp+2") for m in masses])
 
-# ── Graphs ─────────────────────────────────────────────────────────────────
-gr_obs    = ROOT.TGraph(n, xvals, obs_y)
-gr_exp    = ROOT.TGraph(n, xvals, exp_y)
-gr_theory = ROOT.TGraph(n, xvals, theory_y)
+    # Theory curve — one point per mass
+    theory_y = array('d', [cross_sections[m] for m in masses])
 
-gr_1sigma = ROOT.TGraph(2*n)
-for i in range(n):
-    gr_1sigma.SetPoint(i,       xvals[i], exp_p1[i])
-    gr_1sigma.SetPoint(2*n-i-1, xvals[i], exp_m1[i])
-gr_1sigma.SetFillColor(pastel_yellow)
+    # Graph
+    gr_obs    = ROOT.TGraph(n, xvals, obs_y)
+    gr_exp    = ROOT.TGraph(n, xvals, exp_y)
+    gr_theory = ROOT.TGraph(n, xvals, theory_y)
 
-gr_2sigma = ROOT.TGraph(2*n)
-for i in range(n):
-    gr_2sigma.SetPoint(i,       xvals[i], exp_p2[i])
-    gr_2sigma.SetPoint(2*n-i-1, xvals[i], exp_m2[i])
-gr_2sigma.SetFillColor(pastel_green)
+    gr_1sigma = ROOT.TGraph(2*n)
+    for i in range(n):
+        gr_1sigma.SetPoint(i,       xvals[i], exp_p1[i])
+        gr_1sigma.SetPoint(2*n-i-1, xvals[i], exp_m1[i])
+    gr_1sigma.SetFillColor(pastel_yellow)
 
-# ── Canvas ─────────────────────────────────────────────────────────────────
-c = ROOT.TCanvas("c", "Brazil plot vs mass", 1200, 900)
-c.SetLogy()
+    gr_2sigma = ROOT.TGraph(2*n)
+    for i in range(n):
+        gr_2sigma.SetPoint(i,       xvals[i], exp_p2[i])
+        gr_2sigma.SetPoint(2*n-i-1, xvals[i], exp_m2[i])
+    gr_2sigma.SetFillColor(pastel_green)
 
-gr_2sigma.SetTitle(
-    f"Stau GMSB, c#tau = {lifetime};"
-    "Stau mass [GeV];"
-    "95% CL Limit on #sigma [pb]"
-)
+    # canvas
+    c = ROOT.TCanvas("c", "Brazil plot vs mass", 1200, 900)
+    c.SetLogy()
 
-gr_2sigma.Draw("AF")
-gr_2sigma.GetXaxis().SetRangeUser(97, 118)
-gr_2sigma.GetYaxis().SetRangeUser(1e-4, 2.0)
+    gr_2sigma.SetTitle(
+        f"Long-lived #tilde{{#tau}} in GMSB (c#tau = {lifetime});"
+        "m_{#tilde{#tau}} [GeV];"
+        "95% CL limit on #sigma [pb]"
+    )
 
-gr_1sigma.Draw("F same")
+    gr_2sigma.Draw("AF") # fill the polygon- this gets the 2sig band
+    gr_2sigma.GetXaxis().SetRangeUser(97, 118)
+    gr_2sigma.GetYaxis().SetRangeUser(1e-7, 2.0)
 
-gr_exp.SetLineStyle(2)
-gr_exp.SetLineWidth(2)
-gr_exp.Draw("L same")
+    gr_1sigma.Draw("F same") # on same canvas get the 1sig band
 
-gr_obs.SetMarkerStyle(20)
-gr_obs.SetLineWidth(2)
-gr_obs.Draw("PL same")
+    gr_exp.SetLineStyle(2)
+    gr_exp.SetLineWidth(2)
+    gr_exp.Draw("L same") # draw line between points in the same canvas
 
-gr_theory.SetLineColor(ROOT.kRed)
-gr_theory.SetLineWidth(2)
-gr_theory.SetLineStyle(1)
-gr_theory.Draw("L same")
+    gr_obs.SetMarkerStyle(20)
+    gr_obs.SetLineWidth(3)
+    gr_obs.Draw("PL same") # markers and line
 
-# ── Legend ─────────────────────────────────────────────────────────────────
-legend = ROOT.TLegend(0.55, 0.65, 0.88, 0.88)
-legend.SetBorderSize(0)
-legend.SetFillStyle(0)
-legend.AddEntry(gr_obs,    "Observed",            "pl")
-legend.AddEntry(gr_exp,    "Expected",            "l")
-legend.AddEntry(gr_1sigma, "Expected #pm1#sigma", "f")
-legend.AddEntry(gr_2sigma, "Expected #pm2#sigma", "f")
-legend.AddEntry(gr_theory, "Theory #sigma",       "l")
-legend.Draw()
+    gr_theory.SetLineColor(ROOT.kRed)
+    gr_theory.SetLineWidth(3)
+    gr_theory.SetLineStyle(1)
+    gr_theory.Draw("L same") # line
 
-c.SaveAs(f"brazil_plot_lifetime_all_channels{lifetime}.png")
-print(f"Saved: brazil_plot_lifetime_{lifetime}.png")
+    # legend
+    legend = ROOT.TLegend(0.70, 0.70, 0.88, 0.88) #x1, y1, x2, y2
+    legend.SetBorderSize(0)
+    legend.SetFillStyle(0)
+    legend.AddEntry(gr_obs,    "Observed",            "pl")
+    legend.AddEntry(gr_exp,    "Expected",            "l")
+    legend.AddEntry(gr_1sigma, "Expected #pm1#sigma", "f")
+    legend.AddEntry(gr_2sigma, "Expected #pm2#sigma", "f")
+    legend.AddEntry(gr_theory, "Theory #sigma",       "l")
+    legend.Draw()
+
+    label = ROOT.TLatex()
+    label.SetNDC()
+    label.SetTextSize(0.035)
+    label.DrawLatex(0.18, 0.85, "FCC-ee Simulation")
+    label.DrawLatex(0.18, 0.80, "#sqrt{s} = 240 GeV")
+
+    # save the file
+    plots_dir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/combine/plots_allchannels"
+    outfile = os.path.join(plots_dir, f"brazil_plot_lifetime_all_channels_{lifetime}.png")
+    c.SaveAs(outfile)
+    print(f"Saved: {outfile}")
