@@ -4,13 +4,19 @@ import os
 import subprocess
 
 json_limits = {}
-
-input_json = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final_0303/results.json"
-output_dir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/combine/datacards_scaledbg"
+# final_0303 has a different hadronic kV selection with the lepton veto included
+input_json = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final_1day_2003/results.json"
+output_dir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/combine/datacards_all/datacards_2003_1day"
 limits_dir = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/combine/limits"
 
 os.makedirs(output_dir, exist_ok=True)
 os.makedirs(limits_dir, exist_ok=True)
+
+# lumi = 1.08e7  # pb^-1
+lumi = 6480 # lumi in pb-1 for 1 day at 1 IP
+# lumi = 0.9e6 # per year at IP in pb-1
+# lumi = 2.7e6 # per IP at 3 years
+SCALE_FACTOR = 100     # signal always divided by this in the datacard
 
 channels = ["hadronic_KV", "semiLeptonic_KV", "semiLep_DV", "hadronic_DV"]
 
@@ -33,36 +39,93 @@ mc_info = {
 
 # Signal MC - should also be scaled
 signal_mc_info = {
+    # 20 cm
     "FCCee_100_stau_20cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.07735},
     "FCCee_105_stau_20cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.05196},
     "FCCee_110_stau_20cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.02923},
     "FCCee_115_stau_20cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.01067},
+    "FCCee_118_stau_20cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.002752},
+    "FCCee_119_stau_20cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.0009792},
+
+    # 50 cm
     "FCCee_100_stau_50cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.07735},
     "FCCee_105_stau_50cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.05196},
     "FCCee_110_stau_50cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.02923},
     "FCCee_115_stau_50cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.01067},
-    "FCCee_100_stau_1m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.07735},
-    "FCCee_105_stau_1m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.05196},
-    "FCCee_110_stau_1m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.02923},
-    "FCCee_115_stau_1m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.01067},
-    "FCCee_100_stau_2m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.07735},
-    "FCCee_105_stau_2m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.05196},
-    "FCCee_110_stau_2m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.02923},
-    "FCCee_115_stau_2m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.01067},
-    "FCCee_100_stau_3m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.07735},
-    "FCCee_105_stau_3m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.05196},
-    "FCCee_110_stau_3m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.02923},
-    "FCCee_115_stau_3m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.01067},
-    "FCCee_100_stau_4m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.07735},
-    "FCCee_105_stau_4m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.05196},
-    "FCCee_110_stau_4m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.02923},
-    "FCCee_115_stau_4m_ctau_ecm_240":  {"N_MC": 100000, "sigma": 0.01067},
+    "FCCee_118_stau_50cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.002752},
+    "FCCee_119_stau_50cm_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.0009792},
+
+    # 1 m
+    "FCCee_100_stau_1m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.07735},
+    "FCCee_105_stau_1m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.05196},
+    "FCCee_110_stau_1m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.02923},
+    "FCCee_115_stau_1m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.01067},
+    "FCCee_118_stau_1m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.002752},
+    "FCCee_119_stau_1m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.0009792},
+
+    # 2 m
+    "FCCee_100_stau_2m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.07735},
+    "FCCee_105_stau_2m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.05196},
+    "FCCee_110_stau_2m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.02923},
+    "FCCee_115_stau_2m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.01067},
+    "FCCee_118_stau_2m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.002752},
+    "FCCee_119_stau_2m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.0009792},
+
+    # 3 m
+    "FCCee_100_stau_3m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.07735},
+    "FCCee_105_stau_3m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.05196},
+    "FCCee_110_stau_3m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.02923},
+    "FCCee_115_stau_3m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.01067},
+    "FCCee_118_stau_3m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.002752},
+    "FCCee_119_stau_3m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.0009792},
+
+    # 4 m
+    "FCCee_100_stau_4m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.07735},
+    "FCCee_105_stau_4m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.05196},
+    "FCCee_110_stau_4m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.02923},
+    "FCCee_115_stau_4m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.01067},
+    "FCCee_118_stau_4m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.002752},
+    "FCCee_119_stau_4m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.0009792},
+
+    # 6 m
+    "FCCee_100_stau_6m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.07735},
+    "FCCee_105_stau_6m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.05196},
+    "FCCee_110_stau_6m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.02923},
+    "FCCee_115_stau_6m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.01067},
+    "FCCee_118_stau_6m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.002752},
+    "FCCee_119_stau_6m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.0009792},
+
+    # 10 m
+    "FCCee_100_stau_10m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.07735},
+    "FCCee_105_stau_10m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.05196},
+    "FCCee_110_stau_10m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.02923},
+    "FCCee_115_stau_10m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.01067},
+    "FCCee_118_stau_10m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.002752},
+    "FCCee_119_stau_10m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.0009792},
+
+    # 20 m
+    "FCCee_100_stau_20m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.07735},
+    "FCCee_105_stau_20m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.05196},
+    "FCCee_110_stau_20m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.02923},
+    "FCCee_115_stau_20m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.01067},
+    "FCCee_118_stau_20m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.002752},
+    "FCCee_119_stau_20m_ctau_ecm_240": {"N_MC": 100000, "sigma": 0.0009792},
 }
 
-signals = list(signal_mc_info.keys())
+# # scaling all signals with lifetime > 2m : pythia issue
+# scale_large_ctau = {
+#     "20cm" : 1.0,
+#     "50cm" : 1.0,
+#     "1m" : 1.0,
+#     "2m": 0.9996,
+#     "3m": 0.9944,
+#     "4m": 0.9795,
+#     "6m": 0.9251,
+#     "10m": 0.7888,
+#     "20m": 0.5404
+# }
 
-lumi = 1.08e7  # pb^-1
-SCALE_FACTOR = 1000     # signal always divided by this in the datacard
+signals = list(signal_mc_info.keys())
 
 def make_label(s):
     parts = s.split("_")
@@ -94,6 +157,10 @@ def get_rate(proc, chan):
 
     else:  # signal
         info = signal_mc_info[proc]
+        # get the lifetime
+        # _, lifetime = extract_mass_lifetime(proc)
+        # scale_factor_ctau = scale_large_ctau.get(lifetime, 1.0)
+
         if raw == 0:
             scaled = 0
             # scaled = (3.0 / info["N_MC"]) * info["sigma"] * lumi / SCALE_FACTOR
@@ -142,7 +209,8 @@ for sig_proc in signals:
         rates = [get_rate(k, c) for k, c in zip(col_keys, col_chans)]
         dc.write("rate".ljust(15) + "  ".join(f"{r:.6f}" for r in rates) + "\n")
         dc.write("------------\n")
-        dc.write("lumi  lnN  " + "  ".join(["1.02"] * n_cols) + "\n") # considered 2% uncertainity on lumi
+        dc.write("lumi  lnN  " + "  ".join(["1.02"] * n_cols) + "\n") # considered 2% uncertainity on lumi- integrated
+        # lumi uncertainity per day: 3\%
 
     # Run Combine
     result = subprocess.run(
@@ -172,7 +240,7 @@ for sig_proc in signals:
         "obs":   obs    or 0,
     }
 
-json_path = os.path.join(limits_dir, "limits.json")
+json_path = os.path.join(limits_dir, "limits_1day_2003.json") 
 with open(json_path, "w") as f:
     json.dump(json_limits, f, indent=2)
 

@@ -12,40 +12,77 @@ class Analysis():
         # Mandatory: List of datasets used in the analysis
         self.process_list = {
             # 20 cm
-            "FCCee_100_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_105_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_110_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_115_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_100_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_105_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_110_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_115_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_118_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_119_stau_20cm_ctau_ecm_240": {'fraction': 1.0},
 
-            # 50 cm
-            "FCCee_100_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_105_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_110_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_115_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            # # 50 cm
+            # # "FCCee_100_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_105_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_110_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_115_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_118_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_119_stau_50cm_ctau_ecm_240": {'fraction': 1.0},
 
-            # 1 m
-            "FCCee_100_stau_1m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_105_stau_1m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_110_stau_1m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_115_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            # # 1 m
+            # # "FCCee_100_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_105_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_110_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_115_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_118_stau_1m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_119_stau_1m_ctau_ecm_240": {'fraction': 1.0},
 
             # # 2 m
-            "FCCee_100_stau_2m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_105_stau_2m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_110_stau_2m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_115_stau_2m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_100_stau_2m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_105_stau_2m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_110_stau_2m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_115_stau_2m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_118_stau_2m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_119_stau_2m_ctau_ecm_240": {'fraction': 1.0},
 
             # 3 m
-            "FCCee_100_stau_3m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_105_stau_3m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_110_stau_3m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_115_stau_3m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_100_stau_3m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_105_stau_3m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_110_stau_3m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_115_stau_3m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_118_stau_3m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_119_stau_3m_ctau_ecm_240": {'fraction': 1.0},
 
-            # 4 m
-            "FCCee_100_stau_4m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_105_stau_4m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_110_stau_4m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_115_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+            # # # 4 m
+            # # # "FCCee_100_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+            # # # "FCCee_105_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+            # # # "FCCee_110_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+            # # # "FCCee_115_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_118_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_119_stau_4m_ctau_ecm_240": {'fraction': 1.0},
+
+            # # # 6 m
+            # # "FCCee_100_stau_6m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_105_stau_6m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_110_stau_6m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_115_stau_6m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_118_stau_6m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_119_stau_6m_ctau_ecm_240": {'fraction': 1.0},
+
+            # # 10 m
+            # "FCCee_100_stau_10m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_105_stau_10m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_110_stau_10m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_115_stau_10m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_118_stau_10m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_119_stau_10m_ctau_ecm_240": {'fraction': 1.0},
+            
+            # # # 20 m
+            # "FCCee_100_stau_20m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_105_stau_20m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_110_stau_20m_ctau_ecm_240": {'fraction': 1.0}, ## SOME PROBLEM HERE!!
+            # "FCCee_115_stau_20m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_118_stau_20m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_119_stau_20m_ctau_ecm_240": {'fraction': 1.0},
+
         }
 
         # prodTag     = "FCCee/winter2023/IDEA/"
@@ -59,8 +96,8 @@ class Analysis():
         # self.input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023_training/IDEA/'
         # self.input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/spring2021/IDEA/'
 
-        self.input_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/edm4hep_output'
-        self.output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/stage1_0603'
+        self.input_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/edm4hep_output_2003'
+        self.output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/stage1_combined_2003'
 
         # for batch
         # self.output_dir = '.output/condor_jobs/'

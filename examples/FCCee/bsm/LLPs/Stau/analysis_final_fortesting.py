@@ -7,112 +7,112 @@ Final stage of the stau analysis
 # for background:
 # inputDir  = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/condor_0603"
 # combined:
-inputDir  = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/stage1_combined_2003"
-outputDir = "/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/final_1day_2003"
+inputDir  = "/eos/user/s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/testing"
+outputDir = "/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/testing"
 
 # List of datasets used in the analysis
 processList = {
         #######################################################
         #                      SIGNAL                         #
         #######################################################
-        #######################################################
-        #             CME: 240 GeV (ZH) - 20 cm               #
-        #######################################################
-        'FCCee_100_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_105_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_110_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_115_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_118_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_119_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
+        # #######################################################
+        # #             CME: 240 GeV (ZH) - 20 cm               #
+        # #######################################################
+        # 'FCCee_100_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_105_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_110_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_115_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_118_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_119_stau_20cm_ctau_ecm_240': {'fraction': 1.0},
 
-        #######################################################
-        #             CME: 240 GeV (ZH) - 50 cm               #
-        #######################################################
-        'FCCee_100_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_105_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_110_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_115_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_118_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_119_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
+        # #######################################################
+        # #             CME: 240 GeV (ZH) - 50 cm               #
+        # #######################################################
+        # 'FCCee_100_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_105_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_110_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_115_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_118_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_119_stau_50cm_ctau_ecm_240': {'fraction': 1.0},
 
-        #######################################################
-        #             CME: 240 GeV (ZH) - 1 m                 #
-        #######################################################
-        'FCCee_100_stau_1m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_105_stau_1m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_110_stau_1m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_115_stau_1m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_118_stau_1m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_119_stau_1m_ctau_ecm_240': {'fraction': 1.0},
+        # #######################################################
+        # #             CME: 240 GeV (ZH) - 1 m                 #
+        # #######################################################
+        # 'FCCee_100_stau_1m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_105_stau_1m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_110_stau_1m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_115_stau_1m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_118_stau_1m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_119_stau_1m_ctau_ecm_240': {'fraction': 1.0},
 
-        #######################################################
-        #             CME: 240 GeV (ZH) - 2 m                 #
-        #######################################################
-        'FCCee_100_stau_2m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_105_stau_2m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_110_stau_2m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_115_stau_2m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_118_stau_2m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_119_stau_2m_ctau_ecm_240': {'fraction': 1.0},
+        # #######################################################
+        # #             CME: 240 GeV (ZH) - 2 m                 #
+        # #######################################################
+        # 'FCCee_100_stau_2m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_105_stau_2m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_110_stau_2m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_115_stau_2m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_118_stau_2m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_119_stau_2m_ctau_ecm_240': {'fraction': 1.0},
 
-        #######################################################
-        #             CME: 240 GeV (ZH) - 3 m                 #
-        #######################################################
-        'FCCee_100_stau_3m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_105_stau_3m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_110_stau_3m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_115_stau_3m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_118_stau_3m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_119_stau_3m_ctau_ecm_240': {'fraction': 1.0},
+        # #######################################################
+        # #             CME: 240 GeV (ZH) - 3 m                 #
+        # #######################################################
+        # 'FCCee_100_stau_3m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_105_stau_3m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_110_stau_3m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_115_stau_3m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_118_stau_3m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_119_stau_3m_ctau_ecm_240': {'fraction': 1.0},
 
-        #######################################################
-        #             CME: 240 GeV (ZH) - 4 m                 #
-        #######################################################
-        'FCCee_100_stau_4m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_105_stau_4m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_110_stau_4m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_115_stau_4m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_118_stau_4m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_119_stau_4m_ctau_ecm_240': {'fraction': 1.0},
+        # #######################################################
+        # #             CME: 240 GeV (ZH) - 4 m                 #
+        # #######################################################
+        # 'FCCee_100_stau_4m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_105_stau_4m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_110_stau_4m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_115_stau_4m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_118_stau_4m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_119_stau_4m_ctau_ecm_240': {'fraction': 1.0},
 
-        #######################################################
-        #             CME: 240 GeV (ZH) - 6 m                 #
-        #######################################################
-        'FCCee_100_stau_6m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_105_stau_6m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_110_stau_6m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_115_stau_6m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_118_stau_6m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_119_stau_6m_ctau_ecm_240': {'fraction': 1.0},
+        # #######################################################
+        # #             CME: 240 GeV (ZH) - 6 m                 #
+        # #######################################################
+        # 'FCCee_100_stau_6m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_105_stau_6m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_110_stau_6m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_115_stau_6m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_118_stau_6m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_119_stau_6m_ctau_ecm_240': {'fraction': 1.0},
 
-        #######################################################
-        #             CME: 240 GeV (ZH) - 10 m                #
-        #######################################################
-        'FCCee_100_stau_10m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_105_stau_10m_ctau_ecm_240': {'fraction': 1.0},
+        # #######################################################
+        # #             CME: 240 GeV (ZH) - 10 m                #
+        # #######################################################
+        # 'FCCee_100_stau_10m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_105_stau_10m_ctau_ecm_240': {'fraction': 1.0},
         'FCCee_110_stau_10m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_115_stau_10m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_118_stau_10m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_119_stau_10m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_115_stau_10m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_118_stau_10m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_119_stau_10m_ctau_ecm_240': {'fraction': 1.0},
             
-        #######################################################
-        #             CME: 240 GeV (ZH) - 20 m                #
-        #######################################################
-        'FCCee_100_stau_20m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_105_stau_20m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_110_stau_20m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_115_stau_20m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_118_stau_20m_ctau_ecm_240': {'fraction': 1.0},
-        'FCCee_119_stau_20m_ctau_ecm_240': {'fraction': 1.0},
+        # #######################################################
+        # #             CME: 240 GeV (ZH) - 20 m                #
+        # #######################################################
+        # 'FCCee_100_stau_20m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_105_stau_20m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_110_stau_20m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_115_stau_20m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_118_stau_20m_ctau_ecm_240': {'fraction': 1.0},
+        # 'FCCee_119_stau_20m_ctau_ecm_240': {'fraction': 1.0},
 
-        #######################################################
-        #               WINTER 2023                           #
-        #######################################################
-        'p8_ee_WW_ecm240': {'fraction': 1.0,'chunks':100},
-        'p8_ee_ZZ_ecm240': {'fraction': 1.0,'chunks':100},
-        'mgp8_ee_zh_ecm240_hbb': {'fraction': 1.0,'chunks':100},
-        'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
-        'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
+        # #######################################################
+        # #               WINTER 2023                           #
+        # #######################################################
+        # 'p8_ee_WW_ecm240': {'fraction': 1.0,'chunks':100},
+        # 'p8_ee_ZZ_ecm240': {'fraction': 1.0,'chunks':100},
+        # 'mgp8_ee_zh_ecm240_hbb': {'fraction': 1.0,'chunks':100},
+        # 'wzp6_ee_nuenueH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
+        # 'wzp6_ee_bbH_Htautau_ecm240': {'fraction': 1.0,'chunks':100},
 
         } 
 
@@ -226,7 +226,22 @@ saveJSON = True
 cutList = {
 
     "selNone": "n_RecoTracks > -1",
-   
+
+    "semilep": (
+    "n_RecoTracks > -1"
+    " && ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons ==0 && n_RecoMuons == 1))"
+    ),
+
+    "hadronic": (
+    " n_RecoTracks > -1"
+    " && n_RecoElectrons == 0"
+    " && n_RecoMuons == 0"
+    ),
+
+    "dilep":(
+    "n_RecoTracks > -1"
+    " && ((n_RecoElectrons == 2 && n_RecoMuons == 0) || (n_RecoElectrons ==0 && n_RecoMuons == 2) || (n_RecoElectrons ==1 && n_RecoMuons == 1))"
+    ),
     # # "semiLepHad": ( 
     # #     "n_RecoTracks > -1"
     # #     "&& ((n_RecoElectrons == 1 && n_RecoMuons == 0) || (n_RecoElectrons == 0 && n_RecoMuons == 1) || (n_RecoElectrons == 0 && n_RecoMuons == 0))"
@@ -278,6 +293,9 @@ cutList = {
 }
 cutLabels = {
     "selNone": "selNone",
+    "semilep" : "semilep lepton cut",
+    "hadronic" : "hadronic lepton cut",
+    "dilep" : "dilep lepton cut",
     # "semiLepHad": "(0 or 1 reco lepton)",
     # "semiLeptonic": "semiLeptonic",
     "semiLeptonic_KV": "semiLeptonic_KV",
@@ -290,12 +308,12 @@ cutLabels = {
 
 histoList = {
     # Gen-level stau
-    # "n_GenStau":           {"name":"n_GenStau",          "title":"Number of gen staus",             "bin":5,   "xmin":-0.5,  "xmax":4.5},
-    # "GenStau_vx":          {"name":"GenStau_vx",         "title":"Stau vertex x",                   "bin":50,  "xmin":-10,   "xmax":10},
-    # "GenStau_vy":          {"name":"GenStau_vy",         "title":"Stau vertex y",                   "bin":50,  "xmin":-10,   "xmax":10},
-    # "GenStau_vz":          {"name":"GenStau_vz",         "title":"Stau vertex z",                   "bin":50,  "xmin":-50,   "xmax":50},
-    # "GenStau_Lxy":         {"name":"GenStau_Lxy",        "title":"Transverse decay length Lxy",     "bin":50,  "xmin":0,     "xmax":10},
-    # "GenStau_Lxyz":        {"name":"GenStau_Lxyz",       "title":"3D decay length Lxyz",            "bin":50,  "xmin":0,     "xmax":10},
+    "n_GenStau":           {"name":"n_GenStau",          "title":"Number of gen staus",             "bin":5,   "xmin":-0.5,  "xmax":4.5},
+    "GenStau_vx":          {"name":"GenStau_vx",         "title":"Stau vertex x",                   "bin":50,  "xmin":-10,   "xmax":10},
+    "GenStau_vy":          {"name":"GenStau_vy",         "title":"Stau vertex y",                   "bin":50,  "xmin":-10,   "xmax":10},
+    "GenStau_vz":          {"name":"GenStau_vz",         "title":"Stau vertex z",                   "bin":50,  "xmin":-50,   "xmax":50},
+    "GenStau_Lxy":         {"name":"GenStau_Lxy",        "title":"Transverse decay length Lxy",     "bin":50,  "xmin":0,     "xmax":10},
+    "GenStau_Lxyz":        {"name":"GenStau_Lxyz",       "title":"3D decay length Lxyz",            "bin":50,  "xmin":0,     "xmax":10},
     # # "GenStau_observed_lifetime_xyz":   {"name":"GenStau_observed_lifetime_xyz",   "title":"Observed stau lifetime (xyz)",    "bin":50,  "xmin":0,     "xmax":100},
     # "n_StauDaughters":       {"name":"n_StauDaughters",        "title":"Number of Stau Daughters",        "bin":5,   "xmin":-0.5, "xmax":9.5},
     "GenGravitino_e":        {"name":"GenGravitino_e",        "title":"Gen Gravitino energy",            "bin":100,  "xmin":0,    "xmax":200},
@@ -307,13 +325,13 @@ histoList = {
     "GenTau_pt":             {"name":"GenTau_pt",             "title":"Gen Tau pt",                      "bin":100,  "xmin":0,    "xmax":200},
     "GenTau_eta":            {"name":"GenTau_eta",            "title":"Gen Tau eta",                     "bin":100,  "xmin":-5,   "xmax":5},
     "GenTau_phi":            {"name":"GenTau_phi",            "title":"Gen Tau phi",                     "bin":100,  "xmin":-3.2, "xmax":3.2},
-    # "GenTau_theta":          {"name":"GenTau_theta",          "title":"Gen Tau theta",                   "bin":100,  "xmin":0,    "xmax":3.2},
+    "GenTau_theta":          {"name":"GenTau_theta",          "title":"Gen Tau theta",                   "bin":100,  "xmin":0,    "xmax":3.2},
     "GenTau_vx":             {"name":"GenTau_vx",             "title":"Gen Tau vx",                      "bin":100,  "xmin":-10,  "xmax":10},
     "GenTau_vy":             {"name":"GenTau_vy",             "title":"Gen Tau vy",                      "bin":100,  "xmin":-10,  "xmax":10},
     "GenTau_vz":             {"name":"GenTau_vz",             "title":"Gen Tau vz",                      "bin":100,  "xmin":-50,  "xmax":50},
-    # "GenTau_cTau":           {"name":"GenTau_cTau",           "title":"cTau",                    "bin":150,   "xmin":0,    "xmax":300},
-    # "decayLengthTau":        {"name": "decayLengthTau",    "title":"Gen Tau decay length",           "bin":50,   "xmin":0,    "xmax":50},
-    # "GenStau_theta":          {"name":"GenStau_theta",          "title":"Gen Stau theta",                   "bin":100,  "xmin":0,    "xmax":3.2},
+    "GenTau_cTau":           {"name":"GenTau_cTau",           "title":"cTau",                    "bin":150,   "xmin":0,    "xmax":300},
+    "decayLengthTau":        {"name": "decayLengthTau",    "title":"Gen Tau decay length",           "bin":50,   "xmin":0,    "xmax":50},
+    "GenStau_theta":          {"name":"GenStau_theta",          "title":"Gen Stau theta",                   "bin":100,  "xmin":0,    "xmax":3.2},
     # Final-state muons
     "n_FSGenMuon":       {"name":"n_FSGenMuon",     "title":"Number of FS muons", "bin":11,   "xmin":-0.5,  "xmax":10.5},
     "FSGenMuon_e":      {"name":"FSGenMuon_e",      "title":"FS muon energy",     "bin":50, "xmin":0, "xmax":200},
