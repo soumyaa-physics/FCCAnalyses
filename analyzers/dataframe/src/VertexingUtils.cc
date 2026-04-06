@@ -527,6 +527,24 @@ ROOT::VecOps::RVec<double> get_kink_mass(ROOT::VecOps::RVec<FCCAnalysesVertex> v
     }
     return result;
 }
+
+ROOT::VecOps::RVec<double> get_kink_angle(ROOT::VecOps::RVec<FCCAnalysesVertex> vertices) {
+    ROOT::VecOps::RVec<double> result;
+    for (auto &vtx : vertices) {
+        TVector3 p_par = vtx.updated_track_momentum_at_vertex[0]; // should be the stau track
+        TVector3 p_chg = vtx.updated_track_momentum_at_vertex[1]; // should be the pion track
+        double p_par_mag = p_par.Mag();
+        double p_chg_mag = p_chg.Mag();
+        double pdotp = p_par.Dot(p_chg);
+
+        // std::cout << "momentum of the stau track is: " << p_par_mag << "momentum of the pion track is: " << p_chg_mag << std::endl;
+
+        double angle = acos(pdotp / (p_par_mag * p_chg_mag)); 
+        result.push_back(angle);
+    }
+    return result;
+}
+
 // invariant mass of a two track vertex
 double get_invM_pairs(FCCAnalysesVertex vertex, double m1, double m2) {
   // CAUTION: m1 -> first track; m2 -> second track

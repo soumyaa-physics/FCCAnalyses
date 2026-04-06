@@ -60,14 +60,14 @@ class Analysis():
             # "FCCee_119_stau_4m_ctau_ecm_240": {'fraction': 1.0},
 
             # # # 6 m
-            # "FCCee_100_stau_6m_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_105_stau_6m_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_110_stau_6m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_100_stau_6m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_105_stau_6m_ctau_ecm_240": {'fraction': 1.0},
+            # # "FCCee_110_stau_6m_ctau_ecm_240": {'fraction': 1.0},
             # "FCCee_115_stau_6m_ctau_ecm_240": {'fraction': 1.0},
-            # "FCCee_118_stau_6m_ctau_ecm_240": {'fraction': 1.0},
+            "FCCee_118_stau_6m_ctau_ecm_240": {'fraction': 1.0},
             # "FCCee_119_stau_6m_ctau_ecm_240": {'fraction': 1.0},
 
-            # 10 m
+            # # 10 m
             # "FCCee_100_stau_10m_ctau_ecm_240": {'fraction': 1.0},
             # "FCCee_105_stau_10m_ctau_ecm_240": {'fraction': 1.0},
             # "FCCee_110_stau_10m_ctau_ecm_240": {'fraction': 1.0},
@@ -75,13 +75,13 @@ class Analysis():
             # "FCCee_118_stau_10m_ctau_ecm_240": {'fraction': 1.0},
             # "FCCee_119_stau_10m_ctau_ecm_240": {'fraction': 1.0},
             
-            # # 20 m
-            "FCCee_100_stau_20m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_105_stau_20m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_110_stau_20m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_115_stau_20m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_118_stau_20m_ctau_ecm_240": {'fraction': 1.0},
-            "FCCee_119_stau_20m_ctau_ecm_240": {'fraction': 1.0},
+            # # # 20 m
+            # "FCCee_100_stau_20m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_105_stau_20m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_110_stau_20m_ctau_ecm_240": {'fraction': 1.0}, ## SOME PROBLEM HERE!!
+            # "FCCee_115_stau_20m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_118_stau_20m_ctau_ecm_240": {'fraction': 1.0},
+            # "FCCee_119_stau_20m_ctau_ecm_240": {'fraction': 1.0},
 
         }
 
@@ -96,8 +96,10 @@ class Analysis():
         # self.input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023_training/IDEA/'
         # self.input_dir = '/eos/experiment/fcc/ee/generation/DelphesEvents/spring2021/IDEA/'
 
-        self.input_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/stau_output_mainFCC/output/edm4hep_output_2003'
-        self.output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/stage1_combined_0204'
+        # self.input_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/edm4hep_output_2003'
+        self.input_dir = '/eos/user/s/svashish/stau_output_mainFCC/output/edm4hep_output_2003'
+        self.output_dir = '/eos/home-s/svashish/FCCAnalyses/examples/FCCee/bsm/LLPs/Stau/output/testing'
+        # self.output_dir = '/eos/user/s/svashish/stau_output_mainFCC/output/testing'
 
         # for batch
         # self.output_dir = '.output/condor_jobs/'
@@ -440,7 +442,7 @@ class Analysis():
             # vector of distances of all reconstructed SV from PV (in mm in 3D)
             .Define("KinkVertex_d3d", "VertexingUtils::get_d3d_SV(KinkCandidates_VertexObject_passVeto, PrimaryVertexObject)")
             .Define("KinkAngle_rad", "VertexingUtils::get_kink_angle(KinkCandidates_VertexObject_passVeto)")
-            .Define("KinkAngle", "(KinkAngle_rad)*180/3.14")                       
+            .Define("KinkAngle", "(KinkAngle_rad)*180/3.14")            
 
             # DISPLACED VERTICES FROM SELECTED TRACKS- TARGETTING 3 PRONG TAU DECAY
             .Filter("sel_tracks.size()>0")

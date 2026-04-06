@@ -147,6 +147,8 @@ namespace VertexingUtils{
 
   ROOT::VecOps::RVec<double> get_kink_mass(ROOT::VecOps::RVec<FCCAnalysesVertex> vertices);
 
+  ROOT::VecOps::RVec<double> get_kink_angle(ROOT::VecOps::RVec<FCCAnalysesVertex> vertices);
+
   /** returns the invariant mass of a two-track vertex
    *  CAUTION: m1 -> mass of first track, m2 -> mass of second track
    *  by default both pions
