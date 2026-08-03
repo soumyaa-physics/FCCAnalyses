@@ -1578,17 +1578,26 @@ ROOT::VecOps::RVec<TVector3> getHitsOnTrack(int recoIndex,
     std::lock_guard lock(mx_solGeo); 
     if (firstCall){
       std::cout << " ==== Loading the delphes IDEA Geometry === "<<std::endl;  
-      std::ifstream inf("geometry.txt"); 
+      char* geoPath = nullptr; 
+      geoPath = getenv("DELPHES_GEO_PATH");
+      std::string geoLoc = ".";
+      if (geoPath) geoLoc = geoPath;
+      std::ifstream inf(geoLoc + "/geometry.txt"); 
+      if (!inf.good()){
+        std::cerr << "Failed to load the geo - bailing out" << std::endl;
+        throw std::runtime_error{"poof"};
+      }
       std::string theGeo;
-      char buf[500];  
+      std::vector<char> buf(500,0);  
       while(!inf.eof()){
-        inf.getline(buf,500); 
-        theGeo+= std::string(buf)+"\n"; 
+        inf.getline(buf.data(),500); 
+        theGeo+= std::string(buf.data())+"\n"; 
       }
 
       fGeom->Read(theGeo.c_str());
       fGeom->SetBz(2.0); 
       firstCall = false; 
+      std::cout <<" ==== Successfully loaded the IDEA Geometry === " << std::endl;
     }
   }
   auto mcIndices = ReconstructedParticle2MC::getRP2MC_index(recind, mcind, reco); 

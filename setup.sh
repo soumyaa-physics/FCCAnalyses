@@ -1,51 +1,53 @@
-if [ "${0}" != "${BASH_SOURCE}" ]; then
-  # Determinig the location of this setup script
-  export LOCAL_DIR=$(cd $(dirname "${BASH_SOURCE}") && pwd)
+#!/bin/bash
 
-  echo "----> INFO: Setting up Key4hep stack..."
-  # Sourcing of the stack
-  if [ -n "${KEY4HEP_STACK}" ]; then
-    echo "----> INFO: Key4hep stack already set up. Skipping..."
-  elif [ -f "${LOCAL_DIR}/.fccana/stackpin" ]; then
-    STACK_PATH=$(<${LOCAL_DIR}/.fccana/stackpin)
-    echo "----> INFO: Sourcing pinned Key4hep stack..."
-    echo "      ${STACK_PATH}"
-    source ${STACK_PATH}
-  else
-    source /cvmfs/sw.hsf.org/key4hep/setup.sh
-  fi
+# key4Hep - if you run the script with the "24" argument, you get the old release.
+source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10
 
-  if [ -z "${KEY4HEP_STACK}" ]; then
-    echo "----> ERROR: Key4hep stack not setup correctly! Aborting..."
-    return 1
-  fi
+# get the directory where this script is located. This should be the FCCAnalysis folder. 
+BASE_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/..
+export LOCAL_DIR=$(cd $(dirname "${BASH_SOURCE}") && pwd)
+# Add Delphes, assumed to be one folder above FCCAnalysis 
+export DELPHES_DIR="${BASE_DIR}/delphes"
+export LD_LIBRARY_PATH=${DELPHES_DIR}:$LD_LIBRARY_PATH
+export PATH=${DELPHES_DIR}:$PATH 
+export CMAKE_PREFIX_PATH=${DELPHES_DIR}:$CMAKE_PREFIX_PATH
+export DELPHES_EXTERNALS_TKCOV_INCLUDE_DIR=${DELPHES_DIR}/external/TrackCovariance/
 
-  echo "----> INFO: Setting up environment variables..."
-  export PYTHONPATH=${LOCAL_DIR}/python:${PYTHONPATH}
-  export PYTHONPATH=${LOCAL_DIR}/install/python:${PYTHONPATH}
-  export PYTHONPATH=${LOCAL_DIR}/install/share/examples:${PYTHONPATH}
-  export PATH=${LOCAL_DIR}/bin:${PATH}
-  export PATH=${LOCAL_DIR}/install/bin:${PATH}
-  export LD_LIBRARY_PATH=${LOCAL_DIR}/install/lib64:${LD_LIBRARY_PATH}
-  export LD_LIBRARY_PATH=${LOCAL_DIR}/install/lib:${LD_LIBRARY_PATH}
-  export CMAKE_PREFIX_PATH=${LOCAL_DIR}/install:${CMAKE_PREFIX_PATH}
+# Add FCCAnalysis_pre, assumed to be the folder we are in now 
+export FCCana_DIR="${BASE_DIR}/FCCAnalyses_pre/install/"
 
-  export ROOT_INCLUDE_PATH=`fastjet-config --prefix`/include:${ROOT_INCLUDE_PATH}
-  export ROOT_INCLUDE_PATH=${LOCAL_DIR}/install/include:${ROOT_INCLUDE_PATH}
+export LD_LIBRARY_PATH=${FCCana_DIR}/lib:${FCCana_DIR}/lib64:$LD_LIBRARY_PATH
+export PATH=${FCCana_DIR}/bin:$PATH
+export CMAKE_PREFIX_PATH=${FCCana_DIR}:$CMAKE_PREFIX_PATH
+export PYTHONPATH=${FCCana_DIR}/python:$PYTHONPATH
+export DELPHES_GEO_PATH=${FCCana_DIR}/../examples/FCCee/bsm/LLPs/Stau
 
-  export ONNXRUNTIME_ROOT_DIR=`python -c "import onnxruntime; print(onnxruntime.__path__[0]+'/../../../..')" 2> /dev/null`
-  if [ -z "${ONNXRUNTIME_ROOT_DIR}" ]; then
-    echo "----> WARNING: ONNX Runtime not found! Related analyzers won't be build..."
-  else
-    export LD_LIBRARY_PATH=${ONNXRUNTIME_ROOT_DIR}/lib:${LD_LIBRARY_PATH}
-  fi
 
-  export MANPATH=${LOCAL_DIR}/man:${MANPATH}
-  export MANPATH=${LOCAL_DIR}/install/share/man:${MANPATH}
+# Make ROOT/Cling use the local FCCAnalyses headers
+export ROOT_INCLUDE_PATH="${BASE_DIR}/FCCAnalyses_pre/analyzers/dataframe:${FCCana_DIR}/include:${ROOT_INCLUDE_PATH}"
 
-  export MYPYPATH=${LOCAL_DIR}/python:${MYPYPATH}
+# run this to (re-) compile delphes 
+function compileDelphes(){
+    cd ${DELPHES_DIR}
+    make -j12
+    cd - 
+}
 
-  export FCCDICTSDIR=/cvmfs/fcc.cern.ch/FCCDicts:${FCCDICTSDIR}
-else
-  echo "----> ERROR: This script is meant to be sourced!"
-fi
+# run this to configure fccAnalyses
+function confFCC(){
+    mkdir -p ${FCCana_DIR}/../build/
+    cd ${FCCana_DIR}/../build/ 
+    cmake \
+        -DWITH_ACTS=OFF \
+        -DBUILD_TESTING=OFF \
+        -DDELPHES_EXTERNALS_TKCOV_INCLUDE_DIR=$DELPHES_EXTERNALS_TKCOV_INCLUDE_DIR \
+        -DCMAKE_INSTALL_PREFIX=${FCCana_DIR} \
+        .. 
+    cd - 
+}
+# run this to (re-)compile FCCAnalyses
+function compileFCC(){
+    cmake --build ${FCCana_DIR}/../build -j12 && cmake --install ${FCCana_DIR}/../build
+    sed -i 's/liblibFCCAnalysis_analysis_example_dictrflx.so/libFCCAnalysis_analysis_example_dictrflx.so/' \
+    ${FCCana_DIR}/lib/libFCCAnalysis_analysis_example.rootmap
+}
