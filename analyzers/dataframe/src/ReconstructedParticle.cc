@@ -71,7 +71,7 @@ ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>  sel_pt::operator() (ROOT
     }
   }
   return result;
-}
+} 
 
 sel_eta::sel_eta(float arg_min_eta) : m_min_eta(arg_min_eta) {};
 ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>  sel_eta::operator() (ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in) {

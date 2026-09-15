@@ -666,6 +666,18 @@ double get_PV2V0angle(FCCAnalysesVertex V0, FCCAnalysesVertex PV) {
   return result;
 }
 
+// cos(angle) b/n V0s[i] candidate's (or any vtx) momentum & PV to V0s displacement
+// vectors
+ROOT::VecOps::RVec<double> get_PV2V0angles(ROOT::VecOps::RVec<FCCAnalysesVertex> V0s, FCCAnalysesVertex PV) {
+  ROOT::VecOps::RVec<double> result;
+  
+  for (const FCCAnalysesVertex& v0 : V0s) {
+    result.push_back(get_PV2V0angle(v0, PV));
+  }
+  
+  return result;
+}
+
 // cos(angle) b/n track momentum sum & PV to vtx displacement vector
 double get_PV2vtx_angle(ROOT::VecOps::RVec<edm4hep::TrackState> tracks,
                         FCCAnalysesVertex vtx, FCCAnalysesVertex PV) {

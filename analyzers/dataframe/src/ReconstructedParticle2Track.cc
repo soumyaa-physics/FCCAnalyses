@@ -258,6 +258,62 @@ ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>> findKink_candidate(
     return result;
   }
 
+  ROOT::VecOps::RVec<float>
+  getRP2TRK_pt(ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in,
+              ROOT::VecOps::RVec<edm4hep::TrackState> tracks) {
+
+    ROOT::VecOps::RVec<float> result;
+
+    for (auto & p : in) {
+      if (p.tracks_begin >= 0 && p.tracks_begin < tracks.size()) {
+
+        const auto & track = tracks.at(p.tracks_begin);
+
+        // TrackState parameters:
+        // omega = q/pT * conversion factor
+        //
+        // The simplest way to get pT robustly is from the
+        // associated ReconstructedParticle momentum.
+        const float px = p.momentum.x;
+        const float py = p.momentum.y;
+
+        result.push_back(std::sqrt(px * px + py * py));
+
+      } else {
+        result.push_back(std::nan(""));
+      }
+    }
+
+    return result;
+  }
+  
+  ROOT::VecOps::RVec<float>
+  getRP2TRK_theta(ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in,
+                  ROOT::VecOps::RVec<edm4hep::TrackState> tracks) {
+
+    ROOT::VecOps::RVec<float> result;
+
+    for (auto & p : in) {
+      if (p.tracks_begin >= 0 && p.tracks_begin < tracks.size()) {
+
+        const auto & track = tracks.at(p.tracks_begin);
+
+        const float px = p.momentum.x;
+        const float py = p.momentum.y;
+        const float pz = p.momentum.z;
+
+        const float pT = std::sqrt(px * px + py * py);
+
+        result.push_back(std::atan2(pT, pz));
+
+      } else {
+        result.push_back(std::nan(""));
+      }
+    }
+
+    return result;
+  }
+
   ROOT::VecOps::RVec<float> 
   getRP2TRK_charge(ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in,
                    ROOT::VecOps::RVec<edm4hep::TrackState> tracks) {

@@ -200,6 +200,89 @@ ROOT::VecOps::RVec<float> tracks_TOF(
   return tracks_TOF(indices, trackdata, trackerhits);
 }
 
+ROOT::VecOps::RVec<float>
+getTrackMass(
+    const ROOT::VecOps::RVec<float>& pt,
+    const ROOT::VecOps::RVec<float>& tof_ps,
+    const ROOT::VecOps::RVec<float>& theta,
+    float detectorRadius_m,
+    float detectorHalfLength_m)
+{
+    ROOT::VecOps::RVec<float> result;
+
+    // Speed of light in m/ns
+    constexpr float c = 0.299792458f;
+
+    for (size_t i = 0; i < pt.size(); ++i) {
+
+        if (i >= tof_ps.size() ||
+            i >= theta.size() ||
+            !std::isfinite(pt[i]) ||
+            !std::isfinite(tof_ps[i]) ||
+            !std::isfinite(theta[i]) ||
+            pt[i] <= 0.0f ||
+            tof_ps[i] <= 0.0f ||
+            detectorRadius_m <= 0.0f ||
+            detectorHalfLength_m <= 0.0f) {
+
+            result.push_back(std::nan(""));
+            continue;
+        }
+
+        // TOF: ps -> ns
+        const float tof_ns = tof_ps[i] * 1.0e-3f;
+
+        // theta is assumed to be in radians
+        const float abs_sin_theta = std::abs(std::sin(theta[i]));
+        const float abs_cos_theta = std::abs(std::cos(theta[i]));
+
+
+        const float L_barrel =
+            detectorRadius_m / abs_sin_theta;
+
+        // Calculate the path length to the endcap
+        // L_endcap = Z / |cos(theta)|
+        float L_endcap = std::numeric_limits<float>::infinity();
+
+        if (abs_cos_theta > 0.0f) {
+            L_endcap =
+                detectorHalfLength_m / abs_cos_theta;
+        }
+
+        // The particle hits whichever surface is reached first
+        const float pathLength =
+            std::min(L_barrel, L_endcap);
+
+        // p = pT / sin(theta)
+        //
+        // beta = L / (c*t)
+        //
+        // m = p * sqrt(1/beta^2 - 1)
+        //   = pT/sin(theta) * sqrt(
+        //       (c*t/L)^2 - 1
+        //     )
+
+        const float ct_over_L =
+            c * tof_ns / pathLength;
+
+        const float term =
+            ct_over_L * ct_over_L -
+            1.0f;
+
+        if (term <= 0.0f) {
+            result.push_back(std::nan(""));
+            continue;
+        }
+
+        const float mass =
+            (pt[i] / abs_sin_theta) * std::sqrt(term);
+
+        result.push_back(mass);
+    }
+
+    return result;
+}
+
 // --------------------------------------------------------------------------------------------------------------------
 
 ROOT::VecOps::RVec<float> tracks_dNdx(

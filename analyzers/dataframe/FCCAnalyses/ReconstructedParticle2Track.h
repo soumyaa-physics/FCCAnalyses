@@ -108,6 +108,16 @@ namespace ReconstructedParticle2Track{
   ROOT::VecOps::RVec<float> getRP2TRK_mom (ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in, 
 					   ROOT::VecOps::RVec<edm4hep::TrackState> tracks);
 
+
+  /// Return the transverse momentum pT of a track associated to a reconstructed particle
+  ROOT::VecOps::RVec<float> getRP2TRK_pt (
+              ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in,
+              ROOT::VecOps::RVec<edm4hep::TrackState> tracks);
+
+  /// Return the theta angle of the reconstructed particle
+  ROOT::VecOps::RVec<float> getRP2TRK_theta(ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in,
+              ROOT::VecOps::RVec<edm4hep::TrackState> tracks);
+
   /// Return the charge of a track to a reconstructed particle
   ROOT::VecOps::RVec<float> getRP2TRK_charge(ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in,  
 					     ROOT::VecOps::RVec<edm4hep::TrackState> tracks);

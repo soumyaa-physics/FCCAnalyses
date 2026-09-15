@@ -69,6 +69,14 @@ ROOT::VecOps::RVec<float> tracks_TOF(
     const ROOT::VecOps::RVec<edm4hep::TrackData> &trackdata, // Eflowtrack
     const ROOT::VecOps::RVec<edm4hep::TrackerHit3DData> &trackerhits);
 
+/// reconstructed masses
+ROOT::VecOps::RVec<float> getTrackMass(
+    const ROOT::VecOps::RVec<float> &pt,
+    const ROOT::VecOps::RVec<float> &tof_ps,
+    const ROOT::VecOps::RVec<float> &theta,
+    float pathLength_m,
+    float detectorHalfLength_m);
+
 /// the dndx values
 ROOT::VecOps::RVec<float> tracks_dNdx(
     const ROOT::VecOps::RVec<int> &track_indices,

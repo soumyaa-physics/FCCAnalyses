@@ -175,6 +175,9 @@ namespace VertexingUtils{
   double get_PV2V0angle( FCCAnalysesVertex V0,
 			 FCCAnalysesVertex PV) ;
 
+  /** returns the cos of the angle b/n V0s[i] candidate's (or any vtx's) momentum & PV to V0s (vtx) displacement vectors */
+  ROOT::VecOps::RVec<double> get_PV2V0angles(ROOT::VecOps::RVec<FCCAnalysesVertex> V0s, FCCAnalysesVertex PV) ;
+
   /** returns cos of the angle b/n track (that form the vtx) momentum sum & PV to vtx displacement vector */
   double get_PV2vtx_angle( ROOT::VecOps::RVec<edm4hep::TrackState> tracks,
 			   FCCAnalysesVertex vtx,

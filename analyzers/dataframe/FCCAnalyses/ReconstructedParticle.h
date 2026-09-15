@@ -64,6 +64,10 @@ namespace ReconstructedParticle{
     ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>  operator() (ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in);
   };
 
+  inline bool inTimingAcceptance(const TVector3 & lastHit){
+    return (lastHit.Perp() >= 2040. || abs(lastHit.z()) >= 2300.);
+  }
+
   /// select ReconstructedParticles with absolute pseudorapidity less than a maximum absolute value
   struct sel_eta {
     sel_eta(float arg_min_eta);

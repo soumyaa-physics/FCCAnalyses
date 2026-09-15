@@ -666,10 +666,10 @@ def run(parser):
 
     try:
         dash_dash_index = sys.argv.index('--')
-        args = parser.parse_args(sys.argv[1:dash_dash_index])
+        args,_ = parser.parse_known_args(sys.argv[1:dash_dash_index])
         args.remaining = sys.argv[dash_dash_index+1:]
     except ValueError:
-        args = parser.parse_args()
+        args,_ = parser.parse_known_args()
         args.remaining = []
 
     if not hasattr(args, 'command'):

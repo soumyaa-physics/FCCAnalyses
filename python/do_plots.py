@@ -64,17 +64,34 @@ def determine_lumi_scaling(config: dict[str, Any],
     try:
         scaled: bool = infile.scaled.GetVal()
     except AttributeError:
-        LOGGER.error('Input file does not contain scaling '
-                     'information!\n  %s\nAborting...', infile.GetName())
-        sys.exit(3)
+        scaled_obj = infile.Get("scaled")
+
+        if not scaled_obj:
+            LOGGER.error(
+                "Input file does not contain scaling information!\n"
+                "  %s\n"
+                "Aborting...",
+                infile.GetName(),
+            )
+
+            sys.exit(3)
+        scaled: bool = scaled_obj.GetVal()
+
 
     if scaled:
         try:
             int_lumi_in_file: float = infile.intLumi.GetVal()
         except AttributeError:
-            LOGGER.error('Can not load integrated luminosity '
-                         'value from the input file!\n  %s\n'
-                         'Aborting...', infile.GetName())
+            lumi_obj = infile.Get("intLumi")
+            if not lumi_obj:
+                LOGGER.error(
+                    "Cannot load integrated luminosity from the input file!\n"
+                    "  %s\n"
+                    "Aborting...",
+                    infile.GetName(),
+                )
+                sys.exit(3)
+            int_lumi_in_file: float = float(lumi_obj.GetVal())
 
         if config['int_lumi'] != int_lumi_in_file:
             LOGGER.warning(
@@ -91,7 +108,7 @@ def determine_lumi_scaling(config: dict[str, Any],
 
     else:
         if config['do_scale']:
-            scale = scale * config['int_lumi']
+            scale *= config['int_lumi']
 
     return scale
 
@@ -127,7 +144,17 @@ def load_hists(var: str,
                 continue
 
             with ROOT.TFile(infilepath, 'READ') as infile:
-                hist = copy.deepcopy(infile.Get(var))
+                hist_in = infile.Get(var)
+
+                if not hist_in:
+                    LOGGER.error(
+                        "Histogram '%s' not found in %s",
+                        var,
+                        infile.GetName()
+                    )
+                    sys.exit(1)
+
+                hist = hist_in.Clone()
                 hist.SetDirectory(0)
 
                 scale = determine_lumi_scaling(config,
@@ -158,8 +185,18 @@ def load_hists(var: str,
                 LOGGER.info('File "%s" not found!\nSkipping it...', infilepath)
                 continue
 
-            with ROOT.TFile(infilepath) as infile:
-                hist = copy.deepcopy(infile.Get(var))
+            with ROOT.TFile(infilepath, 'READ') as infile:
+                hist_in = infile.Get(var)
+
+                if not hist_in:
+                    LOGGER.error(
+                        "Histogram '%s' not found in %s",
+                        var,
+                        infile.GetName()
+                    )
+                    sys.exit(1)
+
+                hist = hist_in.Clone()
                 hist.SetDirectory(0)
 
                 # print('hist.integral:', hist.Integral())
@@ -179,8 +216,18 @@ def load_hists(var: str,
                 LOGGER.info('File "%s" not found!\nSkipping it...', infilepath)
                 continue
 
-            with ROOT.TFile(infilepath) as infile:
-                hist = copy.deepcopy(infile.Get(var))
+            with ROOT.TFile(infilepath, 'READ') as infile:
+                hist_in = infile.Get(var)
+
+                if not hist_in:
+                    LOGGER.error(
+                        "Histogram '%s' not found in %s",
+                        var,
+                        infile.GetName()
+                    )
+                    sys.exit(1)
+
+                hist = hist_in.Clone()
                 hist.SetDirectory(0)
 
                 scale = determine_lumi_scaling(config,
@@ -294,19 +341,21 @@ def runPlots(config: dict[str, Any],
 
     # Below are settings for separate signal and background legends
     if config['split_leg']:
-        legsize = 0.025 * (len(hsignal))
-        legsize2 = 0.025 * (len(hbackgrounds))
-        leg = ROOT.TLegend(0.15, 0.7 - legsize, 0.50, 0.72)
-        leg2 = ROOT.TLegend(0.60, 0.86- legsize2, 0.88, 0.88)
+        legsize = 0.018 * (len(hsignal))
+        legsize2 = 0.025 * ((len(hbackgrounds)+1) // 2)
+        leg = ROOT.TLegend(0.18, 0.72 - legsize, 0.9, 0.75)
+        leg2 = ROOT.TLegend(0.35, 0.82 - legsize2, 0.9, 0.88)
+        leg.SetNColumns(2)
+        leg2.SetNColumns(2)
 
         if config['leg_position'][0] is not None and \
                 config['leg_position'][2] is not None:
             leg.SetX1(config['leg_position'][0])
             leg.SetX2((config['leg_position'][0] +
                        config['leg_position'][2]) / 2)
-            leg2.SetX2((config['leg_position'][0] +
+            leg2.SetX1((config['leg_position'][0] +
                         config['leg_position'][2]) / 2)
-            leg2.SetX2(config['leg_position'][0])
+            leg2.SetX2(config['leg_position'][2])
         if config['leg_position'][1] is not None:
             leg.SetY1(config['leg_position'][1])
             leg2.SetY1(config['leg_position'][1])
@@ -595,7 +644,7 @@ def drawStack(config, name, ylabel, legend, leftText, rightText, formats,
               plotStatUnc=False, xmin=-1, xmax=-1, ymin=-1, ymax=-1,
               xtitle=""):
 
-    canvas = ROOT.TCanvas(name, name, 800, 800)
+    canvas = ROOT.TCanvas(name, name, 1100, 800)
     canvas.SetLogy(logY)
     canvas.SetTicks(1, 1)
     canvas.SetLeftMargin(0.13)
@@ -748,11 +797,11 @@ def drawStack(config, name, ylabel, legend, leftText, rightText, formats,
 
     latex = ROOT.TLatex()
     latex.SetNDC()
-    latex.SetTextAlign(31)
+    latex.SetTextAlign(21)
     latex.SetTextSize(0.04)
 
     text = '#it{' + leftText + '}'
-    latex.DrawLatex(0.94, 0.92, text)
+    latex.DrawLatex(0.5, 0.92, text)
 
     text = '#it{'+customLabel+'}'
     latex.SetTextAlign(12)
@@ -1007,7 +1056,7 @@ def run(args):
     if hasattr(script_module, 'plotStatUnc'):
         config['plot_stat_unc'] = script_module.plotStatUnc
 
-    config['legend_text_size'] = 0.035
+    config['legend_text_size'] = 0.03
     if hasattr(script_module, 'legendTextSize'):
         config['legend_text_size'] = script_module.legendTextSize
     if args.legend_text_size is not None:

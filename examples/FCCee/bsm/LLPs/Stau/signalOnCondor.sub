@@ -1,0 +1,16 @@
+universe                = Vanilla
+executable              = runAnalysisBatch.sh
+arguments               = "$(Sample)"
+
+transfer_executable = True
+should_transfer_files   = YES
+
+transfer_input_files=analysis_stage1_thomas.py,geometry.txt
+
+# output files 
+# stdio 
+output                  = Log/$(Cluster)/out.$(Process)
+error                   = Log/$(Cluster)/err.$(Process)
+log                     = Log/$(Cluster)/log.$(Process)
+
+queue Sample from   MySampleList.txt

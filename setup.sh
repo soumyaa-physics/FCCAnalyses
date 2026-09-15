@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# key4Hep - if you run the script with the "24" argument, you get the old release.
-source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10
+source /cvmfs/sw.hsf.org/key4hep/setup.sh
 
-# get the directory where this script is located. This should be the FCCAnalysis folder. 
+# get the directory where this script is located. This should be the FCCAnalysis folder.  
 BASE_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/..
 export LOCAL_DIR=$(cd $(dirname "${BASH_SOURCE}") && pwd)
+
 # Add Delphes, assumed to be one folder above FCCAnalysis 
 export DELPHES_DIR="${BASE_DIR}/delphes"
 export LD_LIBRARY_PATH=${DELPHES_DIR}:$LD_LIBRARY_PATH
@@ -13,8 +13,16 @@ export PATH=${DELPHES_DIR}:$PATH
 export CMAKE_PREFIX_PATH=${DELPHES_DIR}:$CMAKE_PREFIX_PATH
 export DELPHES_EXTERNALS_TKCOV_INCLUDE_DIR=${DELPHES_DIR}/external/TrackCovariance/
 
-# Add FCCAnalysis_pre, assumed to be the folder we are in now 
-export FCCana_DIR="${BASE_DIR}/FCCAnalyses_pre/install/"
+
+# Add k4SimDelphes, assumed to be one folder above FCCAnalysis
+export k4SD_DIR="${BASE_DIR}/k4simdelphes/install/"
+export LD_LIBRARY_PATH=${k4SD_DIR}/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=${k4SD_DIR}/lib64:$LD_LIBRARY_PATH
+export PATH=${k4SD_DIR}/bin:$PATH 
+export CMAKE_PREFIX_PATH=${k4SD_DIR}:$CMAKE_PREFIX_PATH
+
+# Add FCCAnalysis, assumed to be the folder we are in now 
+export FCCana_DIR="${BASE_DIR}/FCCAnalyses/install/"
 
 export LD_LIBRARY_PATH=${FCCana_DIR}/lib:${FCCana_DIR}/lib64:$LD_LIBRARY_PATH
 export PATH=${FCCana_DIR}/bin:$PATH
@@ -22,17 +30,27 @@ export CMAKE_PREFIX_PATH=${FCCana_DIR}:$CMAKE_PREFIX_PATH
 export PYTHONPATH=${FCCana_DIR}/python:$PYTHONPATH
 export DELPHES_GEO_PATH=${FCCana_DIR}/../examples/FCCee/bsm/LLPs/Stau
 
-
 # Make ROOT/Cling use the local FCCAnalyses headers
-export ROOT_INCLUDE_PATH="${BASE_DIR}/FCCAnalyses_pre/analyzers/dataframe:${FCCana_DIR}/include:${ROOT_INCLUDE_PATH}"
+export ROOT_INCLUDE_PATH="${BASE_DIR}/FCCAnalyses/analyzers/dataframe:${FCCana_DIR}/include:${ROOT_INCLUDE_PATH}"
 
 # run this to (re-) compile delphes 
 function compileDelphes(){
     cd ${DELPHES_DIR}
     make -j12
-    cd - 
+    cd - export DELPHES_GEO_PATH=${FCCana_DIR}/../examples/FCCee/bsm/LLPs/Stau
 }
 
+# run this to configure k4SimDelphes
+function confk4SD(){
+    mkdir -p ${k4SD_DIR}/../build/
+    cd ${k4SD_DIR}/../build/ 
+    cmake -DCMAKE_INSTALL_PREFIX=${k4SD_DIR} .. 
+    cd - 
+}
+# run this to (re-)compile k4SimDelphes
+function compilek4SD(){
+    cmake --build ${k4SD_DIR}/../build -j12 &&  cmake --install ${k4SD_DIR}/../build 
+}
 # run this to configure fccAnalyses
 function confFCC(){
     mkdir -p ${FCCana_DIR}/../build/
